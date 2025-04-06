@@ -20,7 +20,7 @@ function saveCard() {
   if (!savedCardKey) {
     savedCardKey = 'unnamed'
   }
-  savedCardKey = prompt('Please enter the name you\'d like to save your card as', savedCardKey)
+  savedCardKey = "hei"; //prompt('Please enter the name you\'d like to save your card as', savedCardKey)
   if (localStorageCardKeyList.includes(savedCardKey)) {
     if (!confirm('Would you like to overwrite the card you previously saved as ' + savedCardKey + "? (Pressing 'Cancel' will still save the card, but will affix a version number at the end)")) {
       var originalCardKey = savedCardKey
@@ -243,4 +243,45 @@ function uploadSavedCards(event) {
     localStorage.setItem('cardKeyList', JSON.stringify(localStorageCardKeyList))
   }
   reader.readAsText(event.target.files[0], 'UTF-8')
+}
+
+function saveCardProgrammatically(nameHint = 'unnamed') {
+
+
+
+  
+
+  
+  let savedCardKey = nameHint.trim() || 'unnamed';
+
+  if (localStorageCardKeyList.includes(savedCardKey)) {
+    // Add auto-versioning
+    let originalCardKey = savedCardKey;
+    let duplicateCount = 1;
+    while (localStorageCardKeyList.includes(savedCardKey)) {
+      savedCardKey = `${originalCardKey} (${duplicateCount})`;
+      duplicateCount++;
+    }
+  }
+
+  if (!localStorageCardKeyList.includes(savedCardKey)) {
+    localStorageCardKeyList.push(savedCardKey);
+    localStorageCardKeyList.sort();
+    localStorage.setItem('cardKeyList', JSON.stringify(localStorageCardKeyList));
+
+    // Optionally update UI list
+    const select = document.getElementById('inputCardToImport');
+    if (select) {
+      select.innerHTML = '<option disabled selected="selected">None selected</option>';
+      localStorageCardKeyList.forEach(key => {
+        select.innerHTML += `<option>${key}</option>`;
+      });
+    }
+  }
+
+
+
+  const cardToBeSaved = new savedCard(savedCardKey);
+  cardToBeSaved.save();
+  console.log(`[Saved] Card '${savedCardKey}' was saved programmatically`);
 }

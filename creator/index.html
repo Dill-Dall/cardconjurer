@@ -637,7 +637,7 @@
 							</div>
 						</div>
 					</div>
-					<div id='creator-menu-import' class='hidden'>
+					<div id='creator-menu-import'>
 						<div class='readable-background margin-bottom padding'>
 							<h5 class='padding margin-bottom input-description'>Import a real card by name</h5>
 							<input id='import-name' class='input margin-bottom' type='text' onchange='importChanged();' placeholder='Enter Card Name'>
@@ -665,7 +665,8 @@
 						</div>
 						<div class='readable-background margin-bottom padding'>
 							<h5 class='padding margin-bottom input-description'>Save your current card</h5>
-							<button class='input margin-bottom' onclick='saveCard();'>Save Card</button>
+							<button class='input margin-bottom' onclick='saveCard();' id='savebutton'>Save Card</button>
+							<button class='input margin-bottom' onclick='saveCard(true);' id='savebutton2'>Save Card2</button>
 							<h5 class='padding margin-bottom input-description'>Load a saved card</h5>
 							<select id='load-card-options' class='input margin-bottom' type='text' onchange='loadCard(this.value);'></select>
 							<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
@@ -934,4 +935,5 @@
 	</div>
 	<script defer src='/js/creator-23.js'></script>
 	<script defer src='/js/frameSearch.js'></script>
+
 <!-- END OF CONTENT -->

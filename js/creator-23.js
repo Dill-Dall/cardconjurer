@@ -5038,10 +5038,9 @@ function saveCard(saveFromFile) {
 	} else {
 		cardKey = getCardName();
 	}
-	if (!saveFromFile) {
-		cardKey = prompt('Enter the name you would like to save your card under:', cardKey);
-		if (!cardKey) {return null;}
-	}
+
+		cardKey = cardKey;//prompt('Enter the name you would like to save your card under:', cardKey);
+
 	cardKey = cardKey.trim();
 	if (cardKeys.includes(cardKey)) {
 		if (!confirm('Would you like to overwrite your card previously saved as "' + cardKey + '"?\n(Clicking "cancel" will affix a version number)')) {

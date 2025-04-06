@@ -20,15 +20,15 @@ function notify(message = '', seconds) {
 	notification.appendChild(close);
 	document.querySelector('.notification-container').appendChild(notification);
 	if (seconds) {
-		setTimeout(function(){close.click();}, seconds * 1000)
+		setTimeout(function () { close.click(); }, seconds * 1000)
 	}
 }
 function closeNotification(event) {
 	var target = event.target.closest('.notification');
 	target.classList.add('hidden');
-	setTimeout(function(){target.remove();}, 500);
+	setTimeout(function () { target.remove(); }, 500);
 }
-window.onload = function() {
+window.onload = function () {
 	Array.from(document.querySelectorAll('input')).forEach(element => {
 		element.autocomplete = 'off';
 	});
@@ -41,7 +41,7 @@ Array.from(droppables).forEach(element => {
 	element.addEventListener('dragleave', dropLeave, false);
 	element.addEventListener('dragover', dropOver, false);
 	element.addEventListener('drop', dropDrop, false);
-	element.children[1].addEventListener('click', function() {
+	element.children[1].addEventListener('click', function () {
 		this.value = null;
 	}, false);
 })
@@ -98,7 +98,7 @@ function toggleCollapse(event) {
 //Input same value still enters
 const urlInputs = Array.from(document.querySelectorAll('input[type=url]'));
 urlInputs.forEach(element => {
-	element.addEventListener('keyup', function(event) {
+	element.addEventListener('keyup', function (event) {
 		if (event.keyCode === 13) {
 			event.preventDefault();
 			element.dispatchEvent(new Event('change'));
@@ -111,24 +111,10 @@ function bindInputs(query1, query2, checkbox = false) {
 	var e1 = document.querySelector(query1);
 	var e2 = document.querySelector(query2);
 	if (checkbox) {
-		e1.oninput = (event) => {e2.checked = e1.checked;}
-		e2.oninput = (event) => {e1.checked = e2.checked;}
+		e1.oninput = (event) => { e2.checked = e1.checked; }
+		e2.oninput = (event) => { e1.checked = e2.checked; }
 	} else {
-		e1.oninput = (event) => {e2.value = e1.value;}
-		e2.oninput = (event) => {e1.value = e2.value;}
-	}
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-	document.body.dispatchEvent(new Event('doCreate'));
-})
-
-document.onkeyup = function(e) {
-	if (document.activeElement === document.getElementById('text-editor')) {
-		if (e.ctrlKey && e.which == 73) {
-			toggleTextTag('i');
-
-			e.preventDefault();
-		}
+		e1.oninput = (event) => { e2.value = e1.value; }
+		e2.oninput = (event) => { e1.value = e2.value; }
 	}
 }
