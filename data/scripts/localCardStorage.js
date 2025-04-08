@@ -20,7 +20,7 @@ function saveCard() {
   if (!savedCardKey) {
     savedCardKey = 'unnamed'
   }
-  savedCardKey = "hei"; //prompt('Please enter the name you\'d like to save your card as', savedCardKey)
+  savedCardKey = prompt('Test : Please enter the name you\'d like to save your card as', savedCardKey)
   if (localStorageCardKeyList.includes(savedCardKey)) {
     if (!confirm('Would you like to overwrite the card you previously saved as ' + savedCardKey + "? (Pressing 'Cancel' will still save the card, but will affix a version number at the end)")) {
       var originalCardKey = savedCardKey

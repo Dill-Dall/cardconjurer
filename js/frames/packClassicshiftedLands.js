@@ -3,7 +3,7 @@ var masks = [{src:'/img/frames/custom/classicshifted/maskFrame.png', name:'Frame
 var bounds = {x:0.3267, y:0.6491, width:0.3474, height:0.2496};
 var bounds2 = {x:0.0267, y:0.0134, width:0.9467, height:0.1005};
 //defines available frames
-availableFrames = [
+availableFullFrames = [
 	{name:'Land Frame', src:'/img/frames/custom/classicshifted/l.png', masks:masks},
 	{name:'White Land Frame', src:'/img/frames/custom/classicshifted/wl.png', masks:masks},
 	{name:'Blue Land Frame', src:'/img/frames/custom/classicshifted/ul.png', masks:masks},

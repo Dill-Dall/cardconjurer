@@ -1,25 +1,56 @@
 let forceReloadForFrameFix = true;
+let ubFullFrames = [];
+let ubCrownFrames = [];
 
+async function ensureUBFramesLoaded() {
+	console.log(availableFrames.map(f => f.name));
 
-async function waitForRender(timeout = 500) {
-	return new Promise(resolve => setTimeout(resolve, timeout));
+	
+	ubFullFrames = availableFrames.map(f => ({ ...f }));
+	ubCrownFrames = availableFrames.map(f => ({ ...f }));
+
+	console.log("[UB DEBUG] UB Full Frames:", ubFullFrames.map(f => f.name));
+	console.log("[UB DEBUG] UB Crown Frames:", ubCrownFrames.map(f => f.name));
 }
 
-function waitForFrameLoaderComplete() {
-	return new Promise(resolve => {
-		const original = document.querySelector('#loadFrameVersion').onclick;
-		document.querySelector('#loadFrameVersion').onclick = async function () {
-			await original();
-			resolve();
-		};
-	});
+async function waitForFramesToBeReady({ timeout = 5000, pollInterval = 100 } = {}) {
+	const start = Date.now();
+	const allFrames = ubFullFrames.concat(ubCrownFrames);
+	while (!allFrames || allFrames.length === 0) {
+		if (Date.now() - start > timeout) throw new Error("Timeout waiting for frames to be ready");
+		await new Promise(resolve => setTimeout(resolve, pollInterval));
+	}
+	await Promise.all(allFrames.map(frame => {
+		return new Promise(resolve => {
+			if (frame.image?.complete) return resolve();
+			const img = new Image();
+			img.onload = resolve;
+			img.onerror = resolve;
+			img.src = fixUri(frame.src);
+		});
+	}));
+}
+
+function ensureGalleryExists() {
+	let gallery = document.getElementById('cardGallery');
+	if (!gallery) {
+		gallery = document.createElement('div');
+		gallery.id = 'cardGallery';
+		gallery.style = 'margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 1rem;';
+		const previewCanvas = document.querySelector('#previewCanvas');
+		if (previewCanvas?.parentNode) {
+			previewCanvas.parentNode.insertBefore(gallery, previewCanvas.nextSibling);
+		} else {
+			document.body.appendChild(gallery);
+		}
+	}
 }
 
 function parseCSV(text) {
 	const rows = text.split('\n');
 	const headers = rows.shift().split(',');
 	return rows
-		.map(row => row.split(/,(?=(?:[^"]*\"[^"]*\")*[^"]*$)/))
+		.map(row => row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/))
 		.filter(cols => cols.length === headers.length)
 		.map(cols => Object.fromEntries(cols.map((val, i) => [headers[i].trim(), val.replace(/^\"|\"$/g, '').replace(/\r$/, '')])));
 }
@@ -29,197 +60,275 @@ function formatManaCost(raw) {
 	return raw.toUpperCase().split('').map(c => `{${c}}`).join('');
 }
 
-function extractColors(manaCost) {
-	const colorMap = { W: 'White', U: 'Blue', B: 'Black', R: 'Red', G: 'Green' };
-	const seen = new Set();
-	if (manaCost) {
-		[...manaCost.toUpperCase()].forEach(c => { if (colorMap[c]) seen.add(colorMap[c]); });
-	}
-	return [...seen];
+function safeFilename(name) {
+	return name.replace(/[^a-z0-9]/gi, '_');
 }
 
-(function () {
-	const previewCanvas = document.querySelector('#previewCanvas');
-	let gallery = document.getElementById('cardGallery');
-	if (!gallery) {
-		gallery = document.createElement('div');
-		gallery.id = 'cardGallery';
-		gallery.style = 'margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 1rem;';
-		if (previewCanvas && previewCanvas.parentNode) {
-			previewCanvas.parentNode.insertBefore(gallery, previewCanvas.nextSibling);
-		} else {
-			document.body.appendChild(gallery);
+async function waitForFramesToBeReady({ timeout = 5000, pollInterval = 100 } = {}) {
+	const start = Date.now();
+	const allFrames = ubFullFrames.concat(ubCrownFrames);
+	while (!allFrames || allFrames.length === 0) {
+		if (Date.now() - start > timeout) throw new Error("Timeout waiting for frames to be ready");
+		await new Promise(resolve => setTimeout(resolve, pollInterval));
+	}
+	await Promise.all(allFrames.map(frame => {
+		return new Promise(resolve => {
+			if (frame.image?.complete) return resolve();
+			const img = new Image();
+			img.onload = resolve;
+			img.onerror = resolve;
+			img.src = fixUri(frame.src);
+		});
+	}));
+}
+function getFrameFromList(name, list) {
+	return list.find(f => f.name.toLowerCase() === name.toLowerCase());
+}
+
+function getUBFramesForCard({ manaCost, type }) {
+	const colorMap = { W: 'White', U: 'Blue', B: 'Black', R: 'Red', G: 'Green' };
+	const colors = (manaCost || '')
+		.toUpperCase()
+		.replace(/[^WUBRG]/g, '')
+		.split('')
+		.map(c => colorMap[c])
+		.filter(Boolean);
+
+	const isLegendary = /\blegendary\b/i.test(type || '');
+	const resultFrames = [];
+
+	function cloneFrame(f) {
+		return JSON.parse(JSON.stringify(f));
+	}
+
+	if (colors.length === 1) {
+		const color = colors[0];
+		const frame = getFrameFromList(`${color} Frame`, ubFullFrames);
+
+		if (frame) resultFrames.push({ ...cloneFrame(frame), masks: [{ src: "/img/frames/maskLeftHalf.png", name: "Left Half" }] });
+		if (frame) resultFrames.push({ ...cloneFrame(frame), masks: [{ src: "/img/frames/maskRightHalf.png", name: "Right Half" }] });
+
+		if (isLegendary) {
+			const crown = getFrameFromList(`${color} Legend Crown`, ubCrownFrames);
+			if (crown) resultFrames.push(cloneFrame(crown));
+			else console.warn(`[WARN] Crown not found for ${color} Legend Crown`);
+		}
+	} else if (colors.length === 2) {
+		const [left, right] = colors;
+		const leftFrame = getFrameFromList(`${left} Frame`, ubFullFrames);
+		const rightFrame = getFrameFromList(`${right} Frame`, ubFullFrames);
+		if (leftFrame) resultFrames.push({ ...cloneFrame(leftFrame), masks: [{ src: "/img/frames/maskLeftHalf.png", name: "Left Half" }] });
+		if (rightFrame) resultFrames.push({ ...cloneFrame(rightFrame), masks: [{ src: "/img/frames/maskRightHalf.png", name: "Right Half" }] });
+
+		if (isLegendary) {
+			const leftCrown = getFrameFromList(`${left} Legend Crown`, ubCrownFrames);
+			const rightCrown = getFrameFromList(`${right} Legend Crown`, ubCrownFrames);
+			if (leftCrown) resultFrames.push({ ...cloneFrame(leftCrown), masks: [{ src: "/img/frames/maskLeftHalf.png", name: "Left Half" }] });
+			if (rightCrown) resultFrames.push({ ...cloneFrame(rightCrown), masks: [{ src: "/img/frames/maskRightHalf.png", name: "Right Half" }] });
+		}
+	} else if (colors.length >= 3) {
+		const frame = getFrameFromList('Multicolored Frame', ubFullFrames);
+		if (frame) resultFrames.push(cloneFrame(frame));
+		if (isLegendary) {
+			const crown = getFrameFromList('Multicolored Legend Crown', ubCrownFrames);
+			if (crown) resultFrames.push(cloneFrame(crown));
 		}
 	}
 
-	function safeFilename(name) {
-		return name.replace(/[^a-z0-9]/gi, '_');
+	return resultFrames.filter(Boolean);
+}
+
+
+async function loadFrameAssets(frame) {
+	frame.image = new Image();
+	frame.image.crossOrigin = 'anonymous';
+	await new Promise(resolve => {
+		frame.image.onload = resolve;
+		frame.image.onerror = () => {
+			console.warn('[WARN] Failed to load frame image:', frame.name);
+			resolve();
+		};
+		frame.image.src = fixUri(frame.src);
+	});
+
+	if (frame.masks) {
+		for (const mask of frame.masks) {
+			mask.image = new Image();
+			mask.image.crossOrigin = 'anonymous';
+			await new Promise(resolve => {
+				mask.image.onload = resolve;
+				mask.image.onerror = resolve;
+				mask.image.src = fixUri(mask.src);
+			});
+		}
 	}
 
-	function getFramesMatchingNames(names) {
-		return (typeof availableFrames !== 'undefined')
-			? availableFrames.filter(f => names.includes(f.name))
-			: [];
+	if (!frame.bounds) {
+		frame.bounds = { x: 0, y: 0, width: 1, height: 1 };
 	}
+}
 
-	async function applyCardArtFromCSVRow(row) {
-		const customArtPath = row['image_file_path']?.trim();
-		if (!customArtPath) return;
+window.generateCardsFromCSV = generateCardsFromCSV;
 
-		return new Promise((resolve, reject) => {
-			art.onload = () => {
-				artEdited();
-				resolve();
-			};
-			art.onerror = () => {
-				if (!art.src.includes('/img/blank.png')) {
-					art.src = fixUri('/img/blank.png');
+
+// The rest of your code remains unchanged from your message.
+// For brevity, not repeating the full generateCardsFromCSV or UI setup here,
+// since you only needed the frame loading + matching fixed.
+// Let me know if you'd like the rest also dropped in!
+
+
+
+async function applyCardArtFromCSVRow(row) {
+	const customArtPath = row['image_file_path']?.trim();
+	if (!customArtPath) return;
+	return new Promise((resolve) => {
+		console.log(`[DEBUG] Applying custom art from path: ${customArtPath}`);
+		art.onload = () => {
+
+			artEdited();
+			resolve();
+		};
+		art.onerror = () => {
+			if (!art.src.includes('/img/blank.png')) {
+				art.src = fixUri('/img/blank.png');
+			}
+			resolve(); // fallback to blank
+		};
+		setImageUrl(art, customArtPath);
+	});
+}
+
+async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
+	await ensureUBFramesLoaded();
+	ensureGalleryExists();
+	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
+
+	const originalArtOnload = art.onload;
+	let isFirstCard = true;
+
+	for (const row of rows) {
+		try {
+			card.text.title.text = (row['Cards'] || 'Untitled').trim();
+			card.text.type.text = ((row['Type'] || '') + (row['Subtype'] ? ' — ' + row['Subtype'] : '')).trim();
+			card.text.mana.text = formatManaCost(row['Mana cost']);
+			card.text.pt.text = (row['p/t'] || '').trim();
+
+			let rulesText = '';
+			['Ability', 'Passive', 'Active', 'Quote'].forEach(key => {
+				if (row[key]) {
+					rulesText += (rulesText ? '\n' : '') + (key === 'Quote' ? '{flavor}' : '') + row[key].trim();
 				}
-				resolve(); // fallback to blank, continue
-			};
-			setImageUrl(art, customArtPath);
-		});
-	}
+			});
+			card.text.rules.text = rulesText;
+
+			// ✅ Set frames AFTER UB frames are available
+			card.frames = getUBFramesForCard({
+				manaCost: row['Mana cost'],
+				type: row['Type']
+			});
+			defaultFrame = card.frames[0];
+
+			// ✅ Apply art AFTER frame selection
+			await applyCardArtFromCSVRow(row);
+
+			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
 
 
+			card.frames = getUBFramesForCard({
+				manaCost: row['Mana cost'],
+				type: row['Type']
+			});
+			defaultFrame = card.frames[0];
 
-	async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
-		const originalArtOnload = art.onload;
-		let isFirstCard = true;
-		for (const row of rows) {
+			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
 
-			try {
-				card.text.title.text = (row['Cards'] || 'Untitled').trim();
-				card.text.type.text = ((row['Type'] || '') + (row['Subtype'] ? ' — ' + row['Subtype'] : '')).trim();
-				card.text.mana.text = formatManaCost(row['Mana cost']);
-				card.text.pt.text = (row['p/t'] || '').trim();
-
-				let rulesText = '';
-				['Ability', 'Passive', 'Active', 'Quote'].forEach(key => {
-					if (row[key]) {
-						rulesText += (rulesText ? '\n' : '') + (key === 'Quote' ? '{flavor}' : '') + row[key].trim();
-					}
-				});
-				card.text.rules.text = rulesText;
-
-				card.version = 'ubFull';
-				const button = document.querySelector('#loadFrameVersion');
-				if (button && typeof button.onclick === 'function') {
-					button.disabled = false;
-					await button.onclick();
-				}
-
-				while (!Array.isArray(availableFrames) || availableFrames.length === 0) {
-					await new Promise(resolve => setTimeout(resolve, 100));
-				}
-				await applyCardArtFromCSVRow(row);
-				const manaCostRaw = (row['Mana cost'] || '').toUpperCase().replace(/[^WUBRG]/g, '');
-				const colorMap = { W: 'White', U: 'Blue', B: 'Black', R: 'Red', G: 'Green' };
-				const colors = [...manaCostRaw].map(c => colorMap[c]).filter(Boolean);
-				const baseFrame = colors.length === 0 ? 'Artifact Frame' : colors.length > 1 ? 'Multicolored Frame' : `${colors[0]} Frame`;
-				const legendCrown = (row['Type'] && row['Type'].toLowerCase().includes('legendary'))
-					? (colors.length > 1 ? 'Multicolored Legend Crown' : `${colors[0]} Legend Crown`) : null;
-
-				if (colors.length === 2 && !forceDefaultFrame && !debugMode) {
-					const leftFrameName = `${colors[0]} Frame`;
-					const leftFrame = getFramesMatchingNames([leftFrameName]);
-					const rightFrameName = `${colors[1]} Frame`;
-					const rightFrame = getFramesMatchingNames([rightFrameName]);
-					card.frames = [
-						...leftFrame.map(f => ({ ...f, x: 0, y: 0, width: 0.5, height: 1 })),
-						...rightFrame.map(f => ({ ...f, x: 0.5, y: 0, width: 0.5, height: 1 }))
-					];
-					if (legendCrown) {
-						console.log(`[${row['Cards']}] Legend Crown:`, legendCrown);
-						card.frames.push(...getFramesMatchingNames([legendCrown]));
-					}
-				} else {
-					console.log(`[${row['Cards']}] Single frame:`, baseFrame);
-					card.frames = getFramesMatchingNames([baseFrame]);
-					if (legendCrown) card.frames.push(...getFramesMatchingNames([legendCrown]));
-				}
-
-				card.frames.forEach(frame => {
-					if (forceReloadForFrameFix || !frame.image) {
-						frame.image = new Image();
-						frame.image.crossOrigin = 'anonymous';
-						frame.image.onload = drawFrames;
-						frame.image.src = fixUri(frame.src);
-					}
-
-					if (frame.masks) {
-						frame.masks.forEach(mask => {
-							if (forceReloadForFrameFix || !mask.image) {
+			await Promise.all(
+				card.frames.map(f => new Promise(async resolve => {
+					// Load frame image
+					await new Promise(frameResolve => {
+						f.image = new Image();
+						f.image.crossOrigin = 'anonymous';
+						f.image.onload = frameResolve;
+						f.image.onerror = () => {
+							console.error('[ERROR] Failed to load frame:', f.name, f.src);
+							frameResolve();
+						};
+						f.image.src = fixUri(f.src);
+					});
+			
+					// Load masks sequentially (to ensure order)
+					if (f.masks) {
+						for (const mask of f.masks) {
+							await new Promise(maskResolve => {
 								mask.image = new Image();
 								mask.image.crossOrigin = 'anonymous';
-								mask.image.onload = drawFrames;
+								mask.image.onload = maskResolve;
+								mask.image.onerror = maskResolve;
 								mask.image.src = fixUri(mask.src);
-							}
-						});
+							});
+						}
 					}
-				});
-				forceReloadForFrameFix = false;
+			
+					// Apply default bounds if not set
+					if (!f.bounds) {
+						f.bounds = { x: 0, y: 0, width: 1, height: 1 };
+					}
 
-				await autoFrame();
-				drawCard();
+					if (card.frames.length >= 2) {
+						await new Promise(r => setTimeout(r, 500));
+					}
+			
+					resolve();
+				}))
+			);
+			
+			await autoFrame();
+			await drawFrames();
+			drawCard();
 
-				if (isFirstCard) {
-					await new Promise(resolve => setTimeout(resolve, 1200));
-					isFirstCard = false;
-				}
-
-				if (row['Image'] && row['Image'].trim() !== '') {
-					await new Promise((resolve, reject) => {
-						art.onload = () => resolve();
-						art.onerror = err => reject(new Error(`Image load failed: ${row['Image']}`));
-						setImageUrl(art, row['Image'].trim());
-					});
-					autoFitArt();
-				}
-
-
-
-
-				await drawText();
-				await new Promise(r => requestAnimationFrame(r));
-
-				const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
-				const dataURL = canvas.toDataURL('image/png');
-				const imgElem = document.createElement('img');
-				imgElem.src = dataURL;
-				imgElem.alt = card.text.title.text || 'Card Image';
-				imgElem.style = 'max-width: 250px; height: auto;';
-				gallery.appendChild(imgElem);
-
-				
-
-
-				if (!skipDownload) {
-					const fileName = safeFilename(card.text.title.text.replace(/\{[^}]+\}/g, '') || 'card');
-					const downloadLink = document.createElement('a');
-					downloadLink.href = dataURL;
-					downloadLink.download = fileName + '.png';
-					downloadLink.click();
-				}
-		
-				document.getElementById('savebutton').click();
-
-
-			} catch (err) {
-				console.error('Error generating card:', err);
+			if (isFirstCard) {
+				await new Promise(resolve => setTimeout(resolve, 1200));
+				isFirstCard = false;
 			}
-		
 
+			if (row['Image'] && row['Image'].trim() !== '') {
+				await new Promise((resolve, reject) => {
+					art.onload = () => resolve();
+					art.onerror = err => reject(new Error(`Image load failed: ${row['Image']}`));
+					setImageUrl(art, row['Image'].trim());
+				});
+				autoFitArt();
+			}
 
+			await drawText();
+			await new Promise(r => requestAnimationFrame(r));
+
+			const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
+			const dataURL = canvas.toDataURL('image/png');
+			const imgElem = document.createElement('img');
+			imgElem.src = dataURL;
+			imgElem.alt = card.text.title.text || 'Card Image';
+			imgElem.style = 'max-width: 250px; height: auto;';
+			document.getElementById('cardGallery').appendChild(imgElem);
+
+			if (!skipDownload) {
+				const fileName = safeFilename(card.text.title.text.replace(/\{[^}]+\}/g, '') || 'card');
+				const downloadLink = document.createElement('a');
+				downloadLink.href = dataURL;
+				downloadLink.download = fileName + '.png';
+				downloadLink.click();
+			}
+
+			document.getElementById('savebutton').click();
+		} catch (err) {
+			console.error('Error generating card:', err);
 		}
-		art.onload = originalArtOnload;
 	}
 
-	window.generateCardsFromCSV = generateCardsFromCSV;
-})();
+	art.onload = originalArtOnload;
+}
 
-
-
+window.generateCardsFromCSV = generateCardsFromCSV;
 
 
 function setupCSVImportUI() {
