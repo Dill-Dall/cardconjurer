@@ -32,3 +32,6 @@ access.log
 error.log
 
 fly.toml
+
+
+/img/setSymbols/private
