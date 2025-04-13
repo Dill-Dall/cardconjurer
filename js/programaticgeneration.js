@@ -1,14 +1,18 @@
+
 let forceReloadForFrameFix = true;
 let ubFullFrames = [];
 let ubCrownFrames = [];
 
+
+
+function sanitizeMasks(masks) {
+    return (Array.isArray(masks) ? masks : []).filter(m => m?.src);
+}
+
 async function ensureUBFramesLoaded() {
 	console.log(availableFrames.map(f => f.name));
-
-	
 	ubFullFrames = availableFrames.map(f => ({ ...f }));
 	ubCrownFrames = availableFrames.map(f => ({ ...f }));
-
 	console.log("[UB DEBUG] UB Full Frames:", ubFullFrames.map(f => f.name));
 	console.log("[UB DEBUG] UB Crown Frames:", ubCrownFrames.map(f => f.name));
 }
@@ -30,6 +34,40 @@ async function waitForFramesToBeReady({ timeout = 5000, pollInterval = 100 } = {
 		});
 	}));
 }
+
+async function drawCardSafeWrapper() {
+	const images = [];
+
+	card.frames.forEach(frame => {
+		if (frame.image) images.push(frame.image);
+		if (frame.masks) {
+			frame.masks.forEach(mask => {
+				if (mask.image) images.push(mask.image);
+			});
+		}
+	});
+	if (art?.src) images.push(art);
+
+	await Promise.all(
+		images.map(img =>
+			new Promise(resolve => {
+				if (img.complete && img.naturalWidth > 0) return resolve();
+				img.onload = resolve;
+				img.onerror = () => {
+					console.warn("[WARN] Failed to load image before draw:", img.src);
+					resolve();
+				};
+			})
+		)
+	);
+
+	if (!art.complete || art.naturalWidth === 0) {
+		console.warn("[BLOCKED] Art image is not ready:", art.src);
+		return;
+	}
+	drawCard();
+}
+
 
 function ensureGalleryExists() {
 	let gallery = document.getElementById('cardGallery');
@@ -64,23 +102,6 @@ function safeFilename(name) {
 	return name.replace(/[^a-z0-9]/gi, '_');
 }
 
-async function waitForFramesToBeReady({ timeout = 5000, pollInterval = 100 } = {}) {
-	const start = Date.now();
-	const allFrames = ubFullFrames.concat(ubCrownFrames);
-	while (!allFrames || allFrames.length === 0) {
-		if (Date.now() - start > timeout) throw new Error("Timeout waiting for frames to be ready");
-		await new Promise(resolve => setTimeout(resolve, pollInterval));
-	}
-	await Promise.all(allFrames.map(frame => {
-		return new Promise(resolve => {
-			if (frame.image?.complete) return resolve();
-			const img = new Image();
-			img.onload = resolve;
-			img.onerror = resolve;
-			img.src = fixUri(frame.src);
-		});
-	}));
-}
 function getFrameFromList(name, list) {
 	return list.find(f => f.name.toLowerCase() === name.toLowerCase());
 }
@@ -180,12 +201,18 @@ window.generateCardsFromCSV = generateCardsFromCSV;
 
 async function applyCardArtFromCSVRow(row) {
 	const customArtPath = row['image_file_path']?.trim();
-	if (!customArtPath) return;
+	// ✅ Skip if no valid file path
+	if (!customArtPath || customArtPath === 'img/private/' || !customArtPath.match(/\.(png|jpg|jpeg|gif)$/i)) {
+		console.warn('[SKIP] Invalid or empty art path:', customArtPath);
+		return;
+	}
 	return new Promise((resolve) => {
 		console.log(`[DEBUG] Applying custom art from path: ${customArtPath}`);
 		art.onload = () => {
-
-			artEdited();
+			
+			art.src = fixUri(customArtPath);
+			artEdited("Dalle");
+			console.log(`[DEBUG] Art loaded from path: ${customArtPath}`);
 			resolve();
 		};
 		art.onerror = () => {
@@ -199,7 +226,9 @@ async function applyCardArtFromCSVRow(row) {
 }
 
 async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
+	await document.fonts.ready;
 	await ensureUBFramesLoaded();
+	setAutoFrame("Universes Beyond (Accurate)");
 	ensureGalleryExists();
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
@@ -227,20 +256,11 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				type: row['Type']
 			});
 			defaultFrame = card.frames[0];
-
-			// ✅ Apply art AFTER frame selection
-			await applyCardArtFromCSVRow(row);
+			
 
 			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
 
-
-			card.frames = getUBFramesForCard({
-				manaCost: row['Mana cost'],
-				type: row['Type']
-			});
-			defaultFrame = card.frames[0];
-
-			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
+			
 
 			await Promise.all(
 				card.frames.map(f => new Promise(async resolve => {
@@ -255,7 +275,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 						};
 						f.image.src = fixUri(f.src);
 					});
-			
+
 					// Load masks sequentially (to ensure order)
 					if (f.masks) {
 						for (const mask of f.masks) {
@@ -268,7 +288,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 							});
 						}
 					}
-			
+
 					// Apply default bounds if not set
 					if (!f.bounds) {
 						f.bounds = { x: 0, y: 0, width: 1, height: 1 };
@@ -277,39 +297,26 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 					if (card.frames.length >= 2) {
 						await new Promise(r => setTimeout(r, 500));
 					}
-			
+
 					resolve();
 				}))
 			);
-			
+
+			await applyCardArtFromCSVRow(row);
+
 			await autoFrame();
-			await drawFrames();
-			drawCard();
+			//await drawFrames();
+			await drawCardSafeWrapper(); // ✅ safe drawing after image load
+
 
 			if (isFirstCard) {
 				await new Promise(resolve => setTimeout(resolve, 1200));
 				isFirstCard = false;
 			}
 
-			if (row['Image'] && row['Image'].trim() !== '') {
-				await new Promise((resolve, reject) => {
-					art.onload = () => resolve();
-					art.onerror = err => reject(new Error(`Image load failed: ${row['Image']}`));
-					setImageUrl(art, row['Image'].trim());
-				});
-				autoFitArt();
-			}
-
-			await drawText();
 			await new Promise(r => requestAnimationFrame(r));
 
-			const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
-			const dataURL = canvas.toDataURL('image/png');
-			const imgElem = document.createElement('img');
-			imgElem.src = dataURL;
-			imgElem.alt = card.text.title.text || 'Card Image';
-			imgElem.style = 'max-width: 250px; height: auto;';
-			document.getElementById('cardGallery').appendChild(imgElem);
+			const dataURL = addToGallery();
 
 			if (!skipDownload) {
 				const fileName = safeFilename(card.text.title.text.replace(/\{[^}]+\}/g, '') || 'card');
@@ -330,6 +337,17 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 
 window.generateCardsFromCSV = generateCardsFromCSV;
 
+
+function addToGallery() {
+	const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
+	const dataURL = canvas.toDataURL('image/png');
+ 	const imgElem = document.createElement('img');
+	imgElem.src = dataURL;
+	imgElem.alt = card.text.title.text || 'Card Image';
+	imgElem.style = 'max-width: 250px; height: auto;';
+	document.getElementById('cardGallery').appendChild(imgElem); 
+	return dataURL;
+}
 
 function setupCSVImportUI() {
 	const input = document.createElement('input');
