@@ -1,3 +1,6 @@
+# FORK
+For run import on csv file by clicking button in app. Afterwards edit the cards from the secondary load card select.
+
 # Card Conjurer
 Card Conjurer was created by a passionate Magic the Gathering player and grew to become probably the most popular online card generator known to the game.
 In November of 2022, Wizards of the Coast served the original creator and webhost of the site with Ceas and Desist paperwork, forcing the site offline.

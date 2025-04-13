@@ -666,9 +666,10 @@
 						<div class='readable-background margin-bottom padding'>
 							<h5 class='padding margin-bottom input-description'>Save your current card</h5>
 							<button class='input margin-bottom' onclick='saveCard();' id='savebutton'>Save Card</button>
-							<button class='input margin-bottom' onclick='saveCard(true);' id='savebutton2'>Save Card2</button>
 							<h5 class='padding margin-bottom input-description'>Load a saved card</h5>
 							<select id='load-card-options' class='input margin-bottom' type='text' onchange='loadCard(this.value);'></select>
+							<h5 class='padding margin-bottom input-description'>Load a saved card with Automatically update frame</h5>
+							<select id='load-card-options-2' class='input margin-bottom' onchange='loadCardAsUB(this.value);'></select>
 							<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
 							<button class='input' onclick='deleteCard();'>Delete Card</button>
 						</div>

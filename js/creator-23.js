@@ -4315,7 +4315,13 @@ function resetSetSymbol() {
 	}
 	setSymbolEdited();
 }
+
+function fetchDISetSymbol(uri){
+	uploadSetSymbol(fixUri(uri), 'resetSetSymbol');
+}			
+
 function fetchSetSymbol() {
+	console.log('fetchSetSymbol() called');
 	var setCode = document.querySelector('#set-symbol-code').value.toLowerCase() || 'cmd';
 	if (document.querySelector('#lockSetSymbolCode').checked) {
 		localStorage.setItem('lockSetSymbolCode', setCode);
@@ -5025,6 +5031,13 @@ function loadAvailableCards(cardKeys = JSON.parse(localStorage.getItem('cardKeys
 		cardKeyOption.innerHTML = item;
 		document.querySelector('#load-card-options').appendChild(cardKeyOption);
 	});
+
+	document.querySelector('#load-card-options-2').innerHTML = '<option selected="selected" disabled>None selected</option>';
+	cardKeys.forEach(item => {
+		var cardKeyOption = document.createElement('option');
+		cardKeyOption.innerHTML = item;
+		document.querySelector('#load-card-options-2').appendChild(cardKeyOption);
+	});
 }
 function importChanged() {
 	var unique = document.querySelector('#importAllPrints').checked ? 'prints' : '';
@@ -5140,6 +5153,12 @@ async function loadCard(selectedCardKey) {
 	} else {
 		notify(selectedCardKey + ' failed to load.', 5)
 	}
+}
+
+async function loadCardAsUB(selectedCardKey) {
+	await loadCard(selectedCardKey);
+	setAutoFrame("Universes Beyond (Accurate)");
+	textEdited();
 }
 function deleteCard() {
 	var keyToDelete = document.querySelector('#load-card-options').value;
