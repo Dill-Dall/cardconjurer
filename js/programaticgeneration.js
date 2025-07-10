@@ -4,18 +4,61 @@ let forceReloadForFrameFix = true;
 
 
 function parseCSV(text) {
-	const rows = text.split('\n');
-	const headers = rows.shift().split(',');
+	const rows = [];
+	let currentRow = [];
+	let currentCell = '';
+	let insideQuotes = false;
+
+	for (let i = 0; i < text.length; i++) {
+		const char = text[i];
+		const nextChar = text[i + 1];
+
+		if (char === '"') {
+			if (insideQuotes && nextChar === '"') {
+				// Escaped quote
+				currentCell += '"';
+				i++; // Skip next quote
+			} else {
+				insideQuotes = !insideQuotes;
+			}
+		} else if (char === ',' && !insideQuotes) {
+			currentRow.push(currentCell);
+			currentCell = '';
+		} else if ((char === '\n' || char === '\r') && !insideQuotes) {
+			if (currentCell || currentRow.length) {
+				currentRow.push(currentCell);
+				rows.push(currentRow);
+				currentRow = [];
+				currentCell = '';
+			}
+			// Skip \r\n sequence
+			if (char === '\r' && nextChar === '\n') i++;
+		} else {
+			currentCell += char;
+		}
+	}
+
+	// Add final row if missing newline
+	if (currentCell || currentRow.length) {
+		currentRow.push(currentCell);
+		rows.push(currentRow);
+	}
+
+	const headers = rows.shift().map(h => h.trim());
 	return rows
-		.map(row => row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/))
 		.filter(cols => cols.length === headers.length)
-		.map(cols => Object.fromEntries(cols.map((val, i) => [headers[i].trim(), val.replace(/^\"|\"$/g, '').replace(/\r$/, '')])));
+		.map(cols => Object.fromEntries(cols.map((val, i) => [headers[i], val.replace(/\r$/, '')])));
 }
+
 
 function formatManaCost(raw) {
 	if (!raw) return '';
-	return raw.toUpperCase().split('').map(c => `{${c}}`).join('');
+	return raw
+		.match(/\{[^}]+\}|[^{}]/g)  // Matches {X} or individual characters not in {}
+		.map(c => c.startsWith('{') ? c : `{${c.toUpperCase()}}`)
+		.join('');
 }
+
 
 function safeFilename(name) {
 	return name.replace(/[^a-z0-9]/gi, '_');
@@ -30,11 +73,11 @@ function getFrameFromList(name, list) {
 function addToGallery() {
 	const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
 	const dataURL = canvas.toDataURL('image/png');
- 	const imgElem = document.createElement('img');
+	const imgElem = document.createElement('img');
 	imgElem.src = dataURL;
 	imgElem.alt = card.text.title.text || 'Card Image';
 	imgElem.style = 'max-width: 250px; height: auto;';
-	document.getElementById('cardGallery').appendChild(imgElem); 
+	document.getElementById('cardGallery').appendChild(imgElem);
 	return dataURL;
 }
 
@@ -42,14 +85,14 @@ function addToGallery() {
 async function applyCardArtFromCSVRow(row) {
 	const customArtPath = row['image_file_path']?.trim();
 	// ✅ Skip if no valid file path
-	if (!customArtPath || customArtPath === 'img/private/' || !customArtPath.match(/\.(png|jpg|jpeg|gif)$/i)) {
+	if (!customArtPath || customArtPath === 'assets/creatures/' || !customArtPath.match(/\.(png|jpg|jpeg|gif)$/i)) {
 		console.warn('[SKIP] Invalid or empty art path:', customArtPath);
 		return;
 	}
 	return new Promise((resolve) => {
 		console.log(`[DEBUG] Applying custom art from path: ${customArtPath}`);
 		art.onload = () => {
-			
+
 			art.src = fixUri(customArtPath);
 			artEdited();
 			artistEdited("Dalle");
@@ -72,61 +115,63 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
 	const originalArtOnload = art.onload;
-	let isFirstCard = true;
 
 	for (const row of rows) {
 		card.frames = [];
 		try {
-			if (!row['Cards']) continue;
+			if (!row['Cards']) {
+				console.warn('[SKIP] No card name found in row:', row);
+				continue;
+			}
 
 
-			
+			console.log(row['Cards']);
+
 			card.text.title.text = (row['Cards'] || 'Untitled').trim();
 
 			card.text.type.text = ((row['Type'] || '') + (row['Subtype'] ? ' — ' + row['Subtype'] : '')).trim();
 			card.text.mana.text = formatManaCost(row['Mana cost']);
 			card.text.pt.text = (row['p/t'] || '').trim();
 
-	
-		
-			
+
+
 			rarity = row['R']?.trim().toLowerCase();
-			if(!rarity) {
+			if (!rarity) {
 				rarity = 'c';
 			}
-			setSymbolUri =  "/img/setSymbols/private/di-" + rarity +".svg";
+			setSymbolUri = "/img/setSymbols/private/di-" + rarity + ".svg";
 			console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
 			fetchDISetSymbol(setSymbolUri);
+
 
 			let rulesText = '';
 			['Ability', 'Passive', 'Active', 'Flavour Text'].forEach(key => {
 				if (row[key]) {
 					row[key] = row[key].replace(/"/g, "");
 					rulesText = '';
-					['Std Ability','Ability', 'Passive', 'Active', 'Quote'].forEach(key => {
-						if (row[key]) {
-							columnText = row[key].trim();
-							rulesText += (rulesText ? '\n' : '');
+					['Std Ability', 'Ability', 'Passive', 'Active', 'Flavour Text', 'Quote'].forEach(innerKey => {
+						if (row[innerKey]) {
+							let columnText = row[innerKey].trim();
+							if (rulesText) rulesText += '\n';
 
-							if (key === 'Flavour Text') {
-							rulesText += "{i}"+columnText+"{/i}";
-							}else if (key === 'Std Ability') {
-								rulesText += "{bold}"+columnText+"{/bold}";
-							}
-							else {
+							if (innerKey === 'Flavour Text') {
+								console.log(`[DEBUG] Flavour Text: ${columnText}`);
+								rulesText += "{flavor}" + columnText;
+							} else if (innerKey === 'Std Ability') {
+								rulesText += "{bold}" + columnText + "{/bold}";
+							} else {
 								rulesText += columnText;
 							}
-				}})
-					};
-					
-			
-				});		
-			
-		
+						}
+					});
+				}
+			});
+
+
 			card.text.rules.text = rulesText;
 			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
 
-			
+
 
 			await Promise.all(
 				card.frames.map(f => new Promise(async resolve => {
@@ -182,7 +227,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				downloadLink.click();
 			}
 
-	
+
 		} catch (err) {
 			console.error('Error generating card:', err);
 		}
@@ -207,6 +252,7 @@ function setupCSVImportUI() {
 	button.onclick = () => input.click();
 
 	input.onchange = async (event) => {
+		console.log('File selected:', event.target.files[0]);
 		const file = event.target.files[0];
 		if (!file) return;
 		const text = await file.text();
