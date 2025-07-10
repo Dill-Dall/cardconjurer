@@ -77,7 +77,12 @@ function addToGallery() {
 	imgElem.src = dataURL;
 	imgElem.alt = card.text.title.text || 'Card Image';
 	imgElem.style = 'max-width: 250px; height: auto;';
-	document.getElementById('cardGallery').appendChild(imgElem);
+	const gallery = document.getElementById('cardGallery');
+
+	if (gallery) {
+		gallery.appendChild(imgElem)
+	}
+
 	return dataURL;
 }
 
@@ -95,7 +100,7 @@ async function applyCardArtFromCSVRow(row) {
 
 			art.src = fixUri(customArtPath);
 			artEdited();
-			artistEdited("Dalle");
+			artistEdited("DTF");
 			console.log(`[DEBUG] Art loaded from path: ${customArtPath}`);
 			resolve();
 		};
@@ -110,7 +115,10 @@ async function applyCardArtFromCSVRow(row) {
 }
 
 async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
-	setAutoFrame("Universes Beyond (Accurate)");
+	setAutoFrame();
+	setAutoframeNyx(true);
+	setAutofit();
+
 	await document.fonts.ready;
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
@@ -128,12 +136,9 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			console.log(row['Cards']);
 
 			card.text.title.text = (row['Cards'] || 'Untitled').trim();
-
 			card.text.type.text = ((row['Type'] || '') + (row['Subtype'] ? ' — ' + row['Subtype'] : '')).trim();
 			card.text.mana.text = formatManaCost(row['Mana cost']);
 			card.text.pt.text = (row['p/t'] || '').trim();
-
-
 
 			rarity = row['R']?.trim().toLowerCase();
 			if (!rarity) {
@@ -142,7 +147,6 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			setSymbolUri = "/img/setSymbols/private/di-" + rarity + ".svg";
 			console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
 			fetchDISetSymbol(setSymbolUri);
-
 
 			let rulesText = '';
 			['Ability', 'Passive', 'Active', 'Flavour Text'].forEach(key => {
@@ -157,8 +161,8 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 							if (innerKey === 'Flavour Text') {
 								console.log(`[DEBUG] Flavour Text: ${columnText}`);
 								rulesText += "{flavor}" + columnText;
-							} else if (innerKey === 'Std Ability') {
-								rulesText += "{bold}" + columnText + "{/bold}";
+							//} else if (innerKey === 'Std Ability') {
+							//	rulesText += "{bold}" + columnText + "{/bold}";
 							} else {
 								rulesText += columnText;
 							}
@@ -170,8 +174,6 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 
 			card.text.rules.text = rulesText;
 			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
-
-
 
 			await Promise.all(
 				card.frames.map(f => new Promise(async resolve => {
@@ -213,7 +215,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				}))
 			);
 
-			await applyCardArtFromCSVRow(row);;
+			await applyCardArtFromCSVRow(row);
 			//setAutoFrame("Universes Beyond (Accurate)");
 			document.getElementById('savebutton').click();
 
