@@ -1,3 +1,28 @@
+function convertCharsToSize(charCount) {
+	if (charCount <= 25) {
+		return -5;
+	}
+
+	// Single mathematical formula that approximates the entire curve
+	// Using a modified logistic decay function
+	const x = charCount - 25;
+	const size = -5 - (x * (1 + Math.pow(x - 5, 2) * 0.15));
+
+	return Math.min(0, Math.round(size));
+}
+
+function getBaseSize(key, text) {
+	switch(key) {
+		case "title":
+		case "type":
+			return convertCharsToSize(text.length);
+		case "rules":
+			return -10;
+		default:
+			return 0;
+	}
+}
+
 function toggleMenu() {
 	if (document.querySelector('.hamburger').classList.contains('opened')) {
 		document.querySelector('.hamburger').classList.remove('opened');

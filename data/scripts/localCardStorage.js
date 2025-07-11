@@ -9,9 +9,15 @@ if (localStorage.getItem('cardKeyList') == null) {
 
 function loadSavedCards() {
   localStorageCardKeyList = JSON.parse(localStorage.getItem('cardKeyList'))
-  document.getElementById('inputCardToImport').innerHTML = '<option disabled selected="selected">None selected</option>'
-  for (var i = 0; i < localStorageCardKeyList.length; i ++) {
-    document.getElementById('inputCardToImport').innerHTML += '<option>' + localStorageCardKeyList[i] + '</option>'
+
+  const cardsToImport = document.getElementById('inputCardToImport');
+
+  if (cardsToImport) {
+    cardsToImport.innerHTML = '<option disabled selected="selected">None selected</option>'
+
+    for (var i = 0; i < localStorageCardKeyList.length; i ++) {
+      cardsToImport.innerHTML += '<option>' + localStorageCardKeyList[i] + '</option>'
+    }
   }
 }
 

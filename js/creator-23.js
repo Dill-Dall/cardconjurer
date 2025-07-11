@@ -3287,11 +3287,13 @@ function hslToRGB(h, s, l){
 
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
+
 //TEXT TAB
 var writingText;
 var autoFrameTimer;
-function loadTextOptions(textObject, replace=true) {
+function loadTextOptions(textObject, replace= true) {
 	var oldCardText = card.text || {};
+
 	Object.entries(oldCardText).forEach(item => {
 		savedTextContents[item[0]] = oldCardText[item[0]].text;
 	});
@@ -3303,10 +3305,12 @@ function loadTextOptions(textObject, replace=true) {
 		});
 	}
 	document.querySelector('#text-options').innerHTML = null;
+
 	Object.entries(card.text).forEach(item => {
-		if (oldCardText[item[0]]) {
-			card.text[item[0]].text = oldCardText[item[0]].text;
-		} else if (savedTextContents[item[0]]) {
+		const key = item[0]
+		if (oldCardText[key]) {
+			card.text[item[0]].text = oldCardText[key].text;
+		} else if (savedTextContents[key]) {
 			card.text[item[0]].text = savedTextContents[item[0]];
 		}
 		var textOptionElement = document.createElement('h4');
@@ -3315,6 +3319,21 @@ function loadTextOptions(textObject, replace=true) {
 		textOptionElement.onclick = textOptionClicked;
 		document.querySelector('#text-options').appendChild(textOptionElement);
 	});
+
+	/*const textEntries = Object.entries(textObject).map(([key, item]) => {
+		const result = Object.assign(
+			{},
+			item,
+			{ fontSize: getBaseSize(key, item.text) }
+		);
+
+		console.log(key, item.fontSize, getBaseSize(key, item.text))
+		return [key, result];
+	});
+
+	card.text = Object.fromEntries(textEntries)
+	*/
+
 	document.querySelector('#text-options').firstChild.click();
 	drawTextBuffer();
 	drawNewGuidelines();
@@ -5025,18 +5044,16 @@ function loadAvailableCards(cardKeys = JSON.parse(localStorage.getItem('cardKeys
 		cardKeys.sort();
 		localStorage.setItem('cardKeys', JSON.stringify(cardKeys));
 	}
-	document.querySelector('#load-card-options').innerHTML = '<option selected="selected" disabled>None selected</option>';
+	const options = document.querySelector('#load-card-options')
+
+	if (options) {
+		options.innerHTML = '<option selected="selected" disabled>None selected</option>';
+	}
+
 	cardKeys.forEach(item => {
 		var cardKeyOption = document.createElement('option');
 		cardKeyOption.innerHTML = item;
 		document.querySelector('#load-card-options').appendChild(cardKeyOption);
-	});
-
-	document.querySelector('#load-card-options-2').innerHTML = '<option selected="selected" disabled>None selected</option>';
-	cardKeys.forEach(item => {
-		var cardKeyOption = document.createElement('option');
-		cardKeyOption.innerHTML = item;
-		document.querySelector('#load-card-options-2').appendChild(cardKeyOption);
 	});
 }
 function importChanged() {
@@ -5090,10 +5107,13 @@ async function loadCard(selectedCardKey) {
 	//clear the draggable frames
 	document.querySelector('#frame-list').innerHTML = null;
 	//clear the existing card, then replace it with the new JSON
+
 	card = {};
-	card = JSON.parse(localStorage.getItem(selectedCardKey));
-	//if the card was loaded properly...
-	if (card) {
+	const loadedCard = JSON.parse(localStorage.getItem(selectedCardKey));
+
+	if (loadedCard) {
+		Object.assign(card, loadedCard);
+
 		//load values from card into html inputs
 		document.querySelector('#info-number').value = card.infoNumber;
 		document.querySelector('#info-rarity').value = card.infoRarity;
@@ -5132,18 +5152,23 @@ async function loadCard(selectedCardKey) {
 		card.frames.reverse();
 		await card.frames.forEach(item => addFrame([], item));
 		card.frames.reverse();
+
 		if (card.onload) {
 			await loadScript(card.onload);
 		}
+
 		card.manaSymbols.forEach(item => loadScript(item));
 		//canvases
+
 		var canvasesResized = false;
+
 		canvasList.forEach(name => {
 			if (window[name + 'Canvas'].width != card.width * (1 + card.marginX) || window[name + 'Canvas'].height != card.height * (1 + card.marginY)) {
 				sizeCanvas(name);
 				canvasesResized = true;
 			}
 		});
+
 		if (canvasesResized) {
 			drawTextBuffer();
 			drawFrames();
@@ -5155,10 +5180,27 @@ async function loadCard(selectedCardKey) {
 	}
 }
 
-async function loadCardAsUB(selectedCardKey) {
+async function loadCardFormatted(selectedCardKey) {
+	await resetCardIrregularities();
 	await loadCard(selectedCardKey);
-	setAutoFrame("Universes Beyond (Accurate)");
-	textEdited();
+
+	window.setTimeout(() => {
+		autoFrameBuffer();
+		artEdited();
+		autoFitArt();
+		drawTextBuffer();
+	}, 150);
+
+	window.setTimeout(() => {
+		document.getElementById('loadFrameVersion').click();
+	}, 750);
+}
+
+function applyMargins() {
+	document.getElementById('selectFrameGroup').value = "Margin";
+	loadScript("/js/frames/groupMargin.js");
+
+	window.setTimeout(addFrame, 500);
 }
 function deleteCard() {
 	var keyToDelete = document.querySelector('#load-card-options').value;
@@ -5308,6 +5350,7 @@ async function imageLocal(event, destination, otherParams) {
 	await reader.readAsDataURL(event.target.files[0]);
 }
 function loadScript(scriptPath) {
+	console.log(scriptPath);
 	var script = document.createElement('script');
 	script.setAttribute('type', 'text/javascript');
 	script.onerror = function(){notify('A script failed to load, likely due to an update. Please reload your page. Sorry for the inconvenience.');}

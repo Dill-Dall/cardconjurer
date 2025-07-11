@@ -1,8 +1,3 @@
-
-let forceReloadForFrameFix = true;
-
-
-
 function parseCSV(text) {
 	const rows = [];
 	let currentRow = [];
@@ -54,21 +49,15 @@ function parseCSV(text) {
 function formatManaCost(raw) {
 	if (!raw) return '';
 	return raw
-		.match(/\{[^}]+\}|[^{}]/g)  // Matches {X} or individual characters not in {}
+		.trim()
+		.match(/\{[^}]+}|[^{}]/g)  // Matches {X} or individual characters not in {}
 		.map(c => c.startsWith('{') ? c : `{${c.toUpperCase()}}`)
 		.join('');
 }
 
-
 function safeFilename(name) {
 	return name.replace(/[^a-z0-9]/gi, '_');
 }
-
-function getFrameFromList(name, list) {
-	return list.find(f => f.name.toLowerCase() === name.toLowerCase());
-}
-
-
 
 function addToGallery() {
 	const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
@@ -86,7 +75,6 @@ function addToGallery() {
 	return dataURL;
 }
 
-
 async function applyCardArtFromCSVRow(row) {
 	const customArtPath = row['image_file_path']?.trim();
 	// ✅ Skip if no valid file path
@@ -100,7 +88,6 @@ async function applyCardArtFromCSVRow(row) {
 
 			art.src = fixUri(customArtPath);
 			artEdited();
-			artistEdited("DTF");
 			console.log(`[DEBUG] Art loaded from path: ${customArtPath}`);
 			resolve();
 		};
@@ -114,11 +101,11 @@ async function applyCardArtFromCSVRow(row) {
 	});
 }
 
-async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
-	setAutoFrame();
-	setAutoframeNyx(true);
-	setAutofit();
+function setDiStandard() {
+	artistEdited("DTF");
+}
 
+async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
 	await document.fonts.ready;
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
@@ -132,13 +119,16 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				continue;
 			}
 
-
 			console.log(row['Cards']);
 
 			card.text.title.text = (row['Cards'] || 'Untitled').trim();
 			card.text.type.text = ((row['Type'] || '') + (row['Subtype'] ? ' — ' + row['Subtype'] : '')).trim();
 			card.text.mana.text = formatManaCost(row['Mana cost']);
 			card.text.pt.text = (row['p/t'] || '').trim();
+
+			Object.entries(card.text).forEach(([key, textObject]) => {
+				card.text[key].fontSize = getBaseSize(textObject.text.length);
+			})
 
 			rarity = row['R']?.trim().toLowerCase();
 			if (!rarity) {
@@ -152,25 +142,32 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			['Ability', 'Passive', 'Active', 'Flavour Text'].forEach(key => {
 				if (row[key]) {
 					row[key] = row[key].replace(/"/g, "");
+
 					rulesText = '';
-					['Std Ability', 'Ability', 'Passive', 'Active', 'Flavour Text', 'Quote'].forEach(innerKey => {
+
+					['Std Ability', 'Ability', 'Passive', 'Active', 'Flavour Text'].forEach(innerKey => {
 						if (row[innerKey]) {
 							let columnText = row[innerKey].trim();
-							if (rulesText) rulesText += '\n';
 
-							if (innerKey === 'Flavour Text') {
-								console.log(`[DEBUG] Flavour Text: ${columnText}`);
-								rulesText += "{flavor}" + columnText;
-							//} else if (innerKey === 'Std Ability') {
-							//	rulesText += "{bold}" + columnText + "{/bold}";
-							} else {
-								rulesText += columnText;
+							if (columnText) {
+								switch (innerKey) {
+									case 'Std Ability':
+										rulesText += columnText + "\n{down30}";
+										break;
+									case 'Flavour Text':
+										console.log(`[DEBUG] Flavour Text: ${columnText}`);
+										rulesText = rulesText.trim(); // Remove last "\n"
+										rulesText += "{flavor}" + columnText;
+										break;
+									default:
+										rulesText += columnText + '\n';
+										break;
+								}
 							}
 						}
 					});
 				}
 			});
-
 
 			card.text.rules.text = rulesText;
 			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
@@ -216,7 +213,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			);
 
 			await applyCardArtFromCSVRow(row);
-			//setAutoFrame("Universes Beyond (Accurate)");
+
 			document.getElementById('savebutton').click();
 
 			const dataURL = addToGallery();
@@ -229,6 +226,8 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				downloadLink.click();
 			}
 
+			setDiStandard();
+
 
 		} catch (err) {
 			console.error('Error generating card:', err);
@@ -236,50 +235,39 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	}
 
 	art.onload = originalArtOnload;
+
+	// Reload window
+	window.location.reload();
 }
 
 window.generateCardsFromCSV = generateCardsFromCSV;
 
+function importCsv() {
+	const inputElement = document.createElement('import-csv-input');
+	if (!inputElement) {
+		throw new Error('CSV input is missing.');
+	}
 
-
-function setupCSVImportUI() {
-	const input = document.createElement('input');
-	input.type = 'file';
-	input.accept = '.csv';
-	input.style = 'margin: 1rem;';
-
-	const button = document.createElement('button');
-	button.textContent = 'Import CSV Cards';
-	button.style = 'margin: 1rem;';
-	button.onclick = () => input.click();
-
-	input.onchange = async (event) => {
-		console.log('File selected:', event.target.files[0]);
-		const file = event.target.files[0];
-		if (!file) return;
-		const text = await file.text();
-		const data = parseCSV(text);
-		await generateCardsFromCSV(data);
-	};
-
-	document.body.appendChild(button);
-	document.body.appendChild(input);
+	document.getElementById('import-csv-input').click();
 }
 
-function downloadCardImage() {
+async function onImportCsv(event) {
+	console.log('File selected:', event.target.files[0]);
+	const file = event.target.files[0];
+	if (!file) return;
+	const text = await file.text();
+	const data = parseCSV(text);
+	await generateCardsFromCSV(data);
+}
+
+/*function downloadCardImage() {
 	const link = document.createElement('a');
 	link.download = getCardName().replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
 	link.href = cardCanvas.toDataURL('image/png');
 	document.body.appendChild(link);
 	link.click();
 	document.body.removeChild(link);
-}
-
-if (document.readyState !== 'loading') {
-	setupCSVImportUI();
-} else {
-	document.addEventListener('DOMContentLoaded', setupCSVImportUI);
-}
+}*/
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.body.dispatchEvent(new Event('doCreate'));

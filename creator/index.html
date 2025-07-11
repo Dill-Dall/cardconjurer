@@ -97,17 +97,17 @@
 			<canvas class='creator-canvas box-shadow' id='previewCanvas' width='1005' height='1407'></canvas>
 			<div class='creator-menu box-shadow'>
 				<div id='creator-menu-tabs' class='creator-menu-tabs'>
-					<h3 class='selectable readable-background selected' onclick='toggleCreatorTabs(event, "frame")'>Frame</h3>
+					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "frame")'>Frame</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "text")'>Text</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "art")'>Art</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "setSymbol")'>Set Symbol</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "watermark")'>Watermark</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "bottomInfo")'>Collector</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "import")'>Import/Save</h3>
+					<h3 class='selectable readable-background selected' onclick='toggleCreatorTabs(event, "import")'>Import/Save</h3>
 					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "tutorial"); loadTutorialVideo();'>Tutorial</h3>
 				</div>
 				<div id='creator-menu-sections' class='margin-bottom'>
-					<div id='creator-menu-frame'>
+					<div id='creator-menu-frame' class='hidden'>
 						<div class='readable-background margin-bottom padding'>
 							<h5 class='margin-bottom padding input-description'>
 								Select a Frame Group and a Frame Pack, or type to search. Then you may Load the selected Frame Version (loading the frame version configures text placement, art size, etc...)</h5>
@@ -215,7 +215,7 @@
 							<h5 class='margin-bottom padding input-description'>Edit the placement and size of the selected textbox</h5>
 							<button class='input' onclick='textboxEditor();'>Edit Bounds</button>
 							<h5 class='margin-bottom padding input-description'>Adjust font size</h5>
-							<input id="text-editor-font-size" class="input" type="number" placeholder="0" value="0" step="1" oninput="fontSizedEdited();">
+							<input id="text-editor-font-size" class="input" type="number" placeholder="0" value="0" step="1" onchange="fontSizedEdited();">
 						</div>
 						<div class='readable-background padding margin-bottom'>
 							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
@@ -638,48 +638,110 @@
 						</div>
 					</div>
 					<div id='creator-menu-import'>
-						<div class='readable-background margin-bottom padding'>
-							<h5 class='padding margin-bottom input-description'>Import a real card by name</h5>
-							<input id='import-name' class='input margin-bottom' type='text' onchange='importChanged();' placeholder='Enter Card Name'>
-							<label class='checkbox-container input margin-bottom'>Include all unique prints as options
-								<input id='importAllPrints' type='checkbox' onchange="importChanged();">
-								<span class='checkmark'></span>
-							</label>
-							<h5 class='padding margin-bottom input-description'>Select a specific card to import</h5>
-							<select class='input margin-bottom' id='import-index' onchange='changeCardIndex();'></select>
-							<h5 class='padding input-description'>Select a language for card imports (not all languages will always be available)</h5>
-							<select class='input' id='import-language' onchange='importChanged();'>
-								<option value="en">English</option>
-								<option value="es">Spanish</option>
-								<option value="fr">French</option>
-								<option value="de">German</option>
-								<option value="it">Italian</option>
-								<option value="pt">Portuguese</option>
-								<option value="ja">Japanese</option>
-								<option value="ko">Korean</option>
-								<option value="ru">Russian</option>
-								<option value="zhs">Simplified Chinese</option>
-								<option value="zht">Traditional Chinese</option>
-								<option value="ph">Phyrexian</option>
-							</select>
+						<div class='readable-background padding margin-bottom'>
+							<h5 class='padding input-description'>Automatically update frame</h5>
+							<div class='padding input-grid'>
+								<select id="autoFrame" class="input" onchange="setAutoFrame()">
+									<option value="false">Disabled</option>
+									<option value="M15Regular-1">Regular</option>
+									<option value="M15BoxTopper">Extended Art</option>
+									<option value="M15ExtendedArtShort">Extended Art (Shorter Textbox)</option>
+									<option value="UB">Universes Beyond</option>
+									<option value="Etched">Etched</option>
+									<option value="Borderless">Borderless (Alt)</option>
+									<option value="Praetors">Phyrexian</option>
+									<option value="8th">8th Edition</option>
+									<option value="Seventh">Seventh Edition</option>
+
+									<option disabled>Redone frames</option>
+									<option value="M15RegularNew">Regular (Accurate)</option>
+									<option value="FullArtNew">Full art (Accurate)</option>
+									<option value="UBNew">Universes Beyond (Accurate)</option>
+
+									<option disabled>Custom frames</option>
+									<option value="Circuit">Circuit</option>
+									<option value="M15Eighth">M15-Eighth</option>
+									<option value="M15EighthUB">M15-Eighth Universes Beyond</option>
+								</select>
+							</div>
+							<div class='padding input-grid'>
+								<label class='checkbox-container input'>Use Nyx frame for all Enchantments (where applicable)
+									<input id='autoframe-always-nyx' type='checkbox' onchange='setAutoframeNyx(this.checked);'>
+									<span class='checkmark'></span>
+								</label>
+							</div>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='padding margin-bottom input-description'>Save your current card</h5>
-							<button class='input margin-bottom' onclick='saveCard();' id='savebutton'>Save Card</button>
 							<h5 class='padding margin-bottom input-description'>Load a saved card</h5>
-							<select id='load-card-options' class='input margin-bottom' type='text' onchange='loadCard(this.value);'></select>
-							<h5 class='padding margin-bottom input-description'>Load a saved card with Automatically update frame</h5>
-							<select id='load-card-options-2' class='input margin-bottom' onchange='loadCardAsUB(this.value);'></select>
-							<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
-							<button class='input' onclick='deleteCard();'>Delete Card</button>
+
+							<select
+								id='load-card-options'
+								class='input margin-bottom'
+								onchange='loadCardFormatted(this.value);'> <!--onchange='loadCard(this.value);'-->
+							</select>
+
+							<h5 class='padding input-description'>Apply 1/8 margins for print</h5>
+							<p class="padding margin-bottom">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
+							<button class='input margin-bottom' onclick='applyMargins();'>Apply margins</button>
+
+							<h5 class='padding input-description'>Import or reset</h5>
+							<div class="input-grid">
+								<button class='input margin-bottom' onclick='importCsv();'>Import CSV</button>
+								<button class='input margin-bottom' onclick='deleteSavedCards();'>Delete All Cards</button>
+							</div>
+
+							<input id="import-csv-input" type="file" accept=".csv" hidden oninput="onImportCsv(event)" />
+
+						</div>
+						<div class='readable-background margin-bottom padding'>
+							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+								Save or delete current card
+							</h5>
+							<div class='padding'>
+								<h5 class='padding margin-bottom input-description'>Save your current card</h5>
+								<button class='input margin-bottom' onclick='saveCard();' id='savebutton'>Save Card</button>
+
+								<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
+								<button class='input' onclick='deleteCard();'>Delete Card</button>
+							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding margin-bottom input-description'>Download all saved cards</h5>
-							<button class='input margin-bottom' onclick='downloadSavedCards();'>Download All</button>
-							<h5 class='padding margin-bottom input-description'>Upload previously downloaded file of saved cards (downloaded from above)</h5>
-							<input type='file' accept='.cardconjurer,.txt' class='input margin-bottom' oninput='uploadSavedCards(event);'>
-							<h5 class='padding margin-bottom input-description'>Delete ALL saved cards</h5>
-							<button class='input margin-bottom' onclick='deleteSavedCards();'>Delete All</button>
+							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>Download all saved cards</h5>
+							<div class='padding'>
+								<button class='input margin-bottom' onclick='downloadSavedCards();'>Download All</button>
+								<h5 class='padding margin-bottom input-description'>Upload previously downloaded file of saved cards (downloaded from above)</h5>
+								<input type='file' accept='.cardconjurer,.txt' class='input margin-bottom' oninput='uploadSavedCards(event);'>
+							</div>
+						</div>
+						<div class='readable-background margin-bottom padding'>
+							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+								Import a real card by name
+							</h5>
+							<div class='padding'>
+								<input id='import-name' class='input margin-bottom' type='text' onchange='importChanged();' placeholder='Enter Card Name'>
+								<label class='checkbox-container input margin-bottom'>Include all unique prints as options
+									<input id='importAllPrints' type='checkbox' onchange="importChanged();">
+									<span class='checkmark'></span>
+								</label>
+								<h5 class='padding margin-bottom input-description'>Select a specific card to import</h5>
+								<select class='input margin-bottom' id='import-index' onchange='changeCardIndex();'></select>
+								<h5 class='padding input-description'>Select a language for card imports (not all languages will always be available)</h5>
+								<select class='input' id='import-language' onchange='importChanged();'>
+									<option value="en">English</option>
+									<option value="es">Spanish</option>
+									<option value="fr">French</option>
+									<option value="de">German</option>
+									<option value="it">Italian</option>
+									<option value="pt">Portuguese</option>
+									<option value="ja">Japanese</option>
+									<option value="ko">Korean</option>
+									<option value="ru">Russian</option>
+									<option value="zhs">Simplified Chinese</option>
+									<option value="zht">Traditional Chinese</option>
+									<option value="ph">Phyrexian</option>
+								</select>
+							</div>
+
 						</div>
 						<div class='readable-background padding margin-bottom'>
 							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
@@ -706,43 +768,6 @@
 						<div class='video'>
 							<iframe width="560" height="315" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
 						</div>
-					</div>
-				</div>
-				<div class='readable-background padding margin-bottom'>
-					<h5 class='padding input-description'>Automatically update frame</h5>
-					<div class='padding input-grid'>
-						<select id="autoFrame" class="input" onchange="setAutoFrame()">
-							<option value="false">Disabled</option>
-							<option value="M15Regular-1">Regular</option>
-							<option value="M15BoxTopper">Extended Art</option>
-							<option value="M15ExtendedArtShort">Extended Art (Shorter Textbox)</option>
-							<option value="UB">Universes Beyond</option>
-							<option value="Etched">Etched</option>
-							<option value="Borderless">Borderless (Alt)</option>
-							<option value="Praetors">Phyrexian</option>
-							<option value="8th">8th Edition</option>
-							<option value="Seventh">Seventh Edition</option>
-
-							<option disabled>Redone frames</option>
-							<option value="M15RegularNew">Regular (Accurate)</option>
-							<option value="FullArtNew">Full art (Accurate)</option>
-							<option value="UBNew">Universes Beyond (Accurate)</option>
-
-							<option disabled>Custom frames</option>
-							<option value="Circuit">Circuit</option>
-							<option value="M15Eighth">M15-Eighth</option>
-							<option value="M15EighthUB">M15-Eighth Universes Beyond</option>
-						</select>
-
-						
-						<!-- <button class='input' onclick='autoFrame("M15");'>M15</button>
-						<button class='input' onclick='autoFrame("UB");'>Universes Beyond</button> -->
-					</div>
-					<div class='padding input-grid'>
-						<label class='checkbox-container input'>Use Nyx frame for all Enchantments (where applicable)
-							<input id='autoframe-always-nyx' type='checkbox' onchange='setAutoframeNyx(this.checked);'>
-							<span class='checkmark'></span>
-						</label>
 					</div>
 				</div>
 				<div class='readable-background padding'>
