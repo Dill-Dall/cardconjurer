@@ -35,5 +35,6 @@ fly.toml
 
 
 
-*private
-/assets
+*/private/*
+!/img/setSymbols/private
+assets
