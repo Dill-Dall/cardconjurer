@@ -107,6 +107,16 @@ function setDiStandard() {
 
 async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
 	await document.fonts.ready;
+
+	enableNewCollectorInfoStyle();
+	setDiStandard();
+
+	setCollectorInfo({
+		setCode: "DIN",
+		lang: "EN",
+		note: "D.I."
+	});
+
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
 	const originalArtOnload = art.onload;
@@ -225,15 +235,6 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				downloadLink.download = fileName + '.png';
 				downloadLink.click();
 			}
-
-			setDiStandard();
-
-			setCollectorInfo({
-				setCode: "D.I.",
-				lang: "EN"
-			})
-
-
 		} catch (err) {
 			console.error('Error generating card:', err);
 		}
