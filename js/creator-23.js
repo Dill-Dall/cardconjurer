@@ -3385,24 +3385,22 @@ function loadTextOptions(textObject, replace= true) {
 		}
 		var textOptionElement = document.createElement('h4');
 		textOptionElement.innerHTML = item[1].name;
-		textOptionElement.classList = 'selectable text-option'
+		textOptionElement.classList = 'selectable text-option';
 		textOptionElement.onclick = textOptionClicked;
 		document.querySelector('#text-options').appendChild(textOptionElement);
 	});
 
-	/*const textEntries = Object.entries(textObject).map(([key, item]) => {
+	const textEntries = Object.entries(textObject).map(([key, item]) => {
 		const result = Object.assign(
 			{},
 			item,
 			{ fontSize: getBaseSize(key, item.text) }
 		);
 
-		console.log(key, item.fontSize, getBaseSize(key, item.text))
 		return [key, result];
 	});
 
 	card.text = Object.fromEntries(textEntries)
-	*/
 
 	document.querySelector('#text-options').firstChild.click();
 	drawTextBuffer();
@@ -4651,6 +4649,15 @@ function removeDefaultCollector() {
 	defaultCollector = {}; //{number: year, rarity:'P', setCode:'MTG', lang:'EN', starDot:false};
 	localStorage.removeItem('defaultCollector'); //localStorage.setItem('defaultCollector', JSON.stringify(defaultCollector));
 }
+
+function setCollectorInfo({number, rarity, setCode, lang, note}) {
+	if (typeof number !== "undefined") document.getElementById('info-number').value = number;
+	if (rarity) document.getElementById('info-rarity').value = rarity;
+	if (setCode)  document.getElementById('info-set').value = setCode;
+	if (lang) document.getElementById('info-language').value = lang;
+	if (note) document.getElementById('info-note').value = note;
+}
+
 function setDefaultCollector() {
 	starDot = defaultCollector.starDot;
 	defaultCollector = {

@@ -228,6 +228,11 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 
 			setDiStandard();
 
+			setCollectorInfo({
+				setCode: "D.I.",
+				lang: "EN"
+			})
+
 
 		} catch (err) {
 			console.error('Error generating card:', err);

@@ -1,25 +1,56 @@
-function convertCharsToSize(charCount) {
-	if (charCount <= 25) {
-		return -5;
+function convertCharsToSize(
+	charCount,
+	penaltyCeiling = 0,
+	penaltyFloor = -30,         // Floor value (most negative allowed)
+	accelerationRate = 0.15,    // How quickly penalty accelerates
+	penaltyStartsAt = 25,       // Character count where penalty starts increasing
+	curveExponent = 2,          // Polynomial curve steepness (higher = more curved)
+	initialPenalty = 5,         // Base penalty value at the threshold
+	scalingMode = 'aggressive' , // 'aggressive' for short text, 'gentle' for long text
+) {
+	if (charCount <= penaltyStartsAt) {
+		return penaltyCeiling;
 	}
 
-	// Single mathematical formula that approximates the entire curve
-	// Using a modified logistic decay function
-	const x = charCount - 25;
-	const size = -5 - (x * (1 + Math.pow(x - 5, 2) * 0.15));
+	const excessChars = charCount - penaltyStartsAt;
+	let penaltyIncrease;
 
-	return Math.min(0, Math.round(size));
+	if (scalingMode === 'gentle') {
+		// For long text: use square root scaling to reduce impact of large numbers
+		penaltyIncrease = Math.sqrt(excessChars) * (1 + Math.pow(Math.sqrt(excessChars), curveExponent) * accelerationRate);
+	} else {
+		// For short text: original aggressive polynomial scaling
+		penaltyIncrease = excessChars * (1 + Math.pow(excessChars - initialPenalty, curveExponent) * accelerationRate);
+	}
+
+	const totalPenalty = -initialPenalty - penaltyIncrease;
+
+	return Math.min(penaltyCeiling, Math.max(Math.round(totalPenalty), penaltyFloor));
 }
 
 function getBaseSize(key, text) {
 	switch(key) {
 		case "title":
+			return convertCharsToSize(text.length, -5,-30, 0.04);
 		case "type":
-			return convertCharsToSize(text.length);
+			return convertCharsToSize(text.length, -5,-20, 0.005, 30);
 		case "rules":
-			return -10;
+			const fontSize = convertCharsToSize(
+				text.length,
+				-10,
+				-50,        // penaltyFloor: lower floor for longer text
+				0.04,      // accelerationRate: very gentle curve
+				100,        // penaltyStartsAt: start penalty much later
+				1,          // curveExponent: nearly linear
+				1,          // initialPenalty: minimal base penalty
+				'gentle', // scalingMode: gentle for long text
+			);
+
+			console.log(fontSize);
+
+			return fontSize;
 		default:
-			return 0;
+			return -5;
 	}
 }
 
