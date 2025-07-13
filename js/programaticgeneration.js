@@ -156,7 +156,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 										break;
 									case 'Flavour Text':
 										console.log(`[DEBUG] Flavour Text: ${columnText}`);
-										rulesText = rulesText.trim(); // Remove last "\n"
+										rulesText = rulesText.trim(); // Remove previous "\n"
 										rulesText += "{flavor}" + columnText;
 										break;
 									default:
@@ -169,7 +169,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				}
 			});
 
-			card.text.rules.text = rulesText;
+			card.text.rules.text = rulesText.trim();
 			console.log(`[${row['Cards']}] Applied frames:`, card.frames.map(f => f.name));
 
 			await Promise.all(

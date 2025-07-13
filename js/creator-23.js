@@ -577,20 +577,7 @@ function doubleClick(event, maskOrFrame) {
 }
 function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 	var colors = colors.map(color => color.toUpperCase())
-	if ([
-			['U', 'W'],
-			['B', 'W'],
-			['R', 'B'],
-			['G', 'B'],
-			['B', 'U'],
-			['R', 'U'],
-			['G', 'R'],
-			['W', 'R'],
-			['W', 'G'],
-			['U', 'G']
-		].map(arr => JSON.stringify(arr) === JSON.stringify(colors)).includes(true)) {
-		colors.reverse();
-	}
+		.sort(sortMana);
 
 	var isHybrid = manaCost.includes('/');
 
@@ -758,6 +745,89 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 function setAutoframeNyx(value) {
 	localStorage.setItem('autoframe-always-nyx', document.querySelector('#autoframe-always-nyx').checked);
 	setAutoFrame();
+}
+
+function sortMana(a, b) {
+	const colorOrder = { W: 1, U: 2, B: 3, R: 4, G: 5 };
+
+	const cleanA = a.replace(/[{}]/g, '').toUpperCase();
+	const cleanB = b.replace(/[{}]/g, '').toUpperCase();
+
+	// Check if they're numbers or X - these always come first
+	const isNumberA = /^\d+$/.test(cleanA);
+	const isNumberB = /^\d+$/.test(cleanB);
+	const isXA = cleanA === 'X';
+	const isXB = cleanB === 'X';
+
+	// Handle X and numbers ordering: X comes first, then numbers
+	if (isXA && isXB) return 0; // Both X, equal
+	if (isXA && (isNumberB || !isXB)) return -1; // X before numbers/colors
+	if (isXB && (isNumberA || !isXA)) return 1; // X before numbers/colors
+
+	if (isNumberA && isNumberB) {
+		return parseInt(cleanA) - parseInt(cleanB);
+	}
+	if (isNumberA || isXA) return -1;  // Numbers and X before colors
+	if (isNumberB || isXB) return 1;   // Numbers and X before colors
+
+	// Extract colors (handle Phyrexian modifier and number-color hybrids)
+	let colorsA = cleanA.toUpperCase();
+	let colorsB = cleanB.toUpperCase();
+
+	// Handle number-color hybrids like {2G}, {3W} - extract the color and number parts
+	const numberColorA = colorsA.match(/^(\d+)([WUBRG])$/);
+	const numberColorB = colorsB.match(/^(\d+)([WUBRG])$/);
+
+	let numberPartA = null;
+	let numberPartB = null;
+
+	if (numberColorA) {
+		numberPartA = parseInt(numberColorA[1]);
+		colorsA = numberColorA[2]; // Extract just the color part
+	}
+	if (numberColorB) {
+		numberPartB = parseInt(numberColorB[1]);
+		colorsB = numberColorB[2]; // Extract just the color part
+	}
+
+	// Remove P from beginning (single Phyrexian: {PW}) or end (hybrid Phyrexian: {WUP})
+	if (colorsA.startsWith('P')) {
+		colorsA = colorsA.substring(1);
+	} else if (colorsA.endsWith('P')) {
+		colorsA = colorsA.substring(0, colorsA.length - 1);
+	}
+
+	if (colorsB.startsWith('P')) {
+		colorsB = colorsB.substring(1);
+	} else if (colorsB.endsWith('P')) {
+		colorsB = colorsB.substring(0, colorsB.length - 1);
+	}
+
+	// Get primary color for sorting (WUBRG order)
+	const primaryA = colorsA[0];
+	const primaryB = colorsB[0];
+
+	const orderA = colorOrder[primaryA] || 999;
+	const orderB = colorOrder[primaryB] || 999;
+
+	if (orderA !== orderB) {
+		return orderA - orderB;
+	}
+
+	// If primary colors are the same, handle special cases
+	if (numberPartA !== null && numberPartB !== null) {
+		// Both are number-color hybrids with same color, sort by number
+		return numberPartA - numberPartB;
+	}
+
+	// If primary colors are the same, sort by secondary color
+	const secondaryA = colorsA[1] || '';
+	const secondaryB = colorsB[1] || '';
+
+	const secondOrderA = colorOrder[secondaryA] || 0;
+	const secondOrderB = colorOrder[secondaryB] || 0;
+
+	return secondOrderA - secondOrderB;
 }
 
 var autoFramePack;
@@ -3456,6 +3526,15 @@ function writeText(textObject, targetContext) {
 
 	if (textObject.font == 'saloongirl') {
 		rawText = rawText.replace(/\*/g, '{fontbelerenbsc}*{fontsaloongirl}');
+	}
+	if (textObject.manaCost && rawText) {
+		rawText =
+			rawText
+				.match(/\{[^}]+}|[^{}]/g)
+				?.filter(item => item.trim())
+				.map(c => c.startsWith('{') ? c : `{${c.toUpperCase()}}`)
+				.sort(sortMana)
+				.join("") ?? "";
 	}
 	rawText = rawText.replace(/ - /g, ' — ');
 	var splitText = rawText.replace(/\n/g, '{line}').replace(/{-}/g, '\u2014').replace(/{divider}/g, '{/indent}{lns}{bar}{lns}{fixtextalign}');
