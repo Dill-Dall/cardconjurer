@@ -4568,7 +4568,12 @@ async function bottomInfoEdited() {
 
 	if (document.querySelector('#enableCollectorInfo').checked) {
 		for (var textObject of Object.entries(card.bottomInfo)) {
-			if (["NOT FOR SALE", "Wizards of the Coast", "CardConjurer.com", "cardconjurer.com"].some(v => textObject[1].text.includes(v))) {
+			if ([
+				//"NOT FOR SALE",
+				"Wizards of the Coast",
+				"CardConjurer.com",
+				"cardconjurer.com"
+			].some(v => textObject[1].text.includes(v))) {
 				continue;
 			} else {
 				textObject[1].name = textObject[0];
