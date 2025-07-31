@@ -697,10 +697,6 @@
 								onchange='loadCardFormatted(this.value);'> <!--onchange='loadCard(this.value);'-->
 							</select>
 
-							<h5 class='padding input-description'>Apply 1/8 margins for print</h5>
-							<p class="padding margin-bottom">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
-							<button class='input margin-bottom' onclick='applyMargins();'>Apply margins</button>
-
 							<h5 class='padding input-description'>Import or reset</h5>
 							<div class="input-grid">
 								<button class='input margin-bottom' onclick='importCsv();'>Import CSV</button>
@@ -794,14 +790,28 @@
 						</div>
 					</div>
 				</div>
-				<div class='readable-background padding'>
-					<h3 class='download padding' onclick='downloadCard();'>Download your card</h3>
-					<h5 onclick='downloadCard(false, true);' id='downloadJpg' href='' target='_blank' class='padding download input-description' style='text-align: left;'>Click here to download as JPEG</h5>
-					<h5 onclick='downloadCard(true);' id='downloadAlt' href='' target='_blank' class='padding download input-description' style='text-align: left;'>Click here for an alternative download</h5>
+				<div class='readable-background padding margin-bottom'>
+					<h3 class='download padding' id='downloadJpg' onclick='downloadCard(false, true);'>Download JPG</h3>
+					<!--<h5 onclick='downloadCard(true);' id='downloadAlt' class='padding download input-description' style='text-align: left;'>Click here for an alternative download</h5>-->
 					<!-- <label class='checkbox-container input margin-bottom'>800 DPI
 						<input id='high-res' type='checkbox' onchange='toggleHighRes();'>
 						<span class='checkmark'></span>
 					</label> -->
+				</div>
+				<div class='readable-background padding'>
+					<div class='padding margin-bottom'>
+						<h3 class='download padding' onclick='applyMargins();'>Apply margins</h3>
+						<p class="padding ">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
+					</div>
+
+					<!--<h5 class='padding input-description'>Apply 1/8 margins for print</h5>
+					<p class="padding margin-bottom">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
+					<button class='input margin-bottom' onclick='applyMargins();'>Apply margins</button>-->
+
+					<div class='padding'>
+						<h3 class='download padding' onclick='downloadCard();'>Download hi-res PNG</h3>
+						<h5 class='padding input-description' style="text-align:center;">For print. Remember to check Auto-load frames</h5>
+					</div>
 				</div>
 
 			</div>

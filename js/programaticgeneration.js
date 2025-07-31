@@ -114,7 +114,8 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	setCollectorInfo({
 		setCode: "DIN",
 		lang: "EN",
-		note: "D.I."
+		note: "D.I.",
+		number: "2025"
 	});
 
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
@@ -140,11 +141,11 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
 
-			rarity = row['R']?.trim().toLowerCase();
-			if (!rarity) {
-				rarity = 'c';
-			}
+			rarity = row['R']?.trim().toLowerCase() ?? "c";
 			setSymbolUri = "/img/setSymbols/private/di-" + rarity + ".svg";
+
+			card.infoRarity = rarity.toUpperCase();
+
 			console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
 			fetchDISetSymbol(setSymbolUri);
 

@@ -4869,7 +4869,7 @@ function drawCard() {
 	cardContext.translate(scaleX(card.artX), scaleY(card.artY));
 	cardContext.rotate(Math.PI / 180 * (card.artRotate || 0));
 	if (document.querySelector('#grayscale-art').checked) {
-		cardContext.filter='grayscale(1)';
+		cardContext.filter = 'grayscale(1)';
 	}
 	cardContext.drawImage(art, 0, 0, art.width * card.artZoom, art.height * card.artZoom);
 	cardContext.restore();
@@ -4909,33 +4909,33 @@ function drawCard() {
 		var y = parseInt(card.serialY) || 1383;
 		var scale = parseFloat(card.serialScale) || 1.0;
 
-		cardContext.drawImage(serial, scaleX(x/2010), scaleY(y/2814), scaleX(464/2010) * scale, scaleY(143/2814) * scale);
+		cardContext.drawImage(serial, scaleX(x / 2010), scaleY(y / 2814), scaleX(464 / 2010) * scale, scaleY(143 / 2814) * scale);
 
 		var number = {
-			name:"Number",
+			name: "Number",
 			text: '{kerning3}' + card.serialNumber || '',
-			x: (x+(30 * scale))/2010,
-			y: (y+(52 * scale))/2814,
-			width: (190 * scale)/2010,
-			height: (55 * scale)/2814,
+			x: (x + (30 * scale)) / 2010,
+			y: (y + (52 * scale)) / 2814,
+			width: (190 * scale) / 2010,
+			height: (55 * scale) / 2814,
 			oneLine: true,
 			font: 'gothambold',
 			color: 'white',
-			size: (55 * scale)/2010,
+			size: (55 * scale) / 2010,
 			align: 'center'
 		};
 
 		var total = {
-			name:"Number",
+			name: "Number",
 			text: '{kerning3}' + card.serialTotal || '',
-			x: (x+(251 * scale))/2010,
-			y: (y+(52 * scale))/2814,
-			width: (190 * scale)/2010,
-			height: (55 * scale)/2814,
+			x: (x + (251 * scale)) / 2010,
+			y: (y + (52 * scale)) / 2814,
+			width: (190 * scale) / 2010,
+			height: (55 * scale) / 2814,
 			oneLine: true,
 			font: 'gothambold',
 			color: 'white',
-			size: (55 * scale)/2010,
+			size: (55 * scale) / 2010,
 			align: 'center'
 		};
 
@@ -4959,19 +4959,20 @@ function drawCard() {
 	if (!card.noCorners && (card.marginX == 0 && card.marginY == 0)) {
 		var w = card.version == 'battle' ? 2100 : getStandardWidth();
 
-		cardContext.drawImage(corner, 0, 0, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, 0, 0, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, 0, -card.width, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, 0, -card.width, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, -card.width, -card.height, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, -card.width, -card.height, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, -card.height, 0, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, -card.height, 0, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
 	}
 	// show preview
 	previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 	previewContext.drawImage(cardCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
 }
+
 //DOWNLOADING
 function downloadCard(alt = false, jpeg = false) {
 	if (card.infoArtist.replace(/ /g, '') == '' && !card.artSource.includes('/img/blank.png') && !card.artZoom == 0) {
@@ -5007,6 +5008,14 @@ function downloadCard(alt = false, jpeg = false) {
 		}
 	}
 }
+//DOWNLOAD BOTH DIGITAL AND PRINT
+function downloadDigitalAndPrint() {
+	downloadCard(false, true);
+
+	applyMargins();
+	window.setTimeout(downloadCard, 1500)
+}
+
 //IMPORT/SAVE TAB
 function importCard(cardObject) {
 	scryfallCard = cardObject;
