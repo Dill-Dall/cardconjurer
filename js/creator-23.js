@@ -3564,7 +3564,9 @@ function textboxEditor() {
 function textEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].text = curlyQuotes(document.querySelector('#text-editor').value);
 	drawTextBuffer();
-	autoFrameBuffer();
+
+	// When text is edited, update frame
+	//autoFrameBuffer();
 }
 function fontSizedEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].fontSize = document.querySelector('#text-editor-font-size').value;
@@ -3584,7 +3586,6 @@ async function drawText() {
 	drawTextBetweenFrames = false;
 	for (var textObject of Object.entries(card.text)) {
 		await writeText(textObject[1], textContext);
-		continue;
 	}
 	if (drawTextBetweenFrames || redrawFrames) {
 		drawFrames();

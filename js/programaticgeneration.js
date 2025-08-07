@@ -130,6 +130,11 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				continue;
 			}
 
+			if (row['Status'] === "Canceled") {
+				console.warn('[SKIP] Canceled card detected, ignoring:', row);
+				continue;
+			}
+
 			console.log(row['Cards']);
 
 			card.text.title.text = (row['Cards'] || 'Untitled').trim();
@@ -141,8 +146,9 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
 
-			rarity = row['R']?.trim().toLowerCase() ?? "c";
-			setSymbolUri = "/img/setSymbols/private/di-" + rarity + ".svg";
+			const rarity = row['R']?.trim().toLowerCase() ?? "c";
+			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() ?? (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
+			const setSymbolUri = "/img/setSymbols/private/di-" + setSymbolIcon + ".svg";
 
 			card.infoRarity = rarity.toUpperCase();
 
