@@ -15,6 +15,13 @@ This repository is for the purpose of making the application usable on your loca
 ) ← Help out Card Conjurer's original creator, Kyle. We love you buddy.
 
 
+## Using live-server
+
+```sh
+npm install
+npm start
+```
+
 ## Start with Docker (http://localhost:4242/)
 
 <details>
