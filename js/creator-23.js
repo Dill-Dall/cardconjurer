@@ -3564,9 +3564,10 @@ function textboxEditor() {
 function textEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].text = curlyQuotes(document.querySelector('#text-editor').value);
 	drawTextBuffer();
-
-	// When text is edited, update frame
-	//autoFrameBuffer();
+}
+function textEditUpdateBuffer() {
+	drawTextBuffer();
+	autoFrameBuffer();
 }
 function fontSizedEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].fontSize = document.querySelector('#text-editor-font-size').value;
