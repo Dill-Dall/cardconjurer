@@ -13,34 +13,34 @@
 			<h2 class='frame-element-editor-title'>Frame Image Editor</h2>
 			<h2 class='frame-element-editor-close' onclick='this.parentElement.classList.remove("opened");'>X</h2>
 			<div>
-				<h5 class='input-description'>X</h5>
+				<p class='input-description'>X</p>
 				<input id='frame-editor-x' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Y</h5>
+				<p class='input-description'>Y</p>
 				<input id='frame-editor-y' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Width</h5>
+				<p class='input-description'>Width</p>
 				<input id='frame-editor-width' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Height</h5>
+				<p class='input-description'>Height</p>
 				<input id='frame-editor-height' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Opacity</h5>
+				<p class='input-description'>Opacity</p>
 				<input id='frame-editor-opacity' class='input' type='number' placeholder='Opacity' max='100' min='0' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Erase</h5>
+				<p class='input-description'>Erase</p>
 				<label class='checkbox-container input'>Erase Card
 					<input id='frame-editor-erase' type='checkbox' placeholder='Erase'>
 					<span class='checkmark'></span>
 				</label>
 			</div>
 			<div>
-				<h5 class='input-description'>Blending Mode</h5>
+				<p class='input-description'>Blending Mode</p>
 				<label class='checkbox-container input'>Preserve Alpha
 					<input id='frame-editor-alpha' type='checkbox' placeholder='Preserve Alpha'>
 					<span class='checkmark'></span>
@@ -54,7 +54,7 @@
 				<input id='frame-editor-color-overlay' class='input' type='color' placeholder='Color' value='#000000'>
 			</div>
 			<div>
-				<h5 class='input-description'>HSL Adjustments</h5>
+				<p class='input-description'>HSL Adjustments</p>
 				<input id='frame-editor-hsl-hue-slider' class='input' type='range' min='-180' max='180' value='0' step='1'>
 				<input id='frame-editor-hsl-hue' class='input' type='number' min='-180' max='180' value='0' step='1'>
 				<input id='frame-editor-hsl-saturation-slider' class='input' type='range' min='-100' max='100' value='0' step='1'>
@@ -63,12 +63,12 @@
 				<input id='frame-editor-hsl-lightness' class='input' type='number' min='-100' max='100' value='0' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Select and remove masks</h5>
+				<p class='input-description'>Select and remove masks</p>
 				<select id='frame-editor-masks' class='input margin-bottom'></select>
 				<button onclick='frameElementMaskRemoved();' class='input'>Remove mask</button>
 			</div>
 			<div class='drop-area'>
-	            <h5 class='margin-bottom padding input-description'>Drag and drop masks to add</h5>
+	            <p class='margin-bottom padding input-description'>Drag and drop masks to add</p>
 	            <input type='file' multiple accept='.png, .svg, .jpg, .jpeg, .bmp' placeholder='File Upload' class='input' oninput='uploadFiles(event.target.files, uploadMaskOption);' data-dropFunction='uploadMaskOption' data-otherParams=''>
 			</div>
 		</div>
@@ -76,41 +76,43 @@
 			<h2 class='textbox-editor-title'>Textbox Editor</h2>
 			<h2 class='textbox-editor-close' onclick='this.parentElement.classList.remove("opened");'>X</h2>
 			<div>
-				<h5 class='input-description'>X</h5>
+				<p class='input-description'>X</p>
 				<input id='textbox-editor-x' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Y</h5>
+				<p class='input-description'>Y</p>
 				<input id='textbox-editor-y' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Width</h5>
+				<p class='input-description'>Width</p>
 				<input id='textbox-editor-width' class='input' type='number' placeholder='X' step='1'>
 			</div>
 			<div>
-				<h5 class='input-description'>Height</h5>
+				<p class='input-description'>Height</p>
 				<input id='textbox-editor-height' class='input' type='number' placeholder='X' step='1'>
 			</div>
 		</div>
 		<!-- Regular stuff -->
-		<div class='creator-grid margin-bottom-large'>
-			<canvas class='creator-canvas box-shadow' id='previewCanvas' width='1005' height='1407'></canvas>
-			<div class='creator-menu box-shadow'>
+		<div id='creator-main' class='creator-grid'>
+			<div id="creator-canvas-wrapper" class="creator-canvas-wrapper">
+				<canvas class='creator-canvas canvas-lock box-shadow' id='previewCanvas' width='1005' height='1407'></canvas>
+			</div>
+			<div class='creator-menu'>
 				<div id='creator-menu-tabs' class='creator-menu-tabs'>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "frame")'>Frame</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "text")'>Text</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "art")'>Art</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "setSymbol")'>Set Symbol</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "watermark")'>Watermark</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "bottomInfo")'>Collector</h3>
-					<h3 class='selectable readable-background selected' onclick='toggleCreatorTabs(event, "import")'>Import/Save</h3>
-					<h3 class='selectable readable-background' onclick='toggleCreatorTabs(event, "tutorial"); loadTutorialVideo();'>Tutorial</h3>
+					<button class='creator-menu-item readable-background selected' onclick='toggleCreatorTabs(event, "import")'>Import/Save</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "frame")'>Frame</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "text")'>Text</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "art")'>Art</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "setSymbol")'>Set Symbol</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "watermark")'>Watermark</button>
+					<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "bottomInfo")'>Collector</button>
+					<!--<button class='creator-menu-item readable-background' onclick='toggleCreatorTabs(event, "tutorial"); loadTutorialVideo();'>Tutorial</button>-->
 				</div>
 				<div id='creator-menu-sections' class='margin-bottom'>
 					<div id='creator-menu-frame' class='hidden'>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='margin-bottom padding input-description'>
-								Select a Frame Group and a Frame Pack, or type to search. Then you may Load the selected Frame Version (loading the frame version configures text placement, art size, etc...)</h5>
+							<p class='margin-bottom padding input-description'>
+								Select a Frame Group and a Frame Pack, or type to search. Then you may Load the selected Frame Version (loading the frame version configures text placement, art size, etc...)</p>
 							<div class='input-grid margin-bottom'>
 								<select id='selectFrameGroup' onchange='loadScript("/js/frames/group" + this.value + ".js")' class='input'>
 									<option disabled>Standard Frames</option>
@@ -139,14 +141,18 @@
 							<div class='input-grid margin-bottom'>
 								<button id='loadFrameVersion' class='input'>Load Frame Version</button>
 							</div>
-							<h5 class='input-description margin-bottom'>Automatically load Frame Version when loading Frame Packs</h5>
+							<p class='input-description margin-bottom'>Automatically load Frame Version when loading Frame Packs</p>
 							<label class='checkbox-container input'>Auto load
 								<input id='autoLoadFrameVersion' type='checkbox' onchange='autoLoadFrameVersion();' checked>
 								<span class='checkmark'></span>
 							</label>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='margin-bottom padding input-description'>Select a Frame Image and a Mask, then add it to your card</h5>
+							<p class='input-description margin-bottom'>Clear all frames</p>
+							<button id='clearFrame' onclick="clearFrames()" class='input'>Clear frames</button>
+						</div>
+						<div class='readable-background margin-bottom padding'>
+							<p class='margin-bottom padding input-description'>Select a Frame Image and a Mask, then add it to your card</p>
 							<div class='split-grid margin-bottom'>
 								<div id='frame-picker' class='frame-picker'></div>
 								<div id='mask-picker' class='mask-picker'></div>
@@ -155,7 +161,7 @@
 								<button id='addToFull' class='input' onclick='addFrame()'>Add Frame to Card</button>
 								<button id='addToRightHalf' class='input' onclick='addFrame([{src:"/img/frames/maskRightHalf.png", name:"Right Half"}])'>Add Frame to Card (Right Half)</button>
 							</div>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>More options</h5>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>More options</p>
 								<div>
 									<div class='input-grid margin-bottom'>
 										<button id='addToLeftHalf' class='input' onclick='addFrame([{src:"/img/frames/maskLeftHalf.png", name:"Left Half"}])'>Add Frame to Card (Left Half)</button>
@@ -163,20 +169,20 @@
 										<button id='addToTopHalf' class='input' onclick='addFrame([{src:"/img/frames/maskTopHalf.png", name:"Top Half"}])'>Add Frame to Card (Top Half)</button>
 										<button id='addToBottomHalf' class='input' onclick='addFrame([{src:"/img/frames/maskBottomHalf.png", name:"Bottom Half"}])'>Add Frame to Card (Bottom Half)</button>
 									</div>
-									<h5 class='padding input-description'>You can now double click frames and masks to add them to the card. You can do so while holding the shift, control, or alt keys to add to the right half, left half, or middle third, respectively.</h5>
+									<p class='padding input-description'>You can now double click frames and masks to add them to the card. You can do so while holding the shift, control, or alt keys to add to the right half, left half, or middle third, respectively.</p>
 								</div>
-							<h5 id='selectedPreview' class='padding input-description'>(Selected: White Frame, No Mask)</h5>
+							<p id='selectedPreview' class='padding input-description'>(Selected: White Frame, No Mask)</p>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Drag to reorder frame images</h5>
+							<p class='margin-bottom padding input-description'>Drag to reorder frame images</p>
 							<div id='frame-list' class='frame-list margin-bottom'></div>
-							<h5 class='padding input-description'>You may also click to edit opacity, position, size, and more</h5>
+							<p class='padding input-description'>You may also click to edit opacity, position, size, and more</p>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Upload custom frame images</h5>
+							<p class='margin-bottom padding input-description'>Upload custom frame images</p>
 							<div class='input-grid'>
 								<div class='padding drop-area'>
-						            <h5 class='margin-bottom padding input-description'>Drag and drop</h5>
+						            <p class='margin-bottom padding input-description'>Drag and drop</p>
 						            <input type='file' multiple accept='.png, .svg, .jpg, .jpeg, .bmp' placeholder='File Upload' class='input' oninput='uploadFiles(event.target.files, uploadFrameOption);' data-dropFunction='uploadFrameOption' data-otherParams=''>
 						        </div>
 						        <div>
@@ -185,17 +191,17 @@
 							</div>
 						</div>
 						<div class='readable-background padding'>
-							<h5 class='input-description margin-bottom'>Rounded Corners (When Downloaded)</h5>
+							<p class='input-description margin-bottom'>Rounded Corners (When Downloaded)</p>
 							<label class='checkbox-container input margin-bottom'>Rounded Corners
 								<input id='rounded-corners' checked="true" type='checkbox' onchange='setRoundedCorners(this.checked);'>
 								<span class='checkmark'></span>
 							</label>
-							<h5 class='input-description margin-bottom'>Show guidelines for text, art, watermark, and set symbols</h5>
+							<p class='input-description margin-bottom'>Show guidelines for text, art, watermark, and set symbols</p>
 							<label class='checkbox-container input margin-bottom'>Guidelines
 								<input id='show-guidelines' type='checkbox' onchange='drawCard();'>
 								<span class='checkmark'></span>
 							</label>
-							<h5 class='input-description margin-bottom'>Highlight transparencies in card</h5>
+							<p class='input-description margin-bottom'>Highlight transparencies in card</p>
 							<label class='checkbox-container input'>Transparencies
 								<input id='highlight-transparencies' type='checkbox' onchange='toggleCardBackgroundColor(this.checked);'>
 								<span class='checkmark'></span>
@@ -203,86 +209,86 @@
 						</div>
 					</div>
 					<div id='creator-menu-text' class='hidden'>
-						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Select a text area to edit</h5>
-							<div id='text-options' class='input-grid'></div>
+						<div class='margin-bottom'>
+							<p class='margin-bottom padding input-description'>Select a text area to edit</p>
+							<div id='text-options'></div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Update card frame</h5>
+							<p class='margin-bottom padding input-description'>Update card frame</p>
 							<button class='input margin-bottom' onclick='textEditUpdateBuffer();'>Update card frame</button>
-							<h5 class='margin-bottom padding input-description'>Enter card text</h5>
+							<p class='margin-bottom padding input-description'>Enter card text</p>
 							<textarea id='text-editor' class='input margin-bottom' oninput='textEdited();'></textarea>
 							<div class='padding input-grid'>
 								<button class='input' onclick="toggleTextTag('i');">Italic</button>
 								<button class='input' onclick="toggleTextTag('bold');">Bold</button>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Edit the placement and size of the selected textbox</h5>
+							<p class='margin-bottom padding input-description'>Edit the placement and size of the selected textbox</p>
 							<button class='input' onclick='textboxEditor();'>Edit Bounds</button>
-							<h5 class='margin-bottom padding input-description'>Adjust font size</h5>
+							<p class='margin-bottom padding input-description'>Adjust font size</p>
 							<input id="text-editor-font-size" class="input" type="number" placeholder="0" value="0" step="1" onchange="fontSizedEdited();">
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
 								Text Code / Mana Symbol Code Reference
-							</h5>
+							</p>
 							<div class='padding'>
-								<h5 class='margin-top'>Text Codes:</h5>
+								<p class='margin-top'>Text Codes:</p>
 								<div class='text-codes margin-bottom padding'>
-									<h5>Code</h5><h5>Result</h5>
-									<h5>{cardname}</h5><h5>Inserts the name of the card (or use a tilde: ~)</h5>
-									<h5>{-}</h5><h5>Inserts an em-dash</h5>
-									<h5>{i}</h5><h5>Italicizes text</h5>
-									<h5>{/i}</h5><h5>Removes italicization</h5>
-									<h5>{bold}</h5><h5>Bolds text</h5>
-									<h5>{/bold}</h5><h5>Removes bold</h5>
-									<h5>{lns}</h5><h5>Moves to the next line without an extra space (stands for line-no-space)</h5>
-									<h5>{divider}</h5><h5>Moves to the next line and draws the flavor text bar</h5>
-									<h5>{flavor}</h5><h5>Moves to the next line, draws the flavor text bar, and italicizes</h5>
-									<h5>{oldflavor}</h5><h5>Italicizes and adds line breaks</h5>
-									<h5>{fontsize#pt}</h5><h5>Changes the font size to #pt (absolute)</h5>
-									<h5>{fontsize#}</h5><h5>Changes the font size by # pixels (relative - use negative integers to shrink text - ie '{fontsize-12}')</h5>
-									<h5>{fontcolor___}</h5><h5>Changes the font color to ___ (ie '{fontcolor#00FF00}')</h5>
-									<h5>{left}</h5><h5>Aligns text to the left</h5>
-									<h5>{center}</h5><h5>Aligns text to the center</h5>
-									<h5>{right}</h5><h5>Aligns text to the right</h5>
-									<h5>{justify-left}</h5><h5>Justifies text to the left</h5>
-									<h5>{justify-center}</h5><h5>Justifies text to the center</h5>
-									<h5>{justify-right}</h5><h5>Justifies text to the right</h5>
-									<h5>{permashift#,$}</h5><h5>Moves the text # pixels right and $ pixels down. Recommended for moving the text over large distances</h5>
-									<h5>{up#}</h5><h5>Moves the text # pixels up</h5>
-									<h5>{down#}</h5><h5>Moves the text # pixels down</h5>
-									<h5>{left#}</h5><h5>Moves the text # pixels left</h5>
-									<h5>{right#}</h5><h5>Moves the text # pixels right</h5>
-									<h5>{shadow#}</h5><h5>Changes the shadow distance to # (use {shadow0} to remove the shadow)</h5>
-									<h5>{shadowcolor#}</h5><h5>Changes the shadow color to #</h5>
-									<h5>{outline#}</h5><h5>Changes the Outline Width to # (enables it if not already enabled)</h5>
-									<h5>{outlinecolor___}</h5><h5>Changes the Outline Color to ___ (ie '{outlinecolorblue}'</h5>
-									<h5>{bullet}</h5><h5>Does bullet point •</h5>
-									<h5>{indent}</h5><h5>Indents the rest of the paragraph to the current point</h5>
-									<h5>{/indent}</h5><h5>Removes paragraph indendation</h5>
-									<h5>{kerning#}</h5><h5>Changes the kerning (letter spacing) to #</h5>
-									<h5>{roll___}</h5><h5>Used for dice-rolling cards (like from AFR) - whatever you fill in for '___' will be bolded, and alternating paragraphs will be shaded.</h5>
-									<h5>Notes</h5><h5>For colors, you may use HTML color codes (ie 'green'), hex color codes (ie '#00FF00'), or rgb (ie 'rgb(0,255,0)'')</h5>
+									<p>Code</p><p>Result</p>
+									<p>{cardname}</p><p>Inserts the name of the card (or use a tilde: ~)</p>
+									<p>{-}</p><p>Inserts an em-dash</p>
+									<p>{i}</p><p>Italicizes text</p>
+									<p>{/i}</p><p>Removes italicization</p>
+									<p>{bold}</p><p>Bolds text</p>
+									<p>{/bold}</p><p>Removes bold</p>
+									<p>{lns}</p><p>Moves to the next line without an extra space (stands for line-no-space)</p>
+									<p>{divider}</p><p>Moves to the next line and draws the flavor text bar</p>
+									<p>{flavor}</p><p>Moves to the next line, draws the flavor text bar, and italicizes</p>
+									<p>{oldflavor}</p><p>Italicizes and adds line breaks</p>
+									<p>{fontsize#pt}</p><p>Changes the font size to #pt (absolute)</p>
+									<p>{fontsize#}</p><p>Changes the font size by # pixels (relative - use negative integers to shrink text - ie '{fontsize-12}')</p>
+									<p>{fontcolor___}</p><p>Changes the font color to ___ (ie '{fontcolor#00FF00}')</p>
+									<p>{left}</p><p>Aligns text to the left</p>
+									<p>{center}</p><p>Aligns text to the center</p>
+									<p>{right}</p><p>Aligns text to the right</p>
+									<p>{justify-left}</p><p>Justifies text to the left</p>
+									<p>{justify-center}</p><p>Justifies text to the center</p>
+									<p>{justify-right}</p><p>Justifies text to the right</p>
+									<p>{permashift#,$}</p><p>Moves the text # pixels right and $ pixels down. Recommended for moving the text over large distances</p>
+									<p>{up#}</p><p>Moves the text # pixels up</p>
+									<p>{down#}</p><p>Moves the text # pixels down</p>
+									<p>{left#}</p><p>Moves the text # pixels left</p>
+									<p>{right#}</p><p>Moves the text # pixels right</p>
+									<p>{shadow#}</p><p>Changes the shadow distance to # (use {shadow0} to remove the shadow)</p>
+									<p>{shadowcolor#}</p><p>Changes the shadow color to #</p>
+									<p>{outline#}</p><p>Changes the Outline Width to # (enables it if not already enabled)</p>
+									<p>{outlinecolor___}</p><p>Changes the Outline Color to ___ (ie '{outlinecolorblue}'</p>
+									<p>{bullet}</p><p>Does bullet point •</p>
+									<p>{indent}</p><p>Indents the rest of the paragraph to the current point</p>
+									<p>{/indent}</p><p>Removes paragraph indendation</p>
+									<p>{kerning#}</p><p>Changes the kerning (letter spacing) to #</p>
+									<p>{roll___}</p><p>Used for dice-rolling cards (like from AFR) - whatever you fill in for '___' will be bolded, and alternating paragraphs will be shaded.</p>
+									<p>Notes</p><p>For colors, you may use HTML color codes (ie 'green'), hex color codes (ie '#00FF00'), or rgb (ie 'rgb(0,255,0)'')</p>
 								</div>
-								<h5>Mana Symbol Codes:</h5>
+								<p>Mana Symbol Codes:</p>
 								<div class='text-codes padding'>
-									<h5>Code</h5><h5>Result</h5>
-									<h5>{1}, {2}... {20}</h5><h5>Generic mana (works for numbers 1 through 20)</h5>
-									<h5>{w}, {u}, {b}, {r}, {g}</h5><h5>Colored mana</h5>
-									<h5>{wu}, {wb}, {ub}... {2w}, {2u}...</h5><h5>Hybrid mana</h5>
-									<h5>{pw}, {pu}...</h5><h5>Phyrexian mana</h5>
-									<h5>{wup}, {wbp}, {ubp}...</h5><h5>Hybrid phyrexian mana</h5>
-									<h5>{t}, {untap}</h5><h5>Respective tapping-related symbol</h5>
-									<h5>{oldtap}, {originaltap}</h5><h5>Old tap symbols</h5>
-									<h5>{x}, {y}, {z}</h5><h5>Respective variable-related symbol</h5>
-									<h5>{c}</h5><h5>Colorless-specific mana</h5>
-									<h5>{s}</h5><h5>Snow mana</h5>
-									<h5>{e}</h5><h5>Energy symbol</h5>
-									<h5>{+1}</h5><h5>+1 loyalty icon</h5>
-									<h5>{planeswalker}</h5><h5>Planeswalker icon</h5>
-									<h5>{chaos}</h5><h5>Chaos symbol (planechase)</h5>
-									<h5>{p}</h5><h5>Bloomburrow pawprint symbol</h5>
-									<h5>Notes</h5><h5>Hybrid/Phyrexian mana only works with WUBRG</h5>
+									<p>Code</p><p>Result</p>
+									<p>{1}, {2}... {20}</p><p>Generic mana (works for numbers 1 through 20)</p>
+									<p>{w}, {u}, {b}, {r}, {g}</p><p>Colored mana</p>
+									<p>{wu}, {wb}, {ub}... {2w}, {2u}...</p><p>Hybrid mana</p>
+									<p>{pw}, {pu}...</p><p>Phyrexian mana</p>
+									<p>{wup}, {wbp}, {ubp}...</p><p>Hybrid phyrexian mana</p>
+									<p>{t}, {untap}</p><p>Respective tapping-related symbol</p>
+									<p>{oldtap}, {originaltap}</p><p>Old tap symbols</p>
+									<p>{x}, {y}, {z}</p><p>Respective variable-related symbol</p>
+									<p>{c}</p><p>Colorless-specific mana</p>
+									<p>{s}</p><p>Snow mana</p>
+									<p>{e}</p><p>Energy symbol</p>
+									<p>{+1}</p><p>+1 loyalty icon</p>
+									<p>{planeswalker}</p><p>Planeswalker icon</p>
+									<p>{chaos}</p><p>Chaos symbol (planechase)</p>
+									<p>{p}</p><p>Bloomburrow pawprint symbol</p>
+									<p>Notes</p><p>Hybrid/Phyrexian mana only works with WUBRG</p>
 								</div>
 							</div>
 						</div>
@@ -299,7 +305,7 @@
 							</label>
 						</div>
 						<div class='readable-background padding'>
-							<h5 class='padding input-description'>Add a textbox to your card</h5>
+							<p class='padding input-description'>Add a textbox to your card</p>
 							<div class='padding input-grid'>
 								<button class='input' onclick='addTextbox("Nickname");'>Nickname</button>
 								<button class='input' onclick='addTextbox("Power/Toughness");'>Power/Toughness</button>
@@ -309,15 +315,15 @@
 					</div>
 					<div id='creator-menu-art' class='hidden'>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Choose/upload your art</h5>
+							<p class='margin-bottom padding input-description'>Choose/upload your art</p>
 							<div class='input-grid margin-bottom'>
 								<div class='padding drop-area'>
-						            <h5 class='margin-bottom padding input-description'>Drag and drop</h5>
+						            <p class='margin-bottom padding input-description'>Drag and drop</p>
 						            <input type='file' multiple accept='.png, .svg, .jpg, .jpeg, .bmp' placeholder='File Upload' class='input' oninput='uploadFiles(event.target.files, uploadArt, document.querySelector("#art-update-autofit").checked ? "autoFit" : "");' data-dropFunction='uploadArt' data-otherParams='autoFit'>
 						        </div>
 						        <div>
 									<input type='url' placeholder='Via URL' class='input' onchange='imageURL(this.value, uploadArt, document.querySelector("#art-update-autofit").checked ? "autoFit" : "");'>
-									<h5 class='input-description margin-bottom'></h5>
+									<p class='input-description margin-bottom'></p>
 										<label class='checkbox-container input'>Autofit when setting art
 											<input id='art-update-autofit' type='checkbox' onchange='setAutofit();'>
 											<span class='checkmark'></span>
@@ -325,17 +331,17 @@
 								</div>
 								<button class='input margin-bottom' onclick='pasteArt();'>Paste from clipboard</button>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Or enter a card name</h5>
+							<p class='margin-bottom padding input-description'>Or enter a card name</p>
 							<input id='art-name' type='text' placeholder='Enter Card Name' class='input margin-bottom' onchange="fetchScryfallData(this.value, artFromScryfall, 'art');">
-							<h5 class='padding margin-bottom input-description'>Select a specific card art to load</h5>
+							<p class='padding margin-bottom input-description'>Select a specific card art to load</p>
 							<select class='input margin-bottom' id='art-index' onchange='changeArtIndex();'></select>
-							<h5 class='margin-bottom padding input-description'>And credit the artist</h5>
+							<p class='margin-bottom padding input-description'>And credit the artist</p>
 							<div class='input-grid'>
 								<input id='art-artist' type='text' class='input' oninput='artistEdited(this.value);' placeholder='Artist'>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Position/scale your art (X, Y, Scale, Rotation)<br>Art is now visually adjustable! Click and drag anywhere on the card to move your art around. Hold shift while doing so to scale, or control to rotate.</h5>
+							<p class='margin-bottom padding input-description'>Position/scale your art (X, Y, Scale, Rotation)<br>Art is now visually adjustable! Click and drag anywhere on the card to move your art around. Hold shift while doing so to scale, or control to rotate.</p>
 							<div class='input-grid margin-bottom'>
 								<input id='art-x' type='number' class='input' oninput='artEdited();' value=0>
 								<input id='art-y' type='number' class='input' oninput='artEdited();' value=0>
@@ -347,18 +353,18 @@
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description margin-bottom'>Make the art grayscale</h5>
+							<p class='input-description margin-bottom'>Make the art grayscale</p>
 							<label class='checkbox-container input'>Grayscale
 								<input id='grayscale-art' type='checkbox' onchange='drawCard();'>
 								<span class='checkmark'></span>
 							</label>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding margin-bottom input-description'>Clears the art, making it blank</h5>
+							<p class='padding margin-bottom input-description'>Clears the art, making it blank</p>
 							<button class='input margin-bottom' onclick='uploadArt(blank.src);'>Remove Art</button>
 						</div>
 						<div class='readable-background padding'>
-							<h5 class='input-description margin-bottom'>Show guidelines for text, art, watermark, and set symbols</h5>
+							<p class='input-description margin-bottom'>Show guidelines for text, art, watermark, and set symbols</p>
 							<label class='checkbox-container input'>Guidelines
 								<input id='show-guidelines-2' type='checkbox' onchange='drawCard();'>
 								<span class='checkmark'></span>
@@ -367,22 +373,22 @@
 					</div>
 					<div id='creator-menu-setSymbol' class='hidden'>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Choose/upload your set symbol</h5>
+							<p class='margin-bottom padding input-description'>Choose/upload your set symbol</p>
 							<div class='input-grid margin-bottom'>
 								<div class='padding drop-area'>
-						            <h5 class='margin-bottom padding input-description'>Drag and drop</h5>
+						            <p class='margin-bottom padding input-description'>Drag and drop</p>
 						            <input type='file' multiple accept='.png, .svg, .jpg, .jpeg, .bmp' placeholder='File Upload' class='input' oninput='uploadFiles(event.target.files, uploadSetSymbol, "resetSetSymbol");' data-dropFunction='uploadSetSymbol' data-otherParams='resetSetSymbol'>
 						        </div>
 						        <div>
 									<input type='url' placeholder='Via URL' class='input' onchange='imageURL(this.value, uploadSetSymbol, "resetSetSymbol");'>
 								</div>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Or enter a set code/rarity</h5>
+							<p class='margin-bottom padding input-description'>Or enter a set code/rarity</p>
 							<div class='input-grid margin-bottom'>
 								<input id='set-symbol-code' type='text' placeholder='Set Code' class='input' onchange='fetchSetSymbol();'>
 								<input id='set-symbol-rarity' type='text' placeholder='Rarity' class='input' onchange='fetchSetSymbol();'>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Load set symbols from:</h5>
+							<p class='margin-bottom padding input-description'>Load set symbols from:</p>
 							<div class='input-grid margin-bottom'>
 								<select id='set-symbol-source' class='input' onchange='fetchSetSymbol();'>
 									<option value='cardconjurer'>CardConjurer</option>
@@ -390,18 +396,18 @@
 									<option value='hexproof'>Hexproof.io</option>
 								</select>
 							</div>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
 								How to find set codes
-							</h5>
+							</p>
 							<div class='padding'>
-								<h5 class='margin-top'>Set codes are the two-three character combinations that represent sets. For sets released after 2015, the three-character set code can be found in the lower left hand corner.</h5>
-								<h5 class='margin-top'>For older sets, the code may be different depending on your use:</h5>
+								<p class='margin-top'>Set codes are the two-three character combinations that represent sets. For sets released after 2015, the three-character set code can be found in the lower left hand corner.</p>
+								<p class='margin-top'>For older sets, the code may be different depending on your use:</p>
 								<p class='margin-top padding'>Set symbol images are named using the same codes as used in <a class='underline' href='https://scryfall.com/sets' target='_blank'>Scryfall</a>.</p>
 								<p class='padding'>For watermarks, please reference <a class='underline' href='https://keyrune.andrewgioia.com/icons.html' target='_blank'>Keyrune</a>.</p>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Position/scale your Set Symbol (X, Y, Scale)</h5>
+							<p class='margin-bottom padding input-description'>Position/scale your Set Symbol (X, Y, Scale)</p>
 							<div class='input-grid margin-bottom'>
 								<input id='setSymbol-x' type='number' class='input' oninput='setSymbolEdited();' value=0>
 								<input id='setSymbol-y' type='number' class='input' oninput='setSymbolEdited();' value=0>
@@ -412,23 +418,23 @@
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding margin-bottom input-description'>Clears the Set Symbol, making it blank</h5>
+							<p class='padding margin-bottom input-description'>Clears the Set Symbol, making it blank</p>
 							<button class='input margin-bottom' onclick='uploadSetSymbol(blank.src);'>Remove Set Symbol</button>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description margin-bottom'>Click and drag to move set symbol instead of art (hold shift to zoom)</h5>
+							<p class='input-description margin-bottom'>Click and drag to move set symbol instead of art (hold shift to zoom)</p>
 							<label class='checkbox-container input margin-bottom'>Click and drag to move set symbol instead of art
 								<input id='drag-target-setSymbol' type='checkbox'>
 								<span class='checkmark'></span>
 							</label>
 						</div>
 						<div class='readable-background padding'>
-							<h5 class='input-description margin-bottom'>Lock the set symbol code (saves between reloads)</h5>
+							<p class='input-description margin-bottom'>Lock the set symbol code (saves between reloads)</p>
 							<label class='checkbox-container input margin-bottom'>Lock set symbol code
 								<input id='lockSetSymbolCode' type='checkbox' onchange='lockSetSymbolCode();'>
 								<span class='checkmark'></span>
 							</label>
-							<h5 class='input-description margin-bottom'>Lock the set symbol URL (saves between reloads)</h5>
+							<p class='input-description margin-bottom'>Lock the set symbol URL (saves between reloads)</p>
 							<label class='checkbox-container input'>Lock set symbol URL
 								<input id='lockSetSymbolURL' type='checkbox' onchange='lockSetSymbolURL();'>
 								<span class='checkmark'></span>
@@ -437,10 +443,10 @@
 					</div>
 					<div id='creator-menu-watermark' class='hidden'>
 					<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Choose/upload your watermark</h5>
+							<p class='margin-bottom padding input-description'>Choose/upload your watermark</p>
 							<div class='input-grid'>
 								<div class='padding drop-area'>
-						            <h5 class='margin-bottom padding input-description'>Drag and drop</h5>
+						            <p class='margin-bottom padding input-description'>Drag and drop</p>
 						            <input type='file' multiple accept='.png, .svg, .jpg, .jpeg, .bmp' placeholder='File Upload' class='input' oninput='uploadFiles(event.target.files, uploadWatermark, "resetWatermark");' data-dropFunction='uploadWatermark' data-otherParams='resetWatermark'>
 						        </div>
 						        <div>
@@ -448,7 +454,7 @@
 									<input type='text' placeholder='Via Set Code' class='input' onchange='getSetSymbolWatermark(this.value);'>
 								</div>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Select lore-based watermarks</h5>
+							<p class='margin-bottom padding input-description'>Select lore-based watermarks</p>
 							<select class='input padding margin-bottom' onchange='getSetSymbolWatermark(fixUri(this.value));'>
 								<option disabled selected='selected'>None</option>
 								<option disabled>General</option>
@@ -516,18 +522,18 @@
 								<option disabled>Custome</option>
 								<option value="/img/watermarks/purple.svg">Purple Mana</option>
 							</select>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
 								How to find set codes
-							</h5>
+							</p>
 							<div class='padding'>
-								<h5 class='margin-top'>Set codes are the two-three character combinations that represent sets. For sets released after 2015, the three-character set code can be found in the lower left hand corner.</h5>
-								<h5 class='margin-top'>For older sets, the code may be different depending on your use:</h5>
+								<p class='margin-top'>Set codes are the two-three character combinations that represent sets. For sets released after 2015, the three-character set code can be found in the lower left hand corner.</p>
+								<p class='margin-top'>For older sets, the code may be different depending on your use:</p>
 								<p class='margin-top padding'>Set symbol images are named using the same codes as used in <a class='underline' href='https://scryfall.com/sets' target='_blank'>Scryfall</a>.</p>
 								<p class='padding'>For watermarks, please reference <a class='underline' href='https://keyrune.andrewgioia.com/icons.html' target='_blank'>Keyrune</a>.</p>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Select watermark colors (left, right)</h5>
+							<p class='margin-bottom padding input-description'>Select watermark colors (left, right)</p>
 							<div class='input-grid margin-bottom'>
 								<select class='input' id='watermark-left' onchange='watermarkLeftColor(this.value);'>
 									<option value="none">None</option>
@@ -558,18 +564,18 @@
 					                <option value="#000000">True Black</option>
 								</select>
 							</div>
-							<h5 class='margin-bottom padding input-description'>Or choose them manually (left, right)</h5>
+							<p class='margin-bottom padding input-description'>Or choose them manually (left, right)</p>
 							<div class='input-grid margin-bottom'>
 								<input class='input' type='color' placeholder='Color' value='#000000' onchange='watermarkLeftColor(this.value);'>
 								<input class='input' type='color' placeholder='Color' value='#000000' onchange='watermarkRightColor(this.value);'>
 							</div>
-							<h5 class='margin-bottom padding input-description'>And enter an opacity</h5>
+							<p class='margin-bottom padding input-description'>And enter an opacity</p>
 							<div class='input-grid margin-bottom'>
 								<input id='watermark-opacity' type='number' class='input' oninput='watermarkEdited();' value=40 step=1 min=0 max=100>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='margin-bottom padding input-description'>Position/scale your watermark (X, Y, Scale)</h5>
+							<p class='margin-bottom padding input-description'>Position/scale your watermark (X, Y, Scale)</p>
 							<div class='input-grid margin-bottom'>
 								<input id='watermark-x' type='number' class='input' oninput='watermarkEdited();' value=0>
 								<input id='watermark-y' type='number' class='input' oninput='watermarkEdited();' value=0>
@@ -580,13 +586,13 @@
 							</div>
 						</div>
 						<div class='readable-background padding'>
-							<h5 class='padding margin-bottom input-description'>Clears the watermark, making it blank</h5>
+							<p class='padding margin-bottom input-description'>Clears the watermark, making it blank</p>
 							<button class='input margin-bottom' onclick='uploadWatermark(blank.src);'>Remove Watermark</button>
 						</div>
 					</div>
 					<div id='creator-menu-bottomInfo' class='hidden'>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding margin-bottom input-description'>Enter the card number, rarity, set code, language, and artist's name</h5>
+							<p class='padding margin-bottom input-description'>Enter the card number, rarity, set code, language, and artist's name</p>
 							<div class='padding input-grid'>
 								<input id='info-number' type='text' class='input' oninput='bottomInfoEdited();' placeholder='Number' value=''>
 								<input id='info-rarity' type='text' class='input' oninput='bottomInfoEdited();' placeholder='Rarity' value='P'>
@@ -602,21 +608,21 @@
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description margin-bottom'>Enable importing collector information</h5>
+							<p class='input-description margin-bottom'>Enable importing collector information</p>
 							<label class='checkbox-container input margin-bottom'>Enable imports
 								<input id='enableImportCollectorInfo' type='checkbox' onchange='enableImportCollectorInfo();'>
 								<span class='checkmark'></span>
 							</label>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description margin-bottom'>Collector info style</h5>
+							<p class='input-description margin-bottom'>Collector info style</p>
 							<label class='checkbox-container input margin-bottom'>Use new (post-ONE) collector info style
 								<input id='enableNewCollectorStyle' type='checkbox' onchange='enableNewCollectorInfoStyle();'>
 								<span class='checkmark'></span>
 							</label>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description margin-bottom'>Show collector info</h5>
+							<p class='input-description margin-bottom'>Show collector info</p>
 							<label class='checkbox-container input margin-bottom'>Show collector info (uncheck to hide)
 								<input id='enableCollectorInfo' type='checkbox' onchange='enableCollectorInfo();'>
 								<span class='checkmark'></span>
@@ -624,13 +630,13 @@
 						</div>
 
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding input-description'>Serial Number (leave both blank to hide)</h5>
+							<p class='padding input-description'>Serial Number (leave both blank to hide)</p>
 							<div class='padding input-grid'>
 								<input id='serial-number' type='number' class='input' oninput='serialInfoEdited();' placeholder='001' min='0' value=''>
 								<input id='serial-total' type='number' class='input' oninput='serialInfoEdited();' placeholder='500' min='0' value=''>
 							</div>
 
-							<h5 class='padding input-description'>Placement (X, Y, Scale)</h5>
+							<p class='padding input-description'>Placement (X, Y, Scale)</p>
 							<div class='padding input-grid'>
 								<input id='serial-x' type='number' class='input' oninput='serialInfoEdited();' min='0' value='172'>
 								<input id='serial-y' type='number' class='input' oninput='serialInfoEdited();' min='0' value='1383'>
@@ -642,17 +648,17 @@
 						</div>
 
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description padding margin-bottom'>Toggle between star (seen on foils) and dot (seen on regular cards)</h5>
+							<p class='input-description padding margin-bottom'>Toggle between star (seen on foils) and dot (seen on regular cards)</p>
 							<div class='padding'>
 								<button class='input padding' onclick='toggleStarDot();'>Toggle Star/Dot</button>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='input-description padding margin-bottom'>Save current collector info as default</h5>
+							<p class='input-description padding margin-bottom'>Save current collector info as default</p>
 							<div class='padding'>
 								<button class='input padding' onclick='setDefaultCollector();'>Save as Default</button>
 							</div>
-							<h5 class='input-description padding margin-bottom'>Clear your saved default collector info</h5>
+							<p class='input-description padding margin-bottom'>Clear your saved default collector info</p>
 							<div class='padding'>
 								<button class='input padding' onclick='removeDefaultCollector();'>Clear Saved Defaults</button>
 							</div>
@@ -660,7 +666,7 @@
 					</div>
 					<div id='creator-menu-import'>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='padding input-description'>Automatically update frame</h5>
+							<p class='padding input-description'>Automatically update frame</p>
 							<div class='padding input-grid'>
 								<select id="autoFrame" class="input" onchange="setAutoFrame()">
 									<option value="false">Disabled</option>
@@ -694,7 +700,7 @@
 							</div>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='padding margin-bottom input-description'>Load a saved card</h5>
+							<p class='padding margin-bottom input-description'>Load a saved card</p>
 
 							<select
 								id='load-card-options'
@@ -702,7 +708,7 @@
 								onchange='loadCardFormatted(this.value);'> <!--onchange='loadCard(this.value);'-->
 							</select>
 
-							<h5 class='padding input-description'>Import or reset</h5>
+							<p class='padding input-description'>Import or reset</p>
 							<div class="input-grid">
 								<button class='input margin-bottom' onclick='importCsv();'>Import CSV</button>
 								<button class='input margin-bottom' onclick='deleteSavedCards();'>Delete All Cards</button>
@@ -712,36 +718,36 @@
 
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
 								Save or delete current card
-							</h5>
+							</p>
 							<div class='padding'>
-								<h5 class='padding margin-bottom input-description'>Save your current card</h5>
+								<p class='padding margin-bottom input-description'>Save your current card</p>
 								<button class='input margin-bottom' onclick='saveCard();' id='savebutton'>Save Card</button>
 
-								<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
+								<p class='padding margin-bottom input-description'>Delete selected card</p>
 								<button class='input' onclick='deleteCard();'>Delete Card</button>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>Download all saved cards</h5>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>Download all saved cards</p>
 							<div class='padding'>
 								<button class='input margin-bottom' onclick='downloadSavedCards();'>Download All</button>
-								<h5 class='padding margin-bottom input-description'>Upload previously downloaded file of saved cards (downloaded from above)</h5>
+								<p class='padding margin-bottom input-description'>Upload previously downloaded file of saved cards (downloaded from above)</p>
 								<input type='file' accept='.cardconjurer,.txt' class='input margin-bottom' oninput='uploadSavedCards(event);'>
 							</div>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='collapsible collapsed padding margin-bottom input-description'>Import a real card by name</h5>
+							<p class='collapsible collapsed padding margin-bottom input-description'>Import a real card by name</p>
 							<div class='padding'>
 								<input id='import-name' class='input margin-bottom' type='text' onchange='importChanged();' placeholder='Enter Card Name'>
 								<label class='checkbox-container input margin-bottom'>Include all unique prints as options
 									<input id='importAllPrints' type='checkbox' onchange="importChanged();">
 									<span class='checkmark'></span>
 								</label>
-								<h5 class='padding margin-bottom input-description'>Select a specific card to import</h5>
+								<p class='padding margin-bottom input-description'>Select a specific card to import</p>
 								<select class='input margin-bottom' id='import-index' onchange='changeCardIndex();'></select>
-								<h5 class='padding input-description'>Select a language for card imports (not all languages will always be available)</h5>
+								<p class='padding input-description'>Select a language for card imports (not all languages will always be available)</p>
 								<select class='input' id='import-language' onchange='importChanged();'>
 									<option value="en">English</option>
 									<option value="es">Spanish</option>
@@ -759,66 +765,64 @@
 							</div>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='padding margin-bottom input-description'>Paste full text</h5>
+							<p class='padding margin-bottom input-description'>Paste full text</p>
 							<button class='input margin-bottom' onclick='pasteCardText();'>Paste card</button>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<h5 class='padding margin-bottom input-description'>Save your current card</h5>
+							<p class='padding margin-bottom input-description'>Save your current card</p>
 							<button class='input margin-bottom' onclick='saveCard();'>Save Card</button>
-							<h5 class='padding margin-bottom input-description'>Delete selected card</h5>
+							<p class='padding margin-bottom input-description'>Delete selected card</p>
 							<button class='input' onclick='deleteCard();'>Delete Card</button>
 						</div>
 						<div class='readable-background padding margin-bottom'>
-							<h5 class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
+							<p class='collapsible collapsed padding input-description' onclick='toggleCollapse(event);'>
 								How are my cards saved?
-							</h5>
+							</p>
 							<div class='padding'>
-								<h5 class='margin-top'>Cards are saved on your computer under your browser's localstorage, which usually has a limit of 5MB and cannot be changed.</h5>
-								<h5 class='margin-top'>Unfortunately, this means that if you save a lot of cards, you could run out of space.</h5>
-								<h5 class='margin-top'>Your localstorage runs out of space especially fast when you upload images directly from your computer, because the image itself has to be saved. However, if possible, uploading images via URL will save massive amounts of space, allowing you to save many more cards.</h5>
-								<h5 class='margin-top'>And if you do run out of space, don't worry! You can download all saved cards then delete all saved cards,  freeing up all 5MB of space. And when you'd like to edit the cards you previously downloaded/deleted, you can reupload them via the file upload (under "Upload previously downloaded cards").</h5>
+								<p class='margin-top'>Cards are saved on your computer under your browser's localstorage, which usually has a limit of 5MB and cannot be changed.</p>
+								<p class='margin-top'>Unfortunately, this means that if you save a lot of cards, you could run out of space.</p>
+								<p class='margin-top'>Your localstorage runs out of space especially fast when you upload images directly from your computer, because the image itself has to be saved. However, if possible, uploading images via URL will save massive amounts of space, allowing you to save many more cards.</p>
+								<p class='margin-top'>And if you do run out of space, don't worry! You can download all saved cards then delete all saved cards,  freeing up all 5MB of space. And when you'd like to edit the cards you previously downloaded/deleted, you can reupload them via the file upload (under "Upload previously downloaded cards").</p>
 							</div>
 						</div>
 					</div>
 					<div id='creator-menu-tutorial' class='hidden'>
 						<!-- <div class='padding readable-background margin-bottom'>
-							<h5 class='padding input-description'>This video is currently outdated, but still reflects the general process for making cards</h5>
+							<p class='padding input-description'>This video is currently outdated, but still reflects the general process for making cards</p>
 						</div> -->
 						<!-- <div class='padding readable-background margin-bottom'>
-							<h5 class='padding input-description'>The biggest difference is that you must click the "Load Frame Version" button after selecting your frame pack to load necessary details, such as text placement.</h5>
+							<p class='padding input-description'>The biggest difference is that you must click the "Load Frame Version" button after selecting your frame pack to load necessary details, such as text placement.</p>
 						</div> -->
 						<div class='padding readable-background margin-bottom'>
-							<h5 class='padding input-description'>Here is a tutorial that covers the basics of using Card Conjurer:</h5>
+							<p class='padding input-description'>Here is a tutorial that covers the basics of using Card Conjurer:</p>
 						</div>
 						<div class='video'>
 							<iframe width="560" height="315" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
 						</div>
 					</div>
 				</div>
-				<div class='readable-background padding margin-bottom'>
-					<h3 class='download padding' id='downloadJpg' onclick='downloadCard(false, true);'>Download JPG</h3>
-					<!--<h5 onclick='downloadCard(true);' id='downloadAlt' class='padding download input-description' style='text-align: left;'>Click here for an alternative download</h5>-->
-					<!-- <label class='checkbox-container input margin-bottom'>800 DPI
-						<input id='high-res' type='checkbox' onchange='toggleHighRes();'>
-						<span class='checkmark'></span>
-					</label> -->
-				</div>
-				<div class='readable-background padding'>
-					<div class='padding margin-bottom'>
-						<h3 class='download padding' onclick='applyMargins();'>Apply margins</h3>
-						<p class="padding ">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
-					</div>
+			</div>
+		</div>
+		<div id="creator-save">
+			<div class="creator-save-actions">
+				<button class='creator-save-button primary' id='downloadJpg' onclick='downloadCard(false, true);'>Download JPG</button>
+				<!--<buttonclass='creator-save-button' onclick='downloadCard(true);' id='downloadAlt'>Click here for an alternative download</p>-->
 
-					<!--<h5 class='padding input-description'>Apply 1/8 margins for print</h5>
-					<p class="padding margin-bottom">Only apply margins after you're done with the card. Remember to <a href="." style="text-decoration:underline;">refresh the page</a> when starting with a new card, as this may not apply the correct text styles</p>
-					<button class='input margin-bottom' onclick='applyMargins();'>Apply margins</button>-->
-
-					<div class='padding'>
-						<h3 class='download padding' onclick='downloadCard();'>Download hi-res PNG</h3>
-						<h5 class='padding input-description' style="text-align:center;">For print. Remember to check Auto-load frames</h5>
-					</div>
-				</div>
-
+				<!-- <label class='checkbox-container input margin-bottom'>800 DPI
+					<input id='high-res' type='checkbox' onchange='toggleHighRes();'>
+					<span class='checkmark'></span>
+				</label> -->
+				<button class='creator-save-button primary' onclick='downloadCard();'>Download hi-res PNG</button>
+				<div class='creator-actions-separator'></div>
+				<button class='creator-save-button secondary' onclick='applyMargins();'>Apply margins</button>
+			</div>
+		</div>
+		<div id="creator-canvas-settings">
+			<div>
+				<label class='checkbox-container input'>Lock canvas height
+					<input id='canvas-lock-height' checked type='checkbox' onclick="lockCanvasHeight(event)" aria-label='Lock canvas height'>
+					<span class='checkmark'></span>
+				</label>
 			</div>
 		</div>
 		<!--
@@ -987,7 +991,7 @@
 				<h4>Louis C.</h4>
 				<h4>ChayGamin</h4>
 			</div>
-			<h5 class='input-description'>(Please contact me if you would like your name/nickname changed.)</h5>
+			<p class='input-description'>(Please contact me if you would like your name/nickname changed.)</p>
 		</div>
 		<div class='layer readable-background margin-bottom-larger'>
 			<h1 class='center margin-bottom'>Have feedback?</h1>

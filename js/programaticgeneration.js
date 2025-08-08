@@ -146,8 +146,8 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
 
-			const rarity = row['R']?.trim().toLowerCase() ?? "c";
-			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() ?? (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
+			const rarity = row['R']?.trim().toLowerCase() || "c";
+			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() || (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
 			const setSymbolUri = "/img/setSymbols/private/di-" + setSymbolIcon + ".svg";
 
 			card.infoRarity = rarity.toUpperCase();
