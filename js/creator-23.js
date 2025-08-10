@@ -1,5 +1,11 @@
 //URL Params
+import {bindInputs} from "./main-1";
+
 var params = new URLSearchParams(window.location.search);
+var art;
+var setSymbol;
+var watermark;
+
 const debugging = params.get('debug') != null;
 if (debugging) {
 	alert('debugging - 4.0');
@@ -7,7 +13,7 @@ if (debugging) {
 }
 
 //To save the server from being overloaded? Maybe?
-function fixUri(input) {
+export function fixUri(input) {
 	/* --- DISABLED FOR LOCAL VERSION --
 	var prefix = 'https://card-conjurer.storage.googleapis.com';//'https://raw.githubusercontent.com/ImKyle4815/cardconjurer/remake';
 	if (input.includes(prefix) || input.includes('http') || input.includes('data:image') || window.location.href.includes('localhost')) {
@@ -17,7 +23,7 @@ function fixUri(input) {
 	} */
 	return input;
 }
-function setImageUrl(image, source) {
+export function setImageUrl(image, source) {
 	image.crossOrigin = 'anonymous';
 	image.src = fixUri(source);
 }
@@ -25,36 +31,36 @@ function setImageUrl(image, source) {
 const baseWidth = 1500;
 const baseHeight = 2100;
 const highResScale = 1.34;
-// function getStandardWidth() {
+// export function getStandardWidth() {
 // 	var value = baseWidth;
 // 	if (localStorage.getItem('high-res') == 'true') {
 // 		value *= highResScale;
 // 	}
 // 	return value;
 // }
-// function getStandardHeight() {
+// export function getStandardHeight() {
 // 	var value = baseHeight;
 // 	if (localStorage.getItem('high-res') == 'true') {
 // 		value *= highResScale;
 // 	}
 // 	return value;
 // }
-function getStandardWidth() {
+export function getStandardWidth() {
 	return 2010;
 }
-function getStandardHeight() {
+export function getStandardHeight() {
 	return 2814;
 }
 
 //card object
-var card = {width:getStandardWidth(), height:getStandardHeight(), marginX:0, marginY:0, frames:[], artSource:fixUri('/img/blank.png'), artX:0, artY:0, artZoom:1, artRotate:0, setSymbolSource:fixUri('/img/blank.png'), setSymbolX:0, setSymbolY:0, setSymbolZoom:1, watermarkSource:fixUri('/img/blank.png'), watermarkX:0, watermarkY:0, watermarkZoom:1, watermarkLeft:'none', watermarkRight:'none', watermarkOpacity:0.4, version:'', manaSymbols:[]};
+export var card = {width:getStandardWidth(), height:getStandardHeight(), marginX:0, marginY:0, frames:[], artSource:fixUri('/img/blank.png'), artX:0, artY:0, artZoom:1, artRotate:0, setSymbolSource:fixUri('/img/blank.png'), setSymbolX:0, setSymbolY:0, setSymbolZoom:1, watermarkSource:fixUri('/img/blank.png'), watermarkX:0, watermarkY:0, watermarkZoom:1, watermarkLeft:'none', watermarkRight:'none', watermarkOpacity:0.4, version:'', manaSymbols:[]};
 //core images/masks
-const black = new Image(); black.crossOrigin = 'anonymous'; black.src = fixUri('/img/black.png');
-const blank = new Image(); blank.crossOrigin = 'anonymous'; blank.src = fixUri('/img/blank.png');
-const right = new Image(); right.crossOrigin = 'anonymous'; right.src = fixUri('/img/frames/maskRightHalf.png');
-const middle = new Image(); middle.crossOrigin = 'anonymous'; middle.src = fixUri('/img/frames/maskMiddleThird.png');
-const corner = new Image(); corner.crossOrigin = 'anonymous'; corner.src = fixUri('/img/frames/cornerCutout.png');
-const serial = new Image(); serial.crossOrigin = 'anonymous'; serial.src = fixUri('/img/frames/serial.png');
+export const black = new Image(); black.crossOrigin = 'anonymous'; black.src = fixUri('/img/black.png');
+export const blank = new Image(); blank.crossOrigin = 'anonymous'; blank.src = fixUri('/img/blank.png');
+export const right = new Image(); right.crossOrigin = 'anonymous'; right.src = fixUri('/img/frames/maskRightHalf.png');
+export const middle = new Image(); middle.crossOrigin = 'anonymous'; middle.src = fixUri('/img/frames/maskMiddleThird.png');
+export const corner = new Image(); corner.crossOrigin = 'anonymous'; corner.src = fixUri('/img/frames/cornerCutout.png');
+export const serial = new Image(); serial.crossOrigin = 'anonymous'; serial.src = fixUri('/img/frames/serial.png');
 //art
 art = new Image(); art.crossOrigin = 'anonymous'; art.src = blank.src;
 art.onerror = function() {if (!this.src.includes('/img/blank.png')) {this.src = fixUri('/img/blank.png');}}
@@ -74,7 +80,7 @@ watermark.onerror = function() {if (!this.src.includes('/img/blank.png')) {this.
 watermark.onload = watermarkEdited;
 //preview canvas
 var previewCanvas = document.querySelector('#previewCanvas');
-var previewContext = previewCanvas.getContext('2d');
+var previewContext = previewCanvas?.getContext?.('2d');
 var canvasList = [];
 //frame/mask picker stuff
 var availableFrames = [];
@@ -100,12 +106,14 @@ var savedTextContents = {};
 //for misc
 var date = new Date();
 card.infoYear = date.getFullYear();
-document.querySelector("#info-year").value = card.infoYear;
+if (document.querySelector("#info-year")) {
+	document.querySelector("#info-year").value = card.infoYear;
+}
 //to avoid rerunning special scripts (planeswalker, saga, etc...)
 
 var loadedVersions = [];
 //Card Object managament
-async function resetCardIrregularities({canvas = [getStandardWidth(), getStandardHeight(), 0, 0], resetOthers = true} = {}) {
+export async function resetCardIrregularities({canvas = [getStandardWidth(), getStandardHeight(), 0, 0], resetOthers = true} = {}) {
 	//misc details
 	card.margins = false;
 	card.bottomInfoTranslate = {x:0, y:0};
@@ -141,7 +149,7 @@ async function resetCardIrregularities({canvas = [getStandardWidth(), getStandar
 		card.showsFlavorBar = true;
 	}
 }
-async function setBottomInfoStyle() {
+export async function setBottomInfoStyle() {
 	if (document.querySelector('#enableNewCollectorStyle').checked) {
 			await loadBottomInfo({
 				midLeft: {text:'{elemidinfo-set} \u2022 {elemidinfo-language}  {savex}{fontbelerenbsc}{fontsize' + scaleHeight(0.001) + '}{upinline' + scaleHeight(0.0005) + '}\uFFEE{savex2}{elemidinfo-artist}', x:0.0647, y:0.9548, width:0.8707, height:0.0171, oneLine:true, font:'gothammedium', size:0.0171, color:card.bottomInfoColor, outlineWidth:0.003},
@@ -164,7 +172,7 @@ async function setBottomInfoStyle() {
 		}
 }
 //Canvas management
-function sizeCanvas(name, width = Math.round(card.width * (1 + 2 * card.marginX)), height = Math.round(card.height * (1 + 2 * card.marginY))) {
+export function sizeCanvas(name, width = Math.round(card.width * (1 + 2 * card.marginX)), height = Math.round(card.height * (1 + 2 * card.marginY))) {
 	if (!window[name + 'Canvas']) {
 		window[name + 'Canvas'] = document.createElement('canvas');
 		window[name + 'Context'] = window[name + 'Canvas'].getContext('2d');
@@ -194,23 +202,23 @@ sizeCanvas('bottomInfo');
 sizeCanvas('guidelines');
 sizeCanvas('prePT');
 //Scaling
-function scaleX(input) {
+export function scaleX(input) {
 	return Math.round((input + card.marginX) * card.width);
 }
-function scaleWidth(input) {
+export function scaleWidth(input) {
 	return Math.round(input * card.width);
 }
-function scaleY(input) {
+export function scaleY(input) {
 	return Math.round((input + card.marginY) * card.height);
 }
-function scaleHeight(input) {
+export function scaleHeight(input) {
 	return Math.round(input * card.height);
 }
 //Other nifty functions
-function getElementIndex(element) {
+export function getElementIndex(element) {
 	return Array.prototype.indexOf.call(element.parentElement.children, element);
 }
-function getCardName() {
+export function getCardName() {
 	if (card.text == undefined || card.text.title == undefined) {
 		return 'unnamed';
 	}
@@ -220,7 +228,7 @@ function getCardName() {
 	}
 	return imageName.replace(/\{[^}]+\}/g, '');
 }
-function getInlineCardName() {
+export function getInlineCardName() {
 	if (card.text == undefined || card.text.title == undefined) {
 		return 'unnamed';
 	}
@@ -231,24 +239,24 @@ function getInlineCardName() {
 	return imageName.replace(/\{[^}]+\}/g, '');
 }
 //UI
-function toggleCreatorTabs(event, target) {
+export function toggleCreatorTabs(event, target) {
 	Array.from(document.querySelector('#creator-menu-sections').children).forEach(element => element.classList.add('hidden'));
 	document.querySelector('#creator-menu-' + target).classList.remove('hidden');
 	selectSelectable(event, '.creator-menu-item');
 }
-function selectSelectable(event, selector = '.selectable') {
+export function selectSelectable(event, selector = '.selectable') {
 	var eventTarget = event.target.closest(selector);
 	Array.from(eventTarget.parentElement.children).forEach(element => element.classList.remove('selected'));
 	eventTarget.classList.add('selected');
 }
-function dragStart(event) {
+export function dragStart(event) {
 	Array.from(document.querySelectorAll('.dragging')).forEach(element => element.classList.remove('dragging'));
 	event.target.closest('.draggable').classList.add('dragging');
 }
-function dragEnd(event) {
+export function dragEnd(event) {
 	Array.from(document.querySelectorAll('.dragging')).forEach(element => element.classList.remove('dragging'));
 }
-function touchMove(event) {
+export function touchMove(event) {
 	if (event.target.nodeName != 'p') {
 		event.preventDefault();
 	}
@@ -261,7 +269,7 @@ function touchMove(event) {
 		}
 	})
 }
-function dragOver(event, drag=true) {
+export function dragOver(event, drag=true) {
 	var eventTarget;
 	if (drag) {
 		eventTarget = event.target.closest('.draggable');
@@ -269,7 +277,7 @@ function dragOver(event, drag=true) {
 		eventTarget = event;
 	}
 	var movingElement = document.querySelector('.dragging');
-	if (document.querySelector('.dragging') && !eventTarget.classList.contains('dragging') && eventTarget.parentElement == movingElement.parentElement) {
+	if (movingElement && !eventTarget.classList.contains('dragging') && eventTarget.parentElement == movingElement.parentElement) {
 		var parentElement = eventTarget.parentElement;
 		var elements = document.createDocumentFragment();
 		var movingElementPassed = false;
@@ -333,9 +341,9 @@ loadManaSymbols(true, ['chaos'], [1.2, 1]);
 loadManaSymbols(true, ['tk'], [0.8, 1]);
 loadManaSymbols(true, ['planeswalker'], [0.6, 1.2]);
 loadManaSymbols(true, ['+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8', '+9', '-1', '-2', '-3', '-4', '-5', '-6', '-7', '-8', '-9', '+0'], [1.6, 1]);
-function loadManaSymbols(matchColor, manaSymbolPaths, size = [1, 1]) {
+export function loadManaSymbols(matchColor, manaSymbolPaths, size = [1, 1]) {
 	if (typeof matchColor === 'object') {
-		// Hacky way to add a default argument for matchColor without breaking the function call from other places
+		// Hacky way to add a default argument for matchColor without breaking the export function call from other places
 		size = manaSymbolPaths || [1,1];
 		manaSymbolPaths = matchColor;
 		matchColor = false;
@@ -377,18 +385,18 @@ function loadManaSymbols(matchColor, manaSymbolPaths, size = [1, 1]) {
 		// manaSymbols.push(manaSymbol);
 	});
 }
-function findManaSymbolIndex(string) {
+export function findManaSymbolIndex(string) {
 	return mana.get(key) || -1;
 }
-function getManaSymbol(key) {
+export function getManaSymbol(key) {
 	return mana.get(key);
 }
-function clearFrames() {
+export function clearFrames() {
 	card.frames = [];
 	drawFrames();
 }
 //FRAME TAB
-function drawFrames() {
+export function drawFrames() {
 	frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height);
 	var frameToDraw = card.frames.slice().reverse();
 	var haveDrawnPrePTCanvas = false;
@@ -458,8 +466,12 @@ function drawFrames() {
 	}
 	drawCard();
 }
-function loadFramePacks(framePackOptions = []) {
-	document.querySelector('#selectFramePack').innerHTML = null;
+export function loadFramePacks(framePackOptions = []) {
+	const selectFramePackElement = document.querySelector('#selectFramePack');
+	if (!selectFramePackElement) {
+		return;
+	}
+	selectFramePackElement.innerHTML = null;
 	framePackOptions.forEach(item => {
 		var framePackOption = document.createElement('option');
 		framePackOption.innerHTML = item.name;
@@ -468,11 +480,11 @@ function loadFramePacks(framePackOptions = []) {
 		} else {
 			framePackOption.value = item.value;
 		}
-		document.querySelector('#selectFramePack').appendChild(framePackOption);
+		selectFramePackElement.appendChild(framePackOption);
 	});
-	loadScript("/js/frames/pack" + document.querySelector('#selectFramePack').value + ".js");
+	loadScript("/js/frames/pack" + selectFramePackElement.value + ".js");
 }
-function loadFramePack(frameOptions = availableFrames) {
+export function loadFramePack(frameOptions = availableFrames) {
 	resetDoubleClick();
 	document.querySelector('#frame-picker').innerHTML = null;
 	frameOptions.forEach(item => {
@@ -498,10 +510,10 @@ function loadFramePack(frameOptions = availableFrames) {
 		document.querySelector('#loadFrameVersion').click();
 	}
 }
-function autoLoadFrameVersion() {
+export function autoLoadFrameVersion() {
 	localStorage.setItem('autoLoadFrameVersion', document.querySelector('#autoLoadFrameVersion').checked);
 }
-function frameOptionClicked(event) {
+export function frameOptionClicked(event) {
 	const button = doubleClick(event, 'frame');
 	const clickedFrameOption = event.target.closest('.frame-option');
 	const newFrameIndex = getElementIndex(clickedFrameOption);
@@ -538,7 +550,7 @@ function frameOptionClicked(event) {
 		firstChild.click();
 	} else if (button) { button.click(); resetDoubleClick(); }
 }
-function maskOptionClicked(event) {
+export function maskOptionClicked(event) {
 	var button = doubleClick(event, 'mask');
 	const clickedMaskOption = event.target.closest('.mask-option');
 	(document.querySelector('.mask-option.selected').classList || document.querySelector('body').classList).remove('selected');
@@ -551,10 +563,10 @@ function maskOptionClicked(event) {
 	document.querySelector('#selectedPreview').innerHTML = '(Selected: ' + availableFrames[selectedFrameIndex].name + ', ' + selectedMaskName + ')';
 	if (button) { button.click(); resetDoubleClick(); }
 }
-function resetDoubleClick() {
+export function resetDoubleClick() {
 	lastFrameClick, lastMaskClick = null, null;
 }
-function doubleClick(event, maskOrFrame) {
+export function doubleClick(event, maskOrFrame) {
 	const currentClick = (new Date()).getTime();
 	var lastClick = null;
 	if (maskOrFrame == 'mask') {
@@ -579,7 +591,7 @@ function doubleClick(event, maskOrFrame) {
 	}
 	return null;
 }
-function cardFrameProperties(colors, manaCost, typeLine, power, style) {
+export function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 	var colors = colors.map(color => color.toUpperCase())
 		.sort(sortMana);
 
@@ -746,12 +758,12 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 	}
 }
 
-function setAutoframeNyx(value) {
+export function setAutoframeNyx(value) {
 	localStorage.setItem('autoframe-always-nyx', document.querySelector('#autoframe-always-nyx').checked);
 	setAutoFrame();
 }
 
-function sortMana(a, b) {
+export function sortMana(a, b) {
 	const colorOrder = { W: 1, U: 2, B: 3, R: 4, G: 5 };
 
 	const cleanA = a.replace(/[{}]/g, '').toUpperCase();
@@ -835,7 +847,7 @@ function sortMana(a, b) {
 }
 
 var autoFramePack;
-function autoFrame() {
+export function autoFrame() {
 	var frame = document.querySelector('#autoFrame').value;
 	if (frame == 'false') { autoFramePack = null; return; }
 
@@ -861,7 +873,7 @@ function autoFrame() {
 			}
 			if (addIndex != -1) {
 				var upToAdd = line.substring(addIndex+length).toLowerCase();
-              	['W', 'U', 'B', 'R', 'G'].forEach(function (color) {
+              	['W', 'U', 'B', 'R', 'G'].forEach((color) => {
 					if (upToAdd.includes('{' + color.toLowerCase() + '}')) {
                   		colors.push(color);
                 	}
@@ -897,8 +909,6 @@ function autoFrame() {
 		if (rules.includes('any color') || rules.includes('any one color') || rules.includes('choose a color') || rules.includes('any combination of colors')) {
 			colors = ['W', 'U', 'B', 'R', 'G'];
 		}
-
-
 	} else {
 		colors = [...new Set(card.text.mana.text.toUpperCase().split('').filter(char => ['W', 'U', 'B', 'R', 'G'].includes(char)))];
 	}
@@ -960,7 +970,7 @@ function autoFrame() {
 		autoFramePack = frame;
 	}
 }
-async function autoUBFrame(colors, mana_cost, type_line, power) {
+export async function autoUBFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension') || frame.name.includes('Gray Holo Stamp') || frame.name.includes('Gold Holo Stamp'));
 
 	//clear the draggable frames
@@ -1022,13 +1032,13 @@ async function autoUBFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoUBNewFrame(colors, mana_cost, type_line, power) {
+export async function autoUBNewFrame(colors, mana_cost, type_line, power) {
 	autoM15NewFrame(colors, mana_cost, type_line, power, 'ub');
 }
-async function autoFullArtNewFrame(colors, mana_cost, type_line, power) {
+export async function autoFullArtNewFrame(colors, mana_cost, type_line, power) {
 	autoM15NewFrame(colors, mana_cost, type_line, power, 'fullart');
 }
-async function autoCircuitFrame(colors, mana_cost, type_line, power) {
+export async function autoCircuitFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension') || frame.name.includes('Gray Holo Stamp') || frame.name.includes('Gold Holo Stamp'));
 
 	//clear the draggable frames
@@ -1074,7 +1084,7 @@ async function autoCircuitFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoM15Frame(colors, mana_cost, type_line, power) {
+export async function autoM15Frame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1132,7 +1142,7 @@ async function autoM15Frame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'regular') {
+export async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'regular') {
 	var frames;
 	if (style == 'ub') {
 		frames = card.frames.filter(frame => frame.name.includes('Extension') || frame.name.includes('Gray Holo Stamp'));
@@ -1209,7 +1219,7 @@ async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'reg
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoM15EighthFrame(colors, mana_cost, type_line, power) {
+export async function autoM15EighthFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1267,7 +1277,7 @@ async function autoM15EighthFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoM15EighthUBFrame(colors, mana_cost, type_line, power) {
+export async function autoM15EighthUBFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1325,7 +1335,7 @@ async function autoM15EighthUBFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoBorderlessFrame(colors, mana_cost, type_line, power) {
+export async function autoBorderlessFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1375,7 +1385,7 @@ async function autoBorderlessFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoBorderlessUBFrame(colors, mana_cost, type_line, power) {
+export async function autoBorderlessUBFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1429,7 +1439,7 @@ async function autoBorderlessUBFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function auto8thEditionFrame(colors, mana_cost, type_line, power, colorshifted = false) {
+export async function auto8thEditionFrame(colors, mana_cost, type_line, power, colorshifted = false) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1463,7 +1473,7 @@ async function auto8thEditionFrame(colors, mana_cost, type_line, power, colorshi
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoExtendedArtFrame(colors, mana_cost, type_line, power, short) {
+export async function autoExtendedArtFrame(colors, mana_cost, type_line, power, short) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1525,7 +1535,7 @@ async function autoExtendedArtFrame(colors, mana_cost, type_line, power, short) 
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoEtchedFrame(colors, mana_cost, type_line, power) {
+export async function autoEtchedFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1576,7 +1586,7 @@ async function autoEtchedFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoPhyrexianFrame(colors, mana_cost, type_line, power) {
+export async function autoPhyrexianFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1617,7 +1627,7 @@ async function autoPhyrexianFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function autoSeventhEditionFrame(colors, mana_cost, type_line, power) {
+export async function autoSeventhEditionFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension') || frame.name.includes('DCI Star'));
 
 	//clear the draggable frames
@@ -1641,7 +1651,7 @@ async function autoSeventhEditionFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-function makeM15FrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
+export function makeM15FrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -1776,7 +1786,7 @@ function makeM15FrameByLetter(letter, mask = false, maskToRightHalf = false, sty
 	return frame;
 }
 
-function makeM15NewFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
+export function makeM15NewFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -1936,7 +1946,7 @@ function makeM15NewFrameByLetter(letter, mask = false, maskToRightHalf = false, 
 
 	return frame;
 }
-function makeM15EighthFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
+export function makeM15EighthFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -2071,7 +2081,7 @@ function makeM15EighthFrameByLetter(letter, mask = false, maskToRightHalf = fals
 
 	return frame;
 }
-function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
+export function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -2213,7 +2223,7 @@ function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = fa
 
 	return frame;
 }
-function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = false, style, universesBeyond = false) {
+export function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = false, style, universesBeyond = false) {
 	letter = letter.toUpperCase();
 
 	if (letter == 'V') {
@@ -2371,7 +2381,7 @@ function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = fal
 
 	return frame;
 }
-function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
+export function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -2452,7 +2462,7 @@ function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = fal
 
 	return frame;
 }
-function makeExtendedArtFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular', short = false) {
+export function makeExtendedArtFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular', short = false) {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -2646,7 +2656,7 @@ function makeExtendedArtFrameByLetter(letter, mask = false, maskToRightHalf = fa
 
 	return frame;
 }
-function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
+export function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
 	letter = letter.toUpperCase();
 
 	if (letter == 'C') {
@@ -2803,7 +2813,7 @@ function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false, styl
 
 	return frame;
 }
-function makeCircuitFrameByLetter(letter, mask = false, maskToRightHalf = false) {
+export function makeCircuitFrameByLetter(letter, mask = false, maskToRightHalf = false) {
 	letter = letter.toUpperCase();
 
 	if (letter == 'C') {
@@ -2909,7 +2919,7 @@ function makeCircuitFrameByLetter(letter, mask = false, maskToRightHalf = false)
 
 	return frame;
 }
-function makeEtchedFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
+export function makeEtchedFrameByLetter(letter, mask = false, maskToRightHalf = false, style = 'regular') {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -3028,7 +3038,7 @@ function makeEtchedFrameByLetter(letter, mask = false, maskToRightHalf = false, 
 
 	return frame;
 }
-function makePhyrexianFrameByLetter(letter, mask = false, maskToRightHalf = false) {
+export function makePhyrexianFrameByLetter(letter, mask = false, maskToRightHalf = false) {
 	if (letter == 'C' || letter == 'V') {
 		letter = 'L';
 	}
@@ -3144,7 +3154,7 @@ function makePhyrexianFrameByLetter(letter, mask = false, maskToRightHalf = fals
 
 	return frame;
 }
-function makeSeventhEditionFrameByLetter(letter, mask = false, maskToRightHalf = false) {
+export function makeSeventhEditionFrameByLetter(letter, mask = false, maskToRightHalf = false) {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -3208,7 +3218,7 @@ function makeSeventhEditionFrameByLetter(letter, mask = false, maskToRightHalf =
 
 	return frame;
 }
-async function addFrame(additionalMasks = [], loadingFrame = false) {
+export async function addFrame(additionalMasks = [], loadingFrame = false) {
 	var frameToAdd = JSON.parse(JSON.stringify(availableFrames[selectedFrameIndex]));
 	var maskThumbnail = true;
 	if (!loadingFrame) {
@@ -3300,13 +3310,13 @@ async function addFrame(additionalMasks = [], loadingFrame = false) {
 	document.querySelector('#frame-list').prepend(frameElement);
 	bottomInfoEdited();
 }
-function removeFrame(event) {
+export function removeFrame(event) {
 	card.frames.splice(getElementIndex(event.target.parentElement), 1);
 	event.target.parentElement.remove();
 	drawFrames();
 	bottomInfoEdited();
 }
-function frameElementClicked(event) {
+export function frameElementClicked(event) {
 	if (!event.target.classList.contains('frame-element-close')) {
 		var selectedFrameElement = event.target.closest('.frame-element');
 		selectedFrame = card.frames[Array.from(selectedFrameElement.parentElement.children).indexOf(selectedFrameElement)];
@@ -3361,7 +3371,7 @@ function frameElementClicked(event) {
 		selectMaskElement.selectedIndex = 0;
 	}
 }
-function frameElementMaskRemoved() {
+export function frameElementMaskRemoved() {
 	const selectElement = document.querySelector('#frame-editor-masks');
 	const selectedOption = selectElement.value;
 	if (selectedOption != 'None Selected') {
@@ -3375,20 +3385,20 @@ function frameElementMaskRemoved() {
 		});
 	}
 }
-function uploadMaskOption(imageSource) {
+export function uploadMaskOption(imageSource) {
 	const uploadedMask = {name:`Uploaded Image (${customCount})`, src:imageSource, noThumb:true, image: new Image()};
 	customCount ++;
 	selectedFrame.masks.push(uploadedMask);
 	uploadedMask.image.onload = drawFrames;
 	uploadedMask.image.src = imageSource;
 }
-function uploadFrameOption(imageSource) {
+export function uploadFrameOption(imageSource) {
 	const uploadedFrame = {name:`Uploaded Image (${customCount})`, src:imageSource, noThumb:true};
 	customCount ++;
 	availableFrames.push(uploadedFrame);
 	loadFramePack();
 }
-function hsl(canvas, inputH, inputS, inputL) {
+export function hsl(canvas, inputH, inputS, inputL) {
 	//adjust inputs
 	var hue = parseInt(inputH) / 360;
 	var saturation = parseInt(inputS) / 100;
@@ -3426,7 +3436,7 @@ function hsl(canvas, inputH, inputS, inputL) {
 	//then put the new image data back
 	context.putImageData(imageData, 0, 0);
 }
-function croppedCanvas(oldCanvas, sensitivity = 0) {
+export function croppedCanvas(oldCanvas, sensitivity = 0) {
 	var oldContext = oldCanvas.getContext('2d');
 	var newCanvas = document.createElement('canvas');
 	var newContext = newCanvas.getContext('2d');
@@ -3454,7 +3464,7 @@ function croppedCanvas(oldCanvas, sensitivity = 0) {
 /*
 shoutout to https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion for providing the hsl-rgb conversion algorithms
 */
-function rgbToHSL(r, g, b){
+export function rgbToHSL(r, g, b){
     r /= 255, g /= 255, b /= 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
@@ -3474,13 +3484,13 @@ function rgbToHSL(r, g, b){
 
     return [h, s, l];
 }
-function hslToRGB(h, s, l){
+export function hslToRGB(h, s, l){
     var r, g, b;
 
     if(s == 0){
         r = g = b = l; // achromatic
     }else{
-        var hue2rgb = function hue2rgb(p, q, t){
+        var hue2rgb = (p, q, t) => {
             if(t < 0) t += 1;
             if(t > 1) t -= 1;
             if(t < 1/6) return p + (q - p) * 6 * t;
@@ -3502,7 +3512,7 @@ function hslToRGB(h, s, l){
 //TEXT TAB
 var writingText;
 var autoFrameTimer;
-function loadTextOptions(textObject, replace= true) {
+export function loadTextOptions(textObject, replace= true) {
 	var oldCardText = card.text || {};
 
 	Object.entries(oldCardText).forEach(item => {
@@ -3547,13 +3557,13 @@ function loadTextOptions(textObject, replace= true) {
 	drawTextBuffer();
 	drawNewGuidelines();
 }
-function textOptionClicked(event) {
+export function textOptionClicked(event) {
 	selectedTextIndex = getElementIndex(event.target);
 	document.querySelector('#text-editor').value = Object.entries(card.text)[selectedTextIndex][1].text;
 	document.querySelector('#text-editor-font-size').value = Object.entries(card.text)[selectedTextIndex][1].fontSize;
 	selectSelectable(event, '.text-option');
 }
-function lockCanvasHeight(event) {
+export function lockCanvasHeight(event) {
 	const isLocked = event.target.checked;
 
 	const canvasContainer = document.querySelector('#creator-canvas-wrapper .creator-canvas');
@@ -3565,7 +3575,7 @@ function lockCanvasHeight(event) {
 		canvasContainer.classList.remove(canvasLockClass);
 	}
 }
-function textboxEditor() {
+export function textboxEditor() {
 	var selectedTextbox = card.text[Object.keys(card.text)[selectedTextIndex]];
 	document.querySelector('#textbox-editor').classList.add('opened');
 	document.querySelector('#textbox-editor-x').value = scaleWidth(selectedTextbox.x || 0);
@@ -3577,27 +3587,27 @@ function textboxEditor() {
 	document.querySelector('#textbox-editor-height').value = scaleHeight(selectedTextbox.height || 1);
 	document.querySelector('#textbox-editor-height').onchange = (event) => {selectedTextbox.height = (event.target.value / card.height); textEdited();}
 }
-function textEdited() {
+export function textEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].text = curlyQuotes(document.querySelector('#text-editor').value);
 	drawTextBuffer();
 }
-function textEditUpdateBuffer() {
+export function textEditUpdateBuffer() {
 	drawTextBuffer();
 	autoFrameBuffer();
 }
-function fontSizedEdited() {
+export function fontSizedEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].fontSize = document.querySelector('#text-editor-font-size').value;
 	drawTextBuffer();
 }
-function drawTextBuffer() {
+export function drawTextBuffer() {
 	clearTimeout(writingText);
 	writingText = setTimeout(drawText, 500);
 }
-function autoFrameBuffer() {
+export function autoFrameBuffer() {
 	clearTimeout(autoFrameTimer);
 	autoFrameTimer = setTimeout(autoFrame, 500);
 }
-async function drawText() {
+export async function drawText() {
 	textContext.clearRect(0, 0, textCanvas.width, textCanvas.height);
 	prePTContext.clearRect(0, 0, prePTCanvas.width, prePTCanvas.height);
 	drawTextBetweenFrames = false;
@@ -3615,7 +3625,7 @@ async function drawText() {
 }
 var justifyWidth = 90;
 let manaSymbolsToRender = [];
-function writeText(textObject, targetContext) {
+export function writeText(textObject, targetContext) {
 	manaSymbolsToRender = [];
 	//Most bits of info about text loaded, with defaults when needed
 	var textX = scaleX(textObject.x) || scaleX(0);
@@ -4427,7 +4437,7 @@ const STROKE = 1;
 const MEASURE = 2;
 var maxSpaceSize = 3; // Multiplier for max space size. If greater then no justification applied
 var minSpaceSize = 0.5; // Multiplier for minimum space size
-function renderTextJustified(ctx, text, x, y, width, renderType) {
+export function renderTextJustified(ctx, text, x, y, width, renderType) {
 	var splitChar = " ";
 
 	var words, wordsWidth, count, spaces, spaceWidth, adjSpace, renderer, i, textAlign, useSize, totalWidth;
@@ -4479,7 +4489,7 @@ function renderTextJustified(ctx, text, x, y, width, renderType) {
 }
 
 // Parse vet and set settings object.
-function justifiedTextSettings(settings) {
+export function justifiedTextSettings(settings) {
 	var min,max;
 	var vetNumber = (num, defaultNum) => {
 		num = num !== null && num !== null && !isNaN(num) ? num : defaultNum;
@@ -4512,16 +4522,16 @@ CanvasRenderingContext2D.prototype.measureJustifiedText = function(text, width, 
 	renderTextJustified(this, text, 0, 0, width, MEASURE);
 }
 
-function widthToAngle(width, radius) {
+export function widthToAngle(width, radius) {
 	return width / radius;
 }
-function curlyQuotes(input) {
+export function curlyQuotes(input) {
 	return input.replace(/ '/g, ' ‘').replace(/^'/, '‘').replace(/'/g, '’').replace(/ "/g, ' “').replace(/" /g, '” ').replace(/\."/, '.”').replace(/"$/, '”').replace(/"\)/g, '”)').replace(/"/g, '“');
 }
-function pinlineColors(color) {
+export function pinlineColors(color) {
 	return color.replace('white', '#fcfeff').replace('blue', '#0075be').replace('black', '#272624').replace('red', '#ef3827').replace('green', '#007b43')
 }
-async function addTextbox(textboxType) {
+export async function addTextbox(textboxType) {
 	if (textboxType == 'Nickname' && !card.text.nickname && card.text.title) {
 		await loadTextOptions({nickname: {name:'Nickname', text:card.text.title.text, x:0.14, y:0.1129, width:0.72, height:0.0243, oneLine:true, font:'mplantini', size:0.0229, color:'white', shadowX:0.0014, shadowY:0.001, align:'center'}}, false);
 		var nickname = card.text.title;
@@ -4536,7 +4546,7 @@ async function addTextbox(textboxType) {
 	}
 }
 //ART TAB
-function uploadArt(imageSource, otherParams) {
+export function uploadArt(imageSource, otherParams) {
 	art.src = imageSource;
 	if (otherParams && otherParams == 'autoFit') {
 		art.onload = function() {
@@ -4545,7 +4555,7 @@ function uploadArt(imageSource, otherParams) {
 		};
 	}
 }
-async function pasteArt() {
+export async function pasteArt() {
   try {
     const clipboardItems = await navigator.clipboard.read();
     
@@ -4569,7 +4579,7 @@ async function pasteArt() {
     notify('Clipboard access not allowed or no image available.');
   }
 }
-function artEdited() {
+export function artEdited() {
 	card.artSource = art.src;
 	card.artX = document.querySelector('#art-x').value / card.width;
 	card.artY = document.querySelector('#art-y').value / card.height;
@@ -4577,7 +4587,7 @@ function artEdited() {
 	card.artRotate = document.querySelector('#art-rotate').value;
 	drawCard();
 }
-function autoFitArt() {
+export function autoFitArt() {
 	document.querySelector('#art-rotate').value = 0;
 	if (art.width / art.height > scaleWidth(card.artBounds.width) / scaleHeight(card.artBounds.height)) {
 		document.querySelector('#art-y').value = Math.round(scaleY(card.artBounds.y) - scaleHeight(card.marginY));
@@ -4591,7 +4601,7 @@ function autoFitArt() {
 	artEdited();
 }
 
-function centerArtX() {
+export function centerArtX() {
 	document.querySelector('#art-rotate').value = 0;
 	if (art.width / art.height > scaleWidth(card.artBounds.width) / scaleHeight(card.artBounds.height)) {
 		document.querySelector('#art-x').value = Math.round(scaleX(card.artBounds.x) - (document.querySelector('#art-zoom').value / 100 * art.width - scaleWidth(card.artBounds.width)) / 2 - scaleWidth(card.marginX));
@@ -4601,13 +4611,13 @@ function centerArtX() {
 	artEdited();
 }
 
-function centerArtY() {
+export function centerArtY() {
 	document.querySelector('#art-rotate').value = 0;
 	document.querySelector('#art-y').value = Math.round(scaleY(card.artBounds.y) - (document.querySelector('#art-zoom').value / 100 * art.height - scaleHeight(card.artBounds.height)) / 2 - scaleHeight(card.marginY));
 	artEdited();
 }
 
-function artFromScryfall(scryfallResponse) {
+export function artFromScryfall(scryfallResponse) {
 	scryfallArt = []
 	const artIndex = document.querySelector('#art-index');
 	artIndex.innerHTML = null;
@@ -4645,7 +4655,7 @@ function artFromScryfall(scryfallResponse) {
 
 	changeArtIndex();
 }
-function changeArtIndex() {
+export function changeArtIndex() {
 	const artIndexValue = document.querySelector('#art-index').value;
 	if (artIndexValue != 0 || artIndexValue == '0') {
 		const scryfallCardForArt = scryfallArt[artIndexValue];
@@ -4656,7 +4666,7 @@ function changeArtIndex() {
 		}
 	}
 }
-function tryMTGPicsArt(src) {
+export function tryMTGPicsArt(src) {
 	var attemptedImage = new Image();
 	attemptedImage.onload = function() {
 		if (this.complete) {
@@ -4669,22 +4679,24 @@ function tryMTGPicsArt(src) {
 	}
 	attemptedImage.src = src;
 }
-function initDraggableArt() {
-	previewCanvas.onmousedown = artStartDrag;
-	previewCanvas.onmousemove = artDrag;
-	previewCanvas.onmouseout = artStopDrag;
-	previewCanvas.onmouseup = artStopDrag;
-	draggingArt = false;
-	lastArtDragTime = 0;
+export function initDraggableArt() {
+	if (previewCanvas) {
+		previewCanvas.onmousedown = artStartDrag;
+		previewCanvas.onmousemove = artDrag;
+		previewCanvas.onmouseout = artStopDrag;
+		previewCanvas.onmouseup = artStopDrag;
+		draggingArt = false;
+		lastArtDragTime = 0;
+	}
 }
-function artStartDrag(e) {
+export function artStartDrag(e) {
 	e.preventDefault();
 	e.stopPropagation();
 	startX = parseInt(e.clientX);
 	startY = parseInt(e.clientY);
 	draggingArt = true;
 }
-function artDrag(e) {
+export function artDrag(e) {
 	var target = document.querySelector('#drag-target-setSymbol').checked ? "setSymbol" : "art";
 	var canRotate = target == "art";
 	var edited = target == "art" ? artEdited : setSymbolEdited;
@@ -4722,7 +4734,7 @@ function artDrag(e) {
 
 	}
 }
-function artStopDrag(e) {
+export function artStopDrag(e) {
 	e.preventDefault();
 	e.stopPropagation();
 	if (draggingArt) {
@@ -4730,7 +4742,7 @@ function artStopDrag(e) {
 	}
 }
 //SET SYMBOL TAB
-function uploadSetSymbol(imageSource, otherParams) {
+export function uploadSetSymbol(imageSource, otherParams) {
 	setSymbol.src = imageSource;
 	if (otherParams && otherParams == 'resetSetSymbol') {
 		setSymbol.onload = function() {
@@ -4739,9 +4751,9 @@ function uploadSetSymbol(imageSource, otherParams) {
 		};
 	}
 }
-function setSymbolEdited() {
+export function setSymbolEdited() {
 	card.setSymbolSource = setSymbol.src;
-	if (document.querySelector('#lockSetSymbolURL').checked) {
+	if (document.querySelector('#lockSetSymbolURL')?.checked) {
 		localStorage.setItem('lockSetSymbolURL', card.setSymbolSource);
 	}
 	localStorage.setItem('set-symbol-source', document.querySelector('#set-symbol-source').value);
@@ -4750,7 +4762,7 @@ function setSymbolEdited() {
 	card.setSymbolZoom = document.querySelector('#setSymbol-zoom').value / 100;
 	drawCard();
 }
-function resetSetSymbol() {
+export function resetSetSymbol() {
 	if (card.setSymbolBounds == undefined) {
 		return;
 	}
@@ -4776,11 +4788,11 @@ function resetSetSymbol() {
 	setSymbolEdited();
 }
 
-function fetchDISetSymbol(uri){
+export function fetchDISetSymbol(uri){
 	uploadSetSymbol(fixUri(uri), 'resetSetSymbol');
 }			
 
-function fetchSetSymbol() {
+export function fetchSetSymbol() {
 	console.log('fetchSetSymbol() called');
 	var setCode = document.querySelector('#set-symbol-code').value.toLowerCase() || 'cmd';
 	if (document.querySelector('#lockSetSymbolCode').checked) {
@@ -4806,14 +4818,14 @@ function fetchSetSymbol() {
 		uploadSetSymbol(fixUri(`/img/setSymbols/official/${setCode.toLowerCase()}-${setRarity}.` + extension), 'resetSetSymbol');
 	}
 }
-function lockSetSymbolCode() {
+export function lockSetSymbolCode() {
 	var savedValue = '';
 	if (document.querySelector('#lockSetSymbolCode').checked) {
 		savedValue = document.querySelector('#set-symbol-code').value;
 	}
 	localStorage.setItem('lockSetSymbolCode', savedValue);
 }
-function lockSetSymbolURL() {
+export function lockSetSymbolURL() {
 	var savedValue = '';
 	if (document.querySelector('#lockSetSymbolURL').checked) {
 		savedValue = card.setSymbolSource;
@@ -4821,7 +4833,7 @@ function lockSetSymbolURL() {
 	localStorage.setItem('lockSetSymbolURL', savedValue);
 }
 //WATERMARK TAB
-function uploadWatermark(imageSource, otherParams) {
+export function uploadWatermark(imageSource, otherParams) {
 	watermark.src = imageSource;
 	if (otherParams && otherParams == 'resetWatermark') {
 		watermark.onload = function() {
@@ -4830,15 +4842,15 @@ function uploadWatermark(imageSource, otherParams) {
 		};
 	}
 }
-function watermarkLeftColor(c) {
+export function watermarkLeftColor(c) {
 	card.watermarkLeft = c;
 	watermarkEdited();
 }
-function watermarkRightColor(c) {
+export function watermarkRightColor(c) {
 	card.watermarkRight = c;
 	watermarkEdited();
 }
-function watermarkEdited() {
+export function watermarkEdited() {
 	card.watermarkSource = watermark.src;
 	card.watermarkX = document.querySelector('#watermark-x').value / card.width;
 	card.watermarkY = document.querySelector('#watermark-y').value / card.height;
@@ -4877,7 +4889,7 @@ function watermarkEdited() {
 	}
 	drawCard();
 }
-function resetWatermark() {
+export function resetWatermark() {
 	var watermarkZoom;
 	if (watermark.width / watermark.height > scaleWidth(card.watermarkBounds.width) / scaleHeight(card.watermarkBounds.height)) {
 		watermarkZoom = (scaleWidth(card.watermarkBounds.width) / watermark.width * 100).toFixed(1);
@@ -4890,7 +4902,7 @@ function resetWatermark() {
 	watermarkEdited();
 }
 //svg cropper
-function getSetSymbolWatermark(url, targetImage = watermark) {
+export function getSetSymbolWatermark(url, targetImage = watermark) {
 	if (!url.includes('/')) {
 		url = 'https://cdn.jsdelivr.net/npm/keyrune/svg/' + url + '.svg';
 	}
@@ -4913,14 +4925,14 @@ function getSetSymbolWatermark(url, targetImage = watermark) {
 	xhttp.send();
 }
 //Bottom Info Tab
-async function loadBottomInfo(textObjects = []) {
+export async function loadBottomInfo(textObjects = []) {
 	await bottomInfoContext.clearRect(0, 0, bottomInfoCanvas.width, bottomInfoCanvas.height);
 	card.bottomInfo = null;
 	card.bottomInfo = textObjects;
 	await bottomInfoEdited();
 	bottomInfoEdited();
 }
-async function bottomInfoEdited() {
+export async function bottomInfoEdited() {
 	await bottomInfoContext.clearRect(0, 0, bottomInfoCanvas.width, bottomInfoCanvas.height);
 	card.infoNumber = document.querySelector('#info-number').value;
 	card.infoRarity = document.querySelector('#info-rarity').value;
@@ -4949,7 +4961,7 @@ async function bottomInfoEdited() {
 
 	drawCard();
 }
-async function serialInfoEdited() {
+export async function serialInfoEdited() {
 	card.serialNumber = document.querySelector('#serial-number').value;
 	card.serialTotal = document.querySelector('#serial-total').value;
 	card.serialX = document.querySelector('#serial-x').value;
@@ -4959,7 +4971,7 @@ async function serialInfoEdited() {
 	drawCard();
 }
 
-async function resetSerial() {
+export async function resetSerial() {
 	card.serialX = scaleX(172/2010);
 	card.serialY = scaleY(1383/2814);
 	card.serialScale = 1.0;
@@ -4971,12 +4983,12 @@ async function resetSerial() {
 	drawCard();
 }
 
-function artistEdited(value) {
+export function artistEdited(value) {
 	document.querySelector('#art-artist').value = value;
 	document.querySelector('#info-artist').value = value;
 	bottomInfoEdited();
 }
-function toggleStarDot() {
+export function toggleStarDot() {
 	for (var key of Object.keys(card.bottomInfo)) {
 		var text = card.bottomInfo[key].text
 		if (text.includes('*')) {
@@ -4988,19 +5000,19 @@ function toggleStarDot() {
 	defaultCollector.starDot = !defaultCollector.starDot;
 	bottomInfoEdited();
 }
-function enableNewCollectorInfoStyle() {
+export function enableNewCollectorInfoStyle() {
 	localStorage.setItem('enableNewCollectorStyle', document.querySelector('#enableNewCollectorStyle').checked);
 	setBottomInfoStyle();
 	bottomInfoEdited();
 }
-function enableCollectorInfo() {
+export function enableCollectorInfo() {
 	localStorage.setItem('enableCollectorInfo', document.querySelector('#enableCollectorInfo').checked);
 	bottomInfoEdited();
 }
-function enableImportCollectorInfo() {
+export function enableImportCollectorInfo() {
 	localStorage.setItem('enableImportCollectorInfo', document.querySelector('#enableImportCollectorInfo').checked);
 }
-function setAutoFrame() {
+export function setAutoFrame() {
 	var value = document.querySelector('#autoFrame').value;
 	localStorage.setItem('autoFrame', value);
 
@@ -5011,15 +5023,15 @@ function setAutoFrame() {
 
 	autoFrame();
 }
-function setAutofit() {
+export function setAutofit() {
 	localStorage.setItem('autoFit', document.querySelector('#art-update-autofit').checked);
 }
-function removeDefaultCollector() {
+export function removeDefaultCollector() {
 	defaultCollector = {}; //{number: year, rarity:'P', setCode:'MTG', lang:'EN', starDot:false};
 	localStorage.removeItem('defaultCollector'); //localStorage.setItem('defaultCollector', JSON.stringify(defaultCollector));
 }
 
-function setCollectorInfo({number, rarity, setCode, lang, note}) {
+export function setCollectorInfo({number, rarity, setCode, lang, note}) {
 	if (typeof number !== "undefined") document.getElementById('info-number').value = number;
 	if (rarity) document.getElementById('info-rarity').value = rarity;
 	if (setCode)  document.getElementById('info-set').value = setCode;
@@ -5027,7 +5039,7 @@ function setCollectorInfo({number, rarity, setCode, lang, note}) {
 	if (note) document.getElementById('info-note').value = note;
 }
 
-function setDefaultCollector() {
+export function setDefaultCollector() {
 	starDot = defaultCollector.starDot;
 	defaultCollector = {
 		number: document.querySelector('#info-number').value,
@@ -5039,7 +5051,7 @@ function setDefaultCollector() {
 	};
 	localStorage.setItem('defaultCollector', JSON.stringify(defaultCollector));
 }
-function drawSetSymbol(cardContext, setSymbol, bounds) {
+export function drawSetSymbol(cardContext, setSymbol, bounds) {
     if (!bounds) return;
     
     const symbolWidth = setSymbol.width * card.setSymbolZoom;
@@ -5101,7 +5113,7 @@ function drawSetSymbol(cardContext, setSymbol, bounds) {
     }
 }
 //DRAWING THE CARD (putting it all together)
-function drawCard() {
+export function drawCard() {
 	// reset
 	cardContext.globalCompositeOperation = 'source-over';
 	cardContext.clearRect(0, 0, cardCanvas.width, cardCanvas.height);
@@ -5212,12 +5224,14 @@ function drawCard() {
 		cardContext.rotate(Math.PI / 2);
 	}
 	// show preview
-	previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-	previewContext.drawImage(cardCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
+	if (previewContext) {
+		previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+		previewContext.drawImage(cardCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
+	}
 }
 
 //DOWNLOADING
-function downloadCard(alt = false, jpeg = false) {
+export function downloadCard(alt = false, jpeg = false) {
 	if (card.infoArtist.replace(/ /g, '') == '' && !card.artSource.includes('/img/blank.png') && !card.artZoom == 0) {
 		notify('You must credit an artist before downloading!', 5);
 	} else {
@@ -5252,7 +5266,7 @@ function downloadCard(alt = false, jpeg = false) {
 	}
 }
 //DOWNLOAD BOTH DIGITAL AND PRINT
-function downloadDigitalAndPrint() {
+export function downloadDigitalAndPrint() {
 	downloadCard(false, true);
 
 	applyMargins();
@@ -5260,7 +5274,7 @@ function downloadDigitalAndPrint() {
 }
 
 //IMPORT/SAVE TAB
-function importCard(cardObject) {
+export function importCard(cardObject) {
 	scryfallCard = cardObject;
 	const importIndex = document.querySelector('#import-index');
 	importIndex.innerHTML = null;
@@ -5283,7 +5297,7 @@ function importCard(cardObject) {
 	changeCardIndex();
 }
 
-async function pasteCardText() {
+export async function pasteCardText() {
 	try {
     const text = await navigator.clipboard.readText();
     console.log(text);
@@ -5295,7 +5309,7 @@ async function pasteCardText() {
   }
 }
 
-function scryfallCardFromText(text) {
+export function scryfallCardFromText(text) {
 	var lines = text.trim().split("\n");
 
 	if (lines.count == 0) {
@@ -5349,7 +5363,7 @@ function scryfallCardFromText(text) {
   return cardObject;
 }
 
-function parseSagaAbilities(text) {
+export function parseSagaAbilities(text) {
   const stepsMap = {};
 
   // Remove reminder text
@@ -5388,12 +5402,12 @@ function parseSagaAbilities(text) {
   return Array.from(abilityMap.values());
 }
 
-function extractSagaReminderText(text) {
+export function extractSagaReminderText(text) {
   const match = text.match(/^\([^)]*\)/);
   return match ? match[0] : null;
 }
 
-function changeCardIndex() {
+export function changeCardIndex() {
 	var cardToImport = scryfallCard[document.querySelector('#import-index').value];
 	//text
 	var langFontCode = "";
@@ -5631,7 +5645,7 @@ function changeCardIndex() {
 		fetchSetSymbol();
 	}
 }
-function loadAvailableCards(cardKeys = JSON.parse(localStorage.getItem('cardKeys'))) {
+export function loadAvailableCards(cardKeys = JSON.parse(localStorage.getItem('cardKeys'))) {
 	if (!cardKeys) {
 		cardKeys = [];
 		cardKeys.sort();
@@ -5646,14 +5660,14 @@ function loadAvailableCards(cardKeys = JSON.parse(localStorage.getItem('cardKeys
 	cardKeys.forEach(item => {
 		var cardKeyOption = document.createElement('option');
 		cardKeyOption.innerHTML = item;
-		document.querySelector('#load-card-options').appendChild(cardKeyOption);
+		document.querySelector('#load-card-options')?.appendChild(cardKeyOption);
 	});
 }
-function importChanged() {
+export function importChanged() {
 	var unique = document.querySelector('#importAllPrints').checked ? 'prints' : '';
 	fetchScryfallData(document.querySelector("#import-name").value, importCard, unique);
 }
-function saveCard(saveFromFile) {
+export function saveCard(saveFromFile) {
 	var cardKeys = JSON.parse(localStorage.getItem('cardKeys')) || [];
 	var cardKey, cardToSave;
 	if (saveFromFile) {
@@ -5696,7 +5710,7 @@ function saveCard(saveFromFile) {
 		notify('You have exceeded your 5MB of local storage, and your card has failed to save. If you would like to continue saving cards, please download all saved cards, then delete all saved cards to free up space.<br><br>Local storage is most often exceeded by uploading large images directly from your computer. If possible/convenient, using a URL avoids the need to save these large images.<br><br>Apologies for the inconvenience.');
 	}
 }
-async function loadCard(selectedCardKey) {
+export async function loadCard(selectedCardKey) {
 	//clear the draggable frames
 	document.querySelector('#frame-list').innerHTML = null;
 	//clear the existing card, then replace it with the new JSON
@@ -5773,7 +5787,7 @@ async function loadCard(selectedCardKey) {
 	}
 }
 
-async function loadCardFormatted(selectedCardKey) {
+export async function loadCardFormatted(selectedCardKey) {
 	await resetCardIrregularities();
 	await loadCard(selectedCardKey);
 
@@ -5789,13 +5803,13 @@ async function loadCardFormatted(selectedCardKey) {
 	}, 750);
 }
 
-function applyMargins() {
+export function applyMargins() {
 	document.getElementById('selectFrameGroup').value = "Margin";
 	loadScript("/js/frames/groupMargin.js");
 
 	window.setTimeout(addFrame, 500);
 }
-function deleteCard() {
+export function deleteCard() {
 	var keyToDelete = document.querySelector('#load-card-options').value;
 	if (keyToDelete) {
 		var cardKeys = JSON.parse(localStorage.getItem('cardKeys'));
@@ -5806,7 +5820,7 @@ function deleteCard() {
 		loadAvailableCards(cardKeys);
 	}
 }
-function deleteSavedCards() {
+export function deleteSavedCards() {
 	if (confirm('WARNING:\n\nALL of your saved cards will be deleted! If you would like to save these cards, please make sure you have downloaded them first. There is no way to undo this.\n\n(Press "OK" to delete your cards)')) {
 		var cardKeys = JSON.parse(localStorage.getItem('cardKeys'));
 		cardKeys.forEach(key => localStorage.removeItem(key));
@@ -5814,7 +5828,7 @@ function deleteSavedCards() {
 		loadAvailableCards([]);
 	}
 }
-async function downloadSavedCards() {
+export async function downloadSavedCards() {
 	var cardKeys = JSON.parse(localStorage.getItem('cardKeys'));
 	if (cardKeys) {
 		var allSavedCards = [];
@@ -5829,22 +5843,22 @@ async function downloadSavedCards() {
 		download.remove();
 	}
 }
-function uploadSavedCards(event) {
+export function uploadSavedCards(event) {
 	var reader = new FileReader();
-	reader.onload = function () {
+	reader.onload = () => {
 		JSON.parse(reader.result).forEach(item => saveCard(item));
 	}
 	reader.readAsText(event.target.files[0]);
 }
 //TUTORIAL TAB
-function loadTutorialVideo() {
+export function loadTutorialVideo() {
 	var video = document.querySelector('.video > iframe');
 	if (video.src == '') {
 		video.src = 'https://www.youtube-nocookie.com/embed/e4tnOiub41g?rel=0';
 	}
 }
 // GUIDELINES
-function drawNewGuidelines() {
+export function drawNewGuidelines() {
 	// clear
 	guidelinesContext.clearRect(0, 0, guidelinesCanvas.width, guidelinesCanvas.height);
 	// set opacity
@@ -5907,7 +5921,7 @@ function drawNewGuidelines() {
 	drawCard();
 }
 //HIGHLIGHT TRANSPARENCIES
-function toggleCardBackgroundColor(highlight) {
+export function toggleCardBackgroundColor(highlight) {
 	if (highlight) {
 		previewCanvas.style["background-color"] = "#ff007fff";
 	} else {
@@ -5915,12 +5929,12 @@ function toggleCardBackgroundColor(highlight) {
 	}
 }
 //Rounded Corners
-function setRoundedCorners(value) {
+export function setRoundedCorners(value) {
 	card.noCorners = !value;
 	drawCard();
 }
 //Various loaders
-function imageURL(url, destination, otherParams) {
+export function imageURL(url, destination, otherParams) {
 	var imageurl = url;
 	// If an image URL does not have HTTP in it, assume it's a local file in the repo local_art directory.
 	if (!url.includes('http')) {
@@ -5932,17 +5946,17 @@ function imageURL(url, destination, otherParams) {
 	}
 	destination(imageurl, otherParams);
 }
-async function imageLocal(event, destination, otherParams) {
+export async function imageLocal(event, destination, otherParams) {
 	var reader = new FileReader();
-	reader.onload = function () {
+	reader.onload =  () => {
 		destination(reader.result, otherParams);
 	}
-	reader.onerror = function () {
+	reader.onerror = () => {
 		destination('/img/blank.png', otherParams);
 	}
 	await reader.readAsDataURL(event.target.files[0]);
 }
-function loadScript(scriptPath) {
+export function loadScript(scriptPath) {
 	console.log(scriptPath);
 	var script = document.createElement('script');
 	script.setAttribute('type', 'text/javascript');
@@ -5953,7 +5967,7 @@ function loadScript(scriptPath) {
 	}
 }
 // Stretchable SVGs
-function stretchSVG(frameObject) {
+export function stretchSVG(frameObject) {
 	xhr = new XMLHttpRequest();
 	xhr.open('GET', fixUri(frameObject.src), true);
 	xhr.overrideMimeType('image/svg+xml');
@@ -5964,7 +5978,7 @@ function stretchSVG(frameObject) {
 	}
 	xhr.send();
 }
-function stretchSVGReal(data, frameObject) {
+export function stretchSVGReal(data, frameObject) {
 	var returnData = data;
 	frameObject.stretch.forEach(stretch => {
 		const change = stretch.change;
@@ -5997,7 +6011,7 @@ function stretchSVGReal(data, frameObject) {
 	});
 	return returnData;
 }
-function processScryfallCard(card, responseCards) {
+export function processScryfallCard(card, responseCards) {
 	if ('card_faces' in card) {
 		card.card_faces.forEach(face => {
 			face.set = card.set;
@@ -6024,7 +6038,7 @@ function processScryfallCard(card, responseCards) {
 	}
 }
 
-function fetchScryfallCardByID(scryfallID, callback = console.log) {
+export function fetchScryfallCardByID(scryfallID, callback = console.log) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -6046,7 +6060,7 @@ function fetchScryfallCardByID(scryfallID, callback = console.log) {
 	}
 }
 
-function fetchScryfallCardByCodeNumber(code, number, callback = console.log) {
+export function fetchScryfallCardByCodeNumber(code, number, callback = console.log) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -6069,7 +6083,7 @@ function fetchScryfallCardByCodeNumber(code, number, callback = console.log) {
 }
 
 //SCRYFALL STUFF MAY BE CHANGED IN THE FUTURE
-function fetchScryfallData(cardName, callback = console.log, unique = '') {
+export function fetchScryfallData(cardName, callback = console.log, unique = '') {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -6098,7 +6112,7 @@ function fetchScryfallData(cardName, callback = console.log, unique = '') {
 	}
 }
 
-function toggleTextTag(tag) {
+export function toggleTextTag(tag) {
 	var element = document.getElementById('text-editor');
 
 	var text = element.value;
@@ -6127,60 +6141,85 @@ function toggleTextTag(tag) {
 	textEdited();
 }
 
-function toggleHighRes() {
+export function toggleHighRes() {
 	localStorage.setItem('high-res', document.querySelector('#high-res').checked);
 	drawCard();
 }
 
 // INITIALIZATION
 
-// auto load frame version (user defaults)
-if (!localStorage.getItem('autoLoadFrameVersion')) {
-	localStorage.setItem('autoLoadFrameVersion', document.querySelector('#autoLoadFrameVersion').checked);
+const autoLoadFrameVersionElement =document.querySelector('#autoLoadFrameVersion');
+if (autoLoadFrameVersionElement) {
+	// auto load frame version (user defaults)
+	if (!localStorage.getItem('autoLoadFrameVersion')) {
+		localStorage.setItem('autoLoadFrameVersion', autoLoadFrameVersionElement.checked);
+	}
+
+	autoLoadFrameVersionElement.checked = 'true' === localStorage.getItem('autoLoadFrameVersion');
 }
-document.querySelector('#autoLoadFrameVersion').checked = 'true' == localStorage.getItem('autoLoadFrameVersion');
+
 // document.querySelector('#high-res').checked = 'true' == localStorage.getItem('high-res');
+
+const infoNumberInput = document.querySelector('#info-number'),
+		infoNoteInput = document.querySelector('#info-note'),
+		infoRarityInput = document.querySelector('#info-rarity'),
+		infoSetInput = document.querySelector('#info-set'),
+		infoLanguageInput = document.querySelector('#info-language');
+
+const enableImportCollectorInfoInput =document.querySelector('#enableImportCollectorInfo');
+const autoFrameInput = document.querySelector('#autoFrame');
+const autoFrameAlwaysNyxInput = document.querySelector('#autoframe-always-nyx');
+const artUpdateAutoFitInput = document.querySelector('#art-update-autofit');
+const lockSetSymbolInput = document.querySelector('#lockSetSymbolCode');
+const lockSetSymbolUrlInput = document.querySelector('#lockSetSymbolURL');
+const setSymbolSourceInput = document.querySelector('#set-symbol-source');
+const setSymbolCodeInput = document.querySelector('#set-symbol-code');
+
+
 
 // collector info (user defaults)
 var defaultCollector = JSON.parse(localStorage.getItem('defaultCollector') || '{}');
 if ('number' in defaultCollector) {
-	document.querySelector('#info-number').value = defaultCollector.number;
-	document.querySelector('#info-note').value = defaultCollector.note;
-	document.querySelector('#info-rarity').value = defaultCollector.rarity;
-	document.querySelector('#info-set').value = defaultCollector.setCode;
-	document.querySelector('#info-language').value = defaultCollector.lang;
+	if (infoNumberInput) infoNumberInput.value = defaultCollector.number;
+	if (infoNoteInput) infoNoteInput.value = defaultCollector.note;
+	if (infoRarityInput) infoRarityInput.value = defaultCollector.rarity;
+	if (infoSetInput) infoSetInput.value = defaultCollector.setCode;
+	if (infoLanguageInput) infoLanguageInput.value = defaultCollector.lang;
 	if (defaultCollector.starDot) {setTimeout(function(){defaultCollector.starDot = false; toggleStarDot();}, 500);}
 } else {
-	document.querySelector('#info-number').value = date.getFullYear();
+	if (infoNumberInput) infoNumberInput.value = date.getFullYear();
 }
 if (!localStorage.getItem('enableImportCollectorInfo')) {
 	localStorage.setItem('enableImportCollectorInfo', 'false');
 } else {
-	document.querySelector('#enableImportCollectorInfo').checked = (localStorage.getItem('enableImportCollectorInfo') == 'true');
+	if (enableImportCollectorInfoInput) enableImportCollectorInfoInput.checked = (localStorage.getItem('enableImportCollectorInfo') == 'true');
 }
 if (!localStorage.getItem('enableNewCollectorStyle')) {
 	localStorage.setItem('enableNewCollectorStyle', 'false');
 } else {
-	document.querySelector('#enableNewCollectorStyle').checked = (localStorage.getItem('enableNewCollectorStyle') == 'true');
+	if (enableImportCollectorInfoInput) enableImportCollectorInfoInput.checked = (localStorage.getItem('enableNewCollectorStyle') == 'true');
 }
 if (!localStorage.getItem('enableCollectorInfo')) {
 	localStorage.setItem('enableCollectorInfo', 'true');
 } else {
-	document.querySelector('#enableCollectorInfo').checked = (localStorage.getItem('enableCollectorInfo') == 'true');
+	if (enableImportCollectorInfoInput) enableImportCollectorInfoInput.checked = (localStorage.getItem('enableCollectorInfo') == 'true');
 }
 if (!localStorage.getItem('autoFrame')) {
 	localStorage.setItem('autoFrame', 'false');
 } else {
-	document.querySelector('#autoFrame').value = localStorage.getItem('autoFrame');
+	if (autoFrameInput) autoFrameInput.value = localStorage.getItem('autoFrame');
 }
 if (!localStorage.getItem('autoframe-always-nyx')) {
 	localStorage.setItem('autoframe-always-nyx', 'false');
 }
-document.querySelector('#autoframe-always-nyx').checked = localStorage.getItem('autoframe-always-nyx');
+if (autoFrameAlwaysNyxInput) {
+	autoFrameAlwaysNyxInput.checked = localStorage.getItem('autoframe-always-nyx')
+}
+
 if (!localStorage.getItem('autoFit')) {
 	localStorage.setItem('autoFit', 'true');
 } else {
-	document.querySelector('#art-update-autofit').checked = localStorage.getItem('autoFit');
+	if (artUpdateAutoFitInput) artUpdateAutoFitInput.checked = localStorage.getItem('autoFit');
 }
 
 // lock set symbol code (user defaults)
@@ -6188,22 +6227,31 @@ if (!localStorage.getItem('lockSetSymbolCode')) {
 	localStorage.setItem('lockSetSymbolCode', '');
 }
 if (localStorage.getItem('set-symbol-source')) {
-	document.querySelector('#set-symbol-source').value = localStorage.getItem('set-symbol-source');
+	if (setSymbolSourceInput) setSymbolSourceInput.value = localStorage.getItem('set-symbol-source');
 }
-document.querySelector('#lockSetSymbolCode').checked = '' != localStorage.getItem('lockSetSymbolCode');
-if (document.querySelector('#lockSetSymbolCode').checked) {
-	document.querySelector('#set-symbol-code').value = localStorage.getItem('lockSetSymbolCode');
-	fetchSetSymbol();
+if (lockSetSymbolInput) {
+	lockSetSymbolInput.checked = '' != localStorage.getItem('lockSetSymbolCode');
+	if (lockSetSymbolInput.checked) {
+		if (setSymbolCodeInput) {
+			setSymbolCodeInput.value = localStorage.getItem('lockSetSymbolCode');
+		}
+		fetchSetSymbol();
+	}
 }
+
 
 // lock set symbol url (user defaults)
 if (!localStorage.getItem('lockSetSymbolURL')) {
 	localStorage.setItem('lockSetSymbolURL', '');
 }
-document.querySelector('#lockSetSymbolURL').checked = '' != localStorage.getItem('lockSetSymbolURL');
-if (document.querySelector('#lockSetSymbolURL').checked) {
-	setSymbol.src = localStorage.getItem('lockSetSymbolURL');
+if (lockSetSymbolUrlInput) {
+	lockSetSymbolUrlInput.checked = '' != localStorage.getItem('lockSetSymbolURL');
+
+	if (lockSetSymbolUrlInput.checked) {
+		setSymbol.src = localStorage.getItem('lockSetSymbolURL');
+	}
 }
+
 
 //bind inputs together
 bindInputs('#frame-editor-hsl-hue', '#frame-editor-hsl-hue-slider');
@@ -6212,6 +6260,5 @@ bindInputs('#frame-editor-hsl-lightness', '#frame-editor-hsl-lightness-slider');
 bindInputs('#show-guidelines', '#show-guidelines-2', true);
 
 // Load / init whatever
-loadScript('/js/frames/groupStandard-3.js');
-loadAvailableCards();
+import'../js/frames/groupStandard-3.js';
 initDraggableArt();

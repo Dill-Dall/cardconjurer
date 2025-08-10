@@ -7,7 +7,7 @@ if (localStorage.getItem('cardKeyList') == null) {
   loadSavedCards()
 }
 
-function loadSavedCards() {
+export function loadSavedCards() {
   localStorageCardKeyList = JSON.parse(localStorage.getItem('cardKeyList'))
 
   const cardsToImport = document.getElementById('inputCardToImport');
@@ -21,7 +21,7 @@ function loadSavedCards() {
   }
 }
 
-function saveCard() {
+export function saveCard() {
   var savedCardKey = cardTextList[0].text
   if (!savedCardKey) {
     savedCardKey = 'unnamed'
@@ -51,7 +51,7 @@ function saveCard() {
   cardToBeSaved.save()
 }
 
-function deleteCard() {
+export function deleteCard() {
   if (confirm('Are you sure you want to delete ' + selectedCardKey + '?')) {
     localStorageCardKeyList.splice(localStorageCardKeyList.indexOf(selectedCardKey), 1)
     document.getElementById('inputCardToImport').innerHTML = '<option disabled selected="selected">None selected</option>'
@@ -63,10 +63,10 @@ function deleteCard() {
   }
 }
 
-function importSavedCard(localStorageKey = document.getElementById('inputCardToImport').value) {
+export function importSavedCard(localStorageKey = document.getElementById('inputCardToImport').value) {
   if (localStorageKey) {
     selectedCardKey = localStorageKey
-    importedCard = JSON.parse(localStorage.getItem(localStorageKey))
+    var importedCard = JSON.parse(localStorage.getItem(localStorageKey))
     //Skip trackers
     skipLoadTextList = 0
     skipResizeCardArt = 1

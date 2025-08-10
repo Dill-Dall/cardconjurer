@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2018",
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "reactNamespace": "React",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "types": ["react", "react-dom"],
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "DOM",
+      "ES2024",
+    ],
+  },
+  "include": ["js/**/*", "src/**/*", "vite.config.js"]
+}

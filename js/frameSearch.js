@@ -1,4 +1,4 @@
-const frameNames = new Map ([
+export const frameNames = new Map ([
 	//standard
 	['Regular Frames', 'M15Regular-1'],
 	['Enchantment Frames (Nyx)', 'M15Nyx'],
@@ -275,16 +275,14 @@ const frameNames = new Map ([
 	['Circuit', 'Circuit'],
 ]);
 
-frameSearch = (str) => {
+export const frameSearch = (str) => {
 	if (frameNames.has(str)) loadScript("/js/frames/pack" + frameNames.get(str) + ".js");
 }
 
-//Thank you to w3schools for providing the following quick-and-easy autocomplete code :)
-//(some modifications made)
-
-autocomplete(document.getElementById("frameSearch"), Array.from(frameNames.keys()));
-
-function autocomplete(inp, arr) {
+export function autocomplete(inp, arr) {
+	if (!inp) {
+		return;
+	}
 	var currentFocus;
 	inp.addEventListener("input", function(e) {
 		var a, b, i, val = this.value;
@@ -351,3 +349,6 @@ function autocomplete(inp, arr) {
 		closeAllLists(e.target);
 	});
 }
+
+autocomplete(document.getElementById("frameSearch"), Array.from(frameNames.keys()));
+

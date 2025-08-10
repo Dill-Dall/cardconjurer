@@ -1,3 +1,5 @@
+import {loadFramePacks} from "../creator-23";
+
 loadFramePacks([
 	{name:'Regular Frames', value:'M15Regular-1'},
 	{name:'Enchantment Frames (Nyx)', value:'M15Nyx'},

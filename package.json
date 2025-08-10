@@ -2,9 +2,19 @@
   "name": "cardconjurer",
   "version": "1.0.0",
   "scripts": {
-    "start": "live-server --port=4242 --watch=about,askurza,converter,core,creator,css,globalHTML,js,legal,phyrexian,print,theme,tutorial"
+    "start": "vite serve",
+    "start:live": "live-server --port=4242 --watch=about,askurza,converter,core,creator,css,globalHTML,js,legal,phyrexian,print,theme,tutorial"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router": "^7.8.0"
   },
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "live-server": "^1.2.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.1"
   }
 }

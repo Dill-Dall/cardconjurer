@@ -1,3 +1,17 @@
+import {
+	artistEdited,
+	card,
+	enableNewCollectorInfoStyle,
+	fetchDISetSymbol,
+	setCollectorInfo,
+	setImageUrl
+} from "./creator-23";
+
+import {getBaseSize} from "./main-1";
+
+var availableFrames;
+var art;
+
 function parseCSV(text) {
 	const rows = [];
 	let currentRow = [];
@@ -46,7 +60,7 @@ function parseCSV(text) {
 }
 
 
-function formatManaCost(raw) {
+export function formatManaCost(raw) {
 	if (!raw) return '';
 	return raw
 		.trim()
@@ -55,11 +69,11 @@ function formatManaCost(raw) {
 		.join('');
 }
 
-function safeFilename(name) {
+export function safeFilename(name) {
 	return name.replace(/[^a-z0-9]/gi, '_');
 }
 
-function addToGallery() {
+export function addToGallery() {
 	const canvas = (typeof cardCanvas !== 'undefined') ? cardCanvas : document.querySelector('canvas');
 	const dataURL = canvas.toDataURL('image/png');
 	const imgElem = document.createElement('img');
@@ -101,11 +115,11 @@ async function applyCardArtFromCSVRow(row) {
 	});
 }
 
-function setDiStandard() {
+export function setDiStandard() {
 	artistEdited("DTF");
 }
 
-async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
+export async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
 	await document.fonts.ready;
 
 	enableNewCollectorInfoStyle();
@@ -118,9 +132,9 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 		number: "2025"
 	});
 
-	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
+	console.log("[DEBUG] Available frame names (final):", availableFrames?.map(f => f.name));
 
-	const originalArtOnload = art.onload;
+	const originalArtOnload = art?.onload;
 
 	for (const row of rows) {
 		card.frames = [];
@@ -255,7 +269,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 
 window.generateCardsFromCSV = generateCardsFromCSV;
 
-function importCsv() {
+export function importCsv() {
 	const inputElement = document.createElement('import-csv-input');
 	if (!inputElement) {
 		throw new Error('CSV input is missing.');
@@ -264,7 +278,7 @@ function importCsv() {
 	document.getElementById('import-csv-input').click();
 }
 
-async function onImportCsv(event) {
+export async function onImportCsv(event) {
 	console.log('File selected:', event.target.files[0]);
 	const file = event.target.files[0];
 	if (!file) return;
