@@ -3,7 +3,7 @@ if (!loadedVersions.includes('/js/frames/versionDungeon.js')) {
 	loadedVersions.push('/js/frames/versionDungeon.js');
 	sizeCanvas('dungeon');
 	sizeCanvas('dungeonFX');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `dungeon`)">Dungeon</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `dungeon`)">Dungeon</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-dungeon';
 	newHTML.classList.add('hidden');

@@ -3,7 +3,7 @@ if (!loadedVersions.includes('/js/frames/versionPlaneswalker.js')) {
 	loadedVersions.push('/js/frames/versionPlaneswalker.js');
 	sizeCanvas('planeswalkerPreFrame');
 	sizeCanvas('planeswalkerPostFrame');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `planeswalker`)">Planeswalker</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `planeswalker`)">Planeswalker</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-planeswalker';
 	newHTML.classList.add('hidden');

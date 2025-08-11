@@ -14,7 +14,7 @@ if (!loadedVersions.includes('/js/frames/versionQRCode.js')) {
 	}
 	sizeCanvas('qrious');
 	sizeCanvas('qrCode');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `qrCode`)">QR Code</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `qrCode`)">QR Code</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-qrCode';
 	newHTML.classList.add('hidden');

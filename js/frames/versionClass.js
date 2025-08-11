@@ -2,7 +2,7 @@
 if (!loadedVersions.includes('/js/frames/versionClass.js')) {
 	loadedVersions.push('/js/frames/versionClass.js');
 	sizeCanvas('class');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `class`)">Class</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `class`)">Class</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-class';
 	newHTML.classList.add('hidden');

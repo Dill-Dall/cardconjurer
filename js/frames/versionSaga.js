@@ -2,7 +2,7 @@
 if (!loadedVersions.includes('/js/frames/versionSaga.js')) {
 	loadedVersions.push('/js/frames/versionSaga.js');
 	sizeCanvas('saga');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `saga`)">Saga</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `saga`)">Saga</button>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-saga';
 	newHTML.classList.add('hidden');

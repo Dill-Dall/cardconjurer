@@ -1,7 +1,7 @@
 //checks to see if it needs to run
 if (!loadedVersions.includes('/js/frames/versionNeoBasics.js')) {
 	loadedVersions.push('/js/frames/versionNeoBasics.js');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `neoBasics`)">Kamigawa Basics</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `neoBasics`)">Kamigawa Basics</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-neoBasics';
 	newHTML.classList.add('hidden');
