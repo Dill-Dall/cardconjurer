@@ -1,7 +1,7 @@
 //checks to see if it needs to run
 if (!loadedVersions.includes('/js/frames/versionMysticalArchiveJP.js')) {
 	loadedVersions.push('/js/frames/versionMysticalArchiveJP.js');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `mysticalArchive`)">Mystical Archive</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `mysticalArchive`)">Mystical Archive</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-mysticalArchive';
 	newHTML.classList.add('hidden');

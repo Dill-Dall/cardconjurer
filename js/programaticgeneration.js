@@ -111,21 +111,27 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	enableNewCollectorInfoStyle();
 	setDiStandard();
 
-	setCollectorInfo({
-		setCode: "DIN",
-		lang: "EN",
-		note: "D.I."
-	});
-
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
 	const originalArtOnload = art.onload;
 
 	for (const row of rows) {
+		setCollectorInfo({
+			setCode: row['Set Code'] || "DIN",
+			lang: row['Language'] || "EN",
+			note: row['Collector Note'] || "D.I.",
+			number: row['Collector Number'] || "2025",
+		});
+
 		card.frames = [];
 		try {
 			if (!row['Cards']) {
 				console.warn('[SKIP] No card name found in row:', row);
+				continue;
+			}
+
+			if (row['Status'] === "Canceled") {
+				console.warn('[SKIP] Canceled card detected, ignoring:', row);
 				continue;
 			}
 
@@ -140,11 +146,12 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
 
-			rarity = row['R']?.trim().toLowerCase();
-			if (!rarity) {
-				rarity = 'c';
-			}
-			setSymbolUri = "/img/setSymbols/private/di-" + rarity + ".svg";
+			const rarity = row['R']?.trim().toLowerCase() || "c";
+			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() || (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
+			const setSymbolUri = `/img/setSymbols/private/-${setSymbolIcon}.svg`;
+
+			card.infoRarity = rarity.toUpperCase();
+
 			console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
 			fetchDISetSymbol(setSymbolUri);
 

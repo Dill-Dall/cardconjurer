@@ -35,20 +35,16 @@ function getBaseSize(key, text) {
 		case "type":
 			return convertCharsToSize(text.length, -5,-20, 0.005, 30);
 		case "rules":
-			const fontSize = convertCharsToSize(
+			return convertCharsToSize(
 				text.length,
-				-10,
+				-12,
 				-50,        // penaltyFloor: lower floor for longer text
-				0.04,      // accelerationRate: very gentle curve
+				0.03,      // accelerationRate: very gentle curve
 				80,        // penaltyStartsAt: start penalty much later
 				1,          // curveExponent: nearly linear
 				1,          // initialPenalty: minimal base penalty
 				'gentle', // scalingMode: gentle for long text
 			);
-
-			console.log(fontSize);
-
-			return fontSize;
 		default:
 			return -5;
 	}

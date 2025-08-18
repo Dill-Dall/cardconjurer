@@ -234,10 +234,10 @@ function getInlineCardName() {
 function toggleCreatorTabs(event, target) {
 	Array.from(document.querySelector('#creator-menu-sections').children).forEach(element => element.classList.add('hidden'));
 	document.querySelector('#creator-menu-' + target).classList.remove('hidden');
-	selectSelectable(event);
+	selectSelectable(event, '.creator-menu-item');
 }
-function selectSelectable(event) {
-	var eventTarget = event.target.closest('.selectable');
+function selectSelectable(event, selector = '.selectable') {
+	var eventTarget = event.target.closest(selector);
 	Array.from(eventTarget.parentElement.children).forEach(element => element.classList.remove('selected'));
 	eventTarget.classList.add('selected');
 }
@@ -249,7 +249,7 @@ function dragEnd(event) {
 	Array.from(document.querySelectorAll('.dragging')).forEach(element => element.classList.remove('dragging'));
 }
 function touchMove(event) {
-	if (event.target.nodeName != 'H4') {
+	if (event.target.nodeName != 'p') {
 		event.preventDefault();
 	}
 	var clientX = event.touches[0].clientX;
@@ -382,6 +382,10 @@ function findManaSymbolIndex(string) {
 }
 function getManaSymbol(key) {
 	return mana.get(key);
+}
+function clearFrames() {
+	card.frames = [];
+	drawFrames();
 }
 //FRAME TAB
 function drawFrames() {
@@ -945,6 +949,10 @@ function autoFrame() {
 	} else if (frame == 'Borderless') {
 		group = 'Showcase-5';
 		autoBorderlessFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text);
+	} else if (frame == 'BorderlessUB') {
+		group = 'Showcase-5';
+		autoBorderlessUBFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text);
+		frame = 'Borderless';
 	}
 
 	if (autoFramePack != frame) {
@@ -961,37 +969,49 @@ async function autoUBFrame(colors, mana_cost, type_line, power) {
 
 	var properties = cardFrameProperties(colors, mana_cost, type_line, power);
 
+	var style = false;
+	if (type_line.toLowerCase().includes('enchantment creature') || type_line.toLowerCase().includes('enchantment artifact') || (document.querySelector('#autoframe-always-nyx').checked && type_line.toLowerCase().includes('enchantment'))) {
+		style = 'Nyx';
+	}
+
 	// Set frames
 
 	if (type_line.toLowerCase().includes('legendary')) {
-		if (properties.pinlineRight) {
-			frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Crown', true));
+		if (style == 'Nyx') {
+			if (properties.pinlineRight) {
+				frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Inner Crown', true, style));
+			}
+			frames.push(makeUBFrameByLetter(properties.pinline, 'Inner Crown', false, style));
 		}
-		frames.push(makeUBFrameByLetter(properties.pinline, "Crown", false));
-		frames.push(makeUBFrameByLetter(properties.pinline, "Crown Border Cover", false));
+
+		if (properties.pinlineRight) {
+			frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Crown', true, style));
+		}
+		frames.push(makeUBFrameByLetter(properties.pinline, "Crown", false, style));
+		frames.push(makeUBFrameByLetter(properties.pinline, "Crown Border Cover", false, style));
 	}
 	if (properties.pinlineRight) {
-		frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Stamp', true));
+		frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Stamp', true, style));
 	}
-	frames.push(makeUBFrameByLetter(properties.pinline, "Stamp", false));
+	frames.push(makeUBFrameByLetter(properties.pinline, "Stamp", false, style));
 	if (properties.pt) {
-		frames.push(makeUBFrameByLetter(properties.pt, 'PT', false));
+		frames.push(makeUBFrameByLetter(properties.pt, 'PT', false, style));
 	}
 	if (properties.pinlineRight) {
-		frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Pinline', true));
+		frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Pinline', true, style));
 	}
-	frames.push(makeUBFrameByLetter(properties.pinline, 'Pinline', false));
-	frames.push(makeUBFrameByLetter(properties.typeTitle, 'Type', false));
-	frames.push(makeUBFrameByLetter(properties.typeTitle, 'Title', false));
+	frames.push(makeUBFrameByLetter(properties.pinline, 'Pinline', false, style));
+	frames.push(makeUBFrameByLetter(properties.typeTitle, 'Type', false, style));
+	frames.push(makeUBFrameByLetter(properties.typeTitle, 'Title', false, style));
 	if (properties.pinlineRight) {
-		frames.push(makeUBFrameByLetter(properties.rulesRight, 'Rules', true));
+		frames.push(makeUBFrameByLetter(properties.rulesRight, 'Rules', true, style));
 	}
-	frames.push(makeUBFrameByLetter(properties.rules, 'Rules', false));
+	frames.push(makeUBFrameByLetter(properties.rules, 'Rules', false, style));
 	if (properties.frameRight) {
-		frames.push(makeUBFrameByLetter(properties.frameRight, 'Frame', true));
+		frames.push(makeUBFrameByLetter(properties.frameRight, 'Frame', true, style));
 	}
-	frames.push(makeUBFrameByLetter(properties.frame, 'Frame', false));
-	frames.push(makeUBFrameByLetter(properties.frame, 'Border', false));
+	frames.push(makeUBFrameByLetter(properties.frame, 'Frame', false, style));
+	frames.push(makeUBFrameByLetter(properties.frame, 'Border', false, style));
 
 	if (card.text.pt && type_line.includes('Vehicle') && !card.text.pt.text.includes('fff')) {
 		card.text.pt.text = '{fontcolor#fff}' + card.text.pt.text;
@@ -1125,7 +1145,11 @@ async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'reg
 	document.querySelector('#frame-list').innerHTML = null;
 
 	var properties = cardFrameProperties(colors, mana_cost, type_line, power);
-	if (style != 'ub' && style != 'fullart') {
+	if (style == 'ub') {
+		if (type_line.toLowerCase().includes('enchantment creature') || type_line.toLowerCase().includes('enchantment artifact') || (document.querySelector('#autoframe-always-nyx').checked && type_line.toLowerCase().includes('enchantment'))) {
+			style = 'ubnyx';
+		}
+	} else if (style != 'fullart') {
 	 	if (type_line.toLowerCase().includes('snow')) {
 			style = 'snow';
 		} else if (type_line.toLowerCase().includes('enchantment creature') || type_line.toLowerCase().includes('enchantment artifact') || (document.querySelector('#autoframe-always-nyx').checked && type_line.toLowerCase().includes('enchantment'))) {
@@ -1135,7 +1159,7 @@ async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'reg
 
 	// Set frames
 	if (type_line.includes('Legendary')) {
-		if (style == 'Nyx') {
+		if (style == 'Nyx' || style == 'ubnyx') {
 			if (properties.pinlineRight) {
 				frames.push(makeM15NewFrameByLetter(properties.pinlineRight, 'Inner Crown', true, style));
 			}
@@ -1150,7 +1174,7 @@ async function autoM15NewFrame(colors, mana_cost, type_line, power, style = 'reg
 		frames.push(makeM15NewFrameByLetter(properties.pinline, "Crown Border Cover", false, style));
 	}
 
-	if (style == 'ub') {
+	if (style == 'ub' || style == 'ubnyx') {
 		if (properties.pinlineRight) {
 			frames.push(makeM15NewFrameByLetter(properties.pinlineRight, 'Stamp', true, style));
 		}
@@ -1264,7 +1288,7 @@ async function autoM15EighthUBFrame(colors, mana_cost, type_line, power) {
 			if (properties.pinlineRight) {
 				frames.push(makeM15EighthUBFrameByLetter(properties.pinlineRight, 'Inner Crown', true, style));
 			}
-			frames.push(makeM15FrameByLetter(properties.pinline, 'Inner Crown', false, style));
+			frames.push(makeM15EighthUBFrameByLetter(properties.pinline, 'Inner Crown', false, style));
 		}
 
 		if (properties.pinlineRight) {
@@ -1324,12 +1348,66 @@ async function autoBorderlessFrame(colors, mana_cost, type_line, power) {
 		}
 
 		if (properties.pinlineRight) {
-			frames.push(makeBorderlessFrameByLetter(properties.pinlineRight, 'Crown', true));
+			frames.push(makeBorderlessFrameByLetter(properties.pinlineRight, 'Crown', true, style));
 		}
 		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Crown", false, style));
 		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Legend Crown Outline", false))
 		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Crown Border Cover", false));
 	}
+	if (properties.pt) {
+		frames.push(makeBorderlessFrameByLetter(properties.pt, 'PT', false));
+	}
+	if (properties.pinlineRight) {
+		frames.push(makeBorderlessFrameByLetter(properties.pinlineRight, 'Pinline', true));
+	}
+	frames.push(makeBorderlessFrameByLetter(properties.pinline, 'Pinline', false));
+	frames.push(makeBorderlessFrameByLetter(properties.typeTitle, 'Type', false));
+	frames.push(makeBorderlessFrameByLetter(properties.typeTitle, 'Title', false));
+	frames.push(makeBorderlessFrameByLetter(properties.rules, 'Rules', false));
+	frames.push(makeBorderlessFrameByLetter(properties.frame, 'Border', false));
+
+	// if (card.text.pt && type_line.includes('Vehicle') && !card.text.pt.text.includes('fff')) {
+	// 	card.text.pt.text = '{fontcolor#fff}' + card.text.pt.text;
+	// }
+
+	card.frames = frames;
+	card.frames.reverse();
+	await card.frames.forEach(item => addFrame([], item));
+	card.frames.reverse();
+}
+async function autoBorderlessUBFrame(colors, mana_cost, type_line, power) {
+	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
+
+	//clear the draggable frames
+	card.frames = [];
+	document.querySelector('#frame-list').innerHTML = null;
+
+	var properties = cardFrameProperties(colors, mana_cost, type_line, power, 'Borderless');
+	var style = 'regular';
+	if (type_line.toLowerCase().includes('enchantment creature') || type_line.toLowerCase().includes('enchantment artifact') || (document.querySelector('#autoframe-always-nyx').checked && type_line.toLowerCase().includes('enchantment'))) {
+		style = 'Nyx';
+	}
+
+	// Set frames
+	if (type_line.includes('Legendary')) {
+		if (style == 'Nyx') {
+			if (properties.pinlineRight) {
+				frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Inner Crown', true));
+			}
+			frames.push(makeUBFrameByLetter(properties.pinline, 'Inner Crown', false, style));
+		}
+
+		if (properties.pinlineRight) {
+			frames.push(makeBorderlessFrameByLetter(properties.pinlineRight, 'Crown', true, style, true));
+		}
+		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Crown", false, style, true));
+		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Legend Crown Outline", false))
+		frames.push(makeBorderlessFrameByLetter(properties.pinline, "Crown Border Cover", false));
+	}
+	if (properties.pinlineRight) {
+		frames.push(makeUBFrameByLetter(properties.pinlineRight, 'Stamp', true, style));
+	}
+	frames.push(makeUBFrameByLetter(properties.pinline, "Stamp", false, style));
 	if (properties.pt) {
 		frames.push(makeBorderlessFrameByLetter(properties.pt, 'PT', false));
 	}
@@ -1716,18 +1794,34 @@ function makeM15NewFrameByLetter(letter, mask = false, maskToRightHalf = false, 
 		'BL': 'Black Land',
 		'RL': 'Red Land',
 		'GL': 'Green Land',
-		'ML': 'Multicolored Land'
+		'ML': 'Multicolored Land',
+		'WE': 'White Enchantment',
+		'UE': 'Blue Enchantment',
+		'BE': 'Black Enchantment',
+		'RE': 'Red Enchantment',
+		'GE': 'Green Enchantment',
+		'ME': 'Multicolored Enchantment',
+		'AE': 'Artifact Enchantment'
+	}
+
+	if (style == 'ubnyx') {
+		letter += 'E'
+		if (mask == "Inner Crown") {
+			style = 'nyx';
+		} else {
+			style = 'ub';
+		}
 	}
 
 	if (letter.length == 2) {
 		letter = letter.split("").reverse().join("");
 	}
 
-	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && letter.includes('L') && letter.length > 1) {
+	if ((mask == 'Crown' || mask == 'PT' || mask.includes('Stamp')) && (letter.includes('L') || letter.includes('E')) && letter.length > 1) {
 		letter = letter[1];
 	}
 
-	var frameName = frameNames[letter];
+	var frameName = frameNames[letter.split("").reverse().join("")];
 
 	if (mask == "Crown Border Cover") {
 		return {
@@ -1977,7 +2071,7 @@ function makeM15EighthFrameByLetter(letter, mask = false, maskToRightHalf = fals
 
 	return frame;
 }
-function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = false) {
+function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
 	letter = letter.toUpperCase();
 	var frameNames = {
 		'W': 'White',
@@ -1995,10 +2089,21 @@ function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = fa
 		'BL': 'Black Land',
 		'RL': 'Red Land',
 		'GL': 'Green Land',
-		'ML': 'Multicolored Land'
+		'ML': 'Multicolored Land',
+		'WE': 'White Enchantment',
+		'UE': 'Blue Enchantment',
+		'BE': 'Black Enchantment',
+		'RE': 'Red Enchantment',
+		'GE': 'Green Enchantment',
+		'ME': 'Multicolored Enchantment',
+		'AE': 'Artifact Enchantment'
+	};
+
+	if (style == 'Nyx') {
+		letter = letter + 'E';
 	}
 
-	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && letter.includes('L') && letter.length > 1) {
+	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && (letter.includes('L') || letter.includes('E')) && letter.length > 1) {
 		letter = letter[0];
 	}
 
@@ -2042,7 +2147,7 @@ function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = fa
 	if (mask == "Inner Crown") {
 		var frame = {
 			'name': frameName + ' ' + mask + ' (' + style + ')',
-			'src': '/img/frames/m15/innerCrowns/m15InnerCrown' + letter + style + '.png',
+			'src': '/img/frames/m15/innerCrowns/m15InnerCrown' + letter + style + 'UB.png',
 			'masks': [],
 			'bounds': {
 				'height': 0.0239,
@@ -2108,7 +2213,7 @@ function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = fa
 
 	return frame;
 }
-function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = false, style) {
+function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = false, style, universesBeyond = false) {
 	letter = letter.toUpperCase();
 
 	if (letter == 'V') {
@@ -2169,9 +2274,13 @@ function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = fal
 	}
 
 	if (mask == "Crown") {
-		var frame = {
+		var src = '/img/frames/m15/crowns/m15Crown' + letter + 'Floating.png';
+		if (universesBeyond) {
+			src = '/img/frames/m15/ub/crowns/floating/' + letter + '.png';
+		}
+		var frame = { 
 			'name': frameName + ' Legend Crown',
-			'src': '/img/frames/m15/crowns/m15Crown' + letter + 'Floating.png',
+			'src': src,
 			'masks': [],
 			'bounds': {
 				'height': 0.1024,
@@ -2537,7 +2646,7 @@ function makeExtendedArtFrameByLetter(letter, mask = false, maskToRightHalf = fa
 
 	return frame;
 }
-function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false) {
+function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false, style = false) {
 	letter = letter.toUpperCase();
 
 	if (letter == 'C') {
@@ -2560,10 +2669,21 @@ function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false) {
 		'BL': 'Black Land',
 		'RL': 'Red Land',
 		'GL': 'Green Land',
-		'ML': 'Multicolored Land'
+		'ML': 'Multicolored Land',
+		'WE': 'White Enchantment',
+		'UE': 'Blue Enchantment',
+		'BE': 'Black Enchantment',
+		'RE': 'Red Enchantment',
+		'GE': 'Green Enchantment',
+		'ME': 'Multicolored Enchantment',
+		'AE': 'Artifact Enchantment'
+	};
+
+	if (style == 'Nyx') {
+		letter = letter + 'E';
 	}
 
-	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && letter.includes('L') && letter.length > 1) {
+	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && (letter.includes('L') || letter.includes('E')) && letter.length > 1) {
 		letter = letter[0];
 	}
 
@@ -2612,6 +2732,27 @@ function makeUBFrameByLetter(letter, mask = false, maskToRightHalf = false) {
 				'width': 0.1494,
 				'x': 0.4254,
 				'y': 0.9005
+			}
+		}
+		if (maskToRightHalf) {
+			frame.masks.push({
+				'src': '/img/frames/maskRightHalf.png',
+				'name': 'Right Half'
+			});
+		}
+		return frame;
+	}
+
+	if (mask == "Inner Crown") {
+		var frame = {
+			'name': frameName + ' ' + mask + ' (' + style + ')',
+			'src': '/img/frames/m15/innerCrowns/m15InnerCrown' + letter + style + 'UB.png',
+			'masks': [],
+			'bounds': {
+				'height': 0.0239,
+				'width': 0.672,
+				'x': 0.164,
+				'y': 0.0239
 			}
 		}
 		if (maskToRightHalf) {
@@ -3147,11 +3288,11 @@ async function addFrame(additionalMasks = [], loadingFrame = false) {
 		frameElementMask.src = black.src;
 	}
 	frameElement.appendChild(frameElementMask);
-	var frameElementLabel = document.createElement('h4');
+	var frameElementLabel = document.createElement('p');
 	frameElementLabel.innerHTML = frameToAdd.name;
 	frameToAdd.masks.forEach(item => frameElementLabel.innerHTML += ', ' + item.name);
 	frameElement.appendChild(frameElementLabel);
-	var frameElementClose = document.createElement('h4');
+	var frameElementClose = document.createElement('p');
 	frameElementClose.innerHTML = 'X';
 	frameElementClose.classList = 'frame-element-close';
 	frameElementClose.onclick = removeFrame;
@@ -3367,8 +3508,19 @@ function loadTextOptions(textObject, replace= true) {
 	Object.entries(oldCardText).forEach(item => {
 		savedTextContents[item[0]] = oldCardText[item[0]].text;
 	});
+
+	const textEntries = Object.entries(textObject).map(([key, item]) => {
+		const result = Object.assign(
+			{},
+			item,
+			{ fontSize: getBaseSize(key, item.text) }
+		);
+
+		return [key, result];
+	});
+
 	if (replace) {
-		card.text = textObject;
+		card.text = Object.fromEntries(textEntries)
 	} else {
 		Object.keys(textObject).forEach(key => {
 			card.text[key] = textObject[key];
@@ -3383,24 +3535,12 @@ function loadTextOptions(textObject, replace= true) {
 		} else if (savedTextContents[key]) {
 			card.text[item[0]].text = savedTextContents[item[0]];
 		}
-		var textOptionElement = document.createElement('h4');
+		var textOptionElement = document.createElement('button');
 		textOptionElement.innerHTML = item[1].name;
-		textOptionElement.classList = 'selectable text-option';
+		textOptionElement.classList = 'text-option';
 		textOptionElement.onclick = textOptionClicked;
 		document.querySelector('#text-options').appendChild(textOptionElement);
 	});
-
-	const textEntries = Object.entries(textObject).map(([key, item]) => {
-		const result = Object.assign(
-			{},
-			item,
-			{ fontSize: getBaseSize(key, item.text) }
-		);
-
-		return [key, result];
-	});
-
-	card.text = Object.fromEntries(textEntries)
 
 	document.querySelector('#text-options').firstChild.click();
 	drawTextBuffer();
@@ -3408,9 +3548,25 @@ function loadTextOptions(textObject, replace= true) {
 }
 function textOptionClicked(event) {
 	selectedTextIndex = getElementIndex(event.target);
-	document.querySelector('#text-editor').value = Object.entries(card.text)[selectedTextIndex][1].text;
-	document.querySelector('#text-editor-font-size').value = Object.entries(card.text)[selectedTextIndex][1].fontSize;
-	selectSelectable(event);
+	const textObject = Object.entries(card.text)[selectedTextIndex]?.[1];
+	if (textObject) {
+		document.querySelector('#text-editor').value = textObject.text;
+		document.querySelector('#text-editor-font-size').value = textObject.fontSize ?? 0;
+	}
+
+	selectSelectable(event, '.text-option');
+}
+function lockCanvasHeight(event) {
+	const isLocked = event.target.checked;
+
+	const canvasContainer = document.querySelector('#creator-canvas-wrapper .creator-canvas');
+	const canvasLockClass = 'canvas-lock';
+
+	if (isLocked) {
+		canvasContainer.classList.add(canvasLockClass);
+	} else {
+		canvasContainer.classList.remove(canvasLockClass);
+	}
 }
 function textboxEditor() {
 	var selectedTextbox = card.text[Object.keys(card.text)[selectedTextIndex]];
@@ -3426,6 +3582,9 @@ function textboxEditor() {
 }
 function textEdited() {
 	card.text[Object.keys(card.text)[selectedTextIndex]].text = curlyQuotes(document.querySelector('#text-editor').value);
+	drawTextBuffer();
+}
+function textEditUpdateBuffer() {
 	drawTextBuffer();
 	autoFrameBuffer();
 }
@@ -3447,7 +3606,6 @@ async function drawText() {
 	drawTextBetweenFrames = false;
 	for (var textObject of Object.entries(card.text)) {
 		await writeText(textObject[1], textContext);
-		continue;
 	}
 	if (drawTextBetweenFrames || redrawFrames) {
 		drawFrames();
@@ -3459,7 +3617,14 @@ async function drawText() {
 	}
 }
 var justifyWidth = 90;
+let manaSymbolsToRender = [];
 function writeText(textObject, targetContext) {
+
+	if (!textObject) {
+		return;
+	}
+
+	manaSymbolsToRender = [];
 	//Most bits of info about text loaded, with defaults when needed
 	var textX = scaleX(textObject.x) || scaleX(0);
 	var textY = scaleY(textObject.y) || scaleY(0);
@@ -3491,6 +3656,18 @@ function writeText(textObject, targetContext) {
 		}
 
 		rulesText = rulesText.replace(/ ?{i}\([^\)]+\){\/i}/g, '');
+
+		rawText = rulesText + flavorText;
+	} else if (document.querySelector('#italicize-reminder-text').checked && textObject.name && textObject.name != 'Title' && textObject.name != 'Type' && textObject.name != 'Mana Cost' && textObject.name != 'Power/Toughness') {
+		var rulesText = rawText;
+		var flavorText = '';
+		var flavorIndex = rawText.indexOf('{flavor}') || rawText.indexOf('///');
+		if (flavorIndex >= 0) {
+			flavorText = rawText.substring(flavorIndex);
+			rulesText = rawText.substring(0, flavorIndex);
+		}
+
+		rulesText = rulesText.replace(/\(([^)]+)\)/g, '{i}($1){/i}');
 
 		rawText = rulesText + flavorText;
 	}
@@ -3643,12 +3820,15 @@ function writeText(textObject, targetContext) {
 		lineContext.shadowBlur = textShadowBlur;
 		lineContext.strokeStyle = textObject.outlineColor || 'black';
 		var textOutlineWidth = scaleHeight(textObject.outlineWidth) || 0;
-
+		var textLineCap = textObject.lineCap || 'round';
+		var textLineJoin = textObject.lineJoin || 'round';
 		var hideBottomInfoBorder = card.hideBottomInfoBorder || false;
 		if (hideBottomInfoBorder && ['midLeft', 'topLeft', 'note', 'bottomLeft', 'wizards', 'bottomRight', 'rarity'].includes(textObject.name)) {
 			textOutlineWidth = 0;
 		}
 		lineContext.lineWidth = textOutlineWidth;
+		lineContext.lineCap = textLineCap;
+		lineContext.lineJoin = textLineJoin;
 		//Begin looping through words/codes
 		innerloop: for (word of splitText) {
 			var wordToWrite = word;
@@ -3661,6 +3841,8 @@ function writeText(textObject, targetContext) {
 					newLineSpacing = textSize * 0.35;
 				} else if (possibleCode == 'lns' || possibleCode == 'linenospace') {
 					newLine = true;
+				} else if (possibleCode == 'bullet' || possibleCode == '•') {
+					wordToWrite = '•';
 				} else if (possibleCode == 'bar') {
 					var barWidth = textWidth * 0.96;
 					var barHeight = scaleHeight(0.03);
@@ -3752,6 +3934,10 @@ function writeText(textObject, targetContext) {
 				} else if (possibleCode.includes('outline')) {
 					textOutlineWidth = parseInt(possibleCode.replace('outline', ''));
 					lineContext.lineWidth = textOutlineWidth;
+				} else if (possibleCode.includes('linecap')) {
+					lineContext.lineCap = possibleCode.replace('linecap', '').trim();
+				} else if (possibleCode.includes('linejoin')) {
+					lineContext.lineJoin = possibleCode.replace('linejoin', '').trim();
 				} else if (possibleCode.includes('upinline')) {
 					lineY -= parseInt(possibleCode.replace('upinline', '')) || 0;
 				} else if (possibleCode.substring(0, 2) == 'up' && possibleCode != 'up') {
@@ -3851,9 +4037,11 @@ function writeText(textObject, targetContext) {
 					lineContext.letterSpacing = possibleCode.replace('kerning', '') + 'px';
 					lineContext.font = lineContext.font; //necessary for the letterspacing update to be recognized
 				} else if (getManaSymbol(possibleCode.replaceAll('/', '')) != undefined || getManaSymbol(possibleCode.replaceAll('/', '').split('').reverse().join('')) != undefined) {
-					possibleCode = possibleCode.replaceAll('/', '')
+					var possibleCode = possibleCode.replaceAll('/', '');
 					var manaSymbol;
-					if (textObject.manaPrefix && (getManaSymbol(textObject.manaPrefix + possibleCode) != undefined || getManaSymbol(textObject.manaPrefix + possibleCode.split('').reverse().join('')) != undefined)) {
+					// Add symbol to render queue without drawing immediately
+					if (textObject.manaPrefix && 
+						(getManaSymbol(textObject.manaPrefix + possibleCode) != undefined || getManaSymbol(textObject.manaPrefix + possibleCode.split('').reverse().join('')) != undefined)) {
 						manaSymbol = getManaSymbol(textObject.manaPrefix + possibleCode) || getManaSymbol(textObject.manaPrefix + possibleCode.split('').reverse().join(''));
 					} else {
 						manaSymbol = getManaSymbol(possibleCode) || getManaSymbol(possibleCode.split('').reverse().join(''));
@@ -3900,29 +4088,29 @@ function writeText(textObject, targetContext) {
 						manaSymbolWidth *= textObject.manaImageScale;
 						manaSymbolHeight *= textObject.manaImageScale;
 					}
-					//fake shadow begins
-					var fakeShadow = lineCanvas.cloneNode();
-					var fakeShadowContext = fakeShadow.getContext('2d');
-					fakeShadowContext.clearRect(0, 0, fakeShadow.width, fakeShadow.height);
 					var backImage = null;
 					if (manaSymbol.backs) {
 						backImage = getManaSymbol('back' + Math.floor(Math.random() * manaSymbol.backs) + manaSymbol.back).image;
 					}
-					if (textArcRadius > 0) {
-						if (manaSymbol.backs) {
-							fakeShadowContext.drawImageArc(backImage, manaSymbolX, manaSymbolY, manaSymbolWidth, manaSymbolHeight, textArcRadius, textArcStart, currentX);
-						}
-						fakeShadowContext.drawImageArc(manaSymbol.image, manaSymbolX, manaSymbolY, manaSymbolWidth, manaSymbolHeight, textArcRadius, textArcStart, currentX);
-					} else if (manaSymbolColor) {
-						fakeShadowContext.fillImage(manaSymbol.image, manaSymbolX, manaSymbolY, manaSymbolWidth, manaSymbolHeight, manaSymbolColor);
-					} else {
-						if (manaSymbol.backs) {
-							fakeShadowContext.drawImage(backImage, manaSymbolX, manaSymbolY, manaSymbolWidth, manaSymbolHeight);
-						}
-						fakeShadowContext.drawImage(manaSymbol.image, manaSymbolX, manaSymbolY, manaSymbolWidth, manaSymbolHeight);
-					}
-					lineContext.drawImage(fakeShadow, 0, 0);
-					//fake shadow ends (thanks, safari)
+					// Add to render queue
+					manaSymbolsToRender.push({
+						symbol: manaSymbol,
+						x: manaSymbolX,
+						y: manaSymbolY, 
+						width: manaSymbolWidth,
+						height: manaSymbolHeight,
+						hasOutline: textOutlineWidth > 0,
+						color: manaSymbolColor,
+						radius: textArcRadius,
+						arcStart: textArcStart,
+						currentX: currentX,
+						backImage: backImage,
+						outlineWidth: textOutlineWidth,
+						shadowColor: textShadowColor,
+						shadowOffsetX: textShadowOffsetX,
+						shadowOffsetY: textShadowOffsetY,
+						shadowBlur: textShadowBlur
+					});
 					currentX += manaSymbolWidth + manaSymbolSpacing * 2;
 
 					manaSymbolColor = origManaSymbolColor;
@@ -3931,6 +4119,158 @@ function writeText(textObject, targetContext) {
 				}
 			}
 
+			function renderManaSymbols() {
+				if (manaSymbolsToRender.length === 0) return;
+
+				// Detect Safari browser
+				var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+				// Check if any symbols actually need outlines
+				var hasAnyOutlines = manaSymbolsToRender.some(symbolData => symbolData.hasOutline);
+				
+				if (!hasAnyOutlines) {
+					// Simple path: no outlines needed, just draw symbols normally
+					manaSymbolsToRender.forEach(symbolData => {
+						var imageToUse = symbolData.symbol.image;
+						var backImageToUse = symbolData.backImage;
+						
+						// For Safari, create a combined canvas first, then apply shadow
+						if (isSafari && (symbolData.symbol.image.src?.includes('.svg') || (backImageToUse?.src?.includes('.svg')))) {
+							// Create a combined canvas for both symbols
+							var combinedCanvas = document.createElement('canvas');
+							combinedCanvas.width = symbolData.width;
+							combinedCanvas.height = symbolData.height;
+							var combinedContext = combinedCanvas.getContext('2d');
+							
+							// Draw back image first (if exists)
+							if (symbolData.symbol.backs && backImageToUse) {
+								combinedContext.drawImage(backImageToUse, 0, 0, symbolData.width, symbolData.height);
+							}
+							
+							// Draw main symbol on top
+							combinedContext.drawImage(symbolData.symbol.image, 0, 0, symbolData.width, symbolData.height);
+							
+							// Now use the combined canvas as the image source
+							imageToUse = combinedCanvas;
+							backImageToUse = null; // Don't draw back separately since it's already combined
+						}
+						
+						if (symbolData.radius > 0) {
+							if (symbolData.symbol.backs && backImageToUse) {
+								lineContext.drawImageArc(backImageToUse, symbolData.x, symbolData.y, 
+									symbolData.width, symbolData.height, symbolData.radius, 
+									symbolData.arcStart, symbolData.currentX);
+							}
+							lineContext.drawImageArc(imageToUse, symbolData.x, symbolData.y, 
+								symbolData.width, symbolData.height, symbolData.radius,
+								symbolData.arcStart, symbolData.currentX);
+						} else if (symbolData.color) {
+							lineContext.fillImage(imageToUse, symbolData.x, symbolData.y,
+								symbolData.width, symbolData.height, symbolData.color);
+						} else {
+							if (symbolData.symbol.backs && backImageToUse) {
+								lineContext.drawImage(backImageToUse, symbolData.x, symbolData.y,
+									symbolData.width, symbolData.height);
+							}
+							lineContext.drawImage(imageToUse, symbolData.x, symbolData.y,
+								symbolData.width, symbolData.height);
+						}
+					});
+					
+					manaSymbolsToRender = [];
+					return; // This exits the function completely - no complex rendering
+				}
+
+				// Complex path: outlines needed, do multi-pass rendering
+				// This code should ONLY run when hasAnyOutlines is true
+				var outlineCanvas = lineCanvas.cloneNode(); 
+				var outlineContext = outlineCanvas.getContext('2d');
+				var symbolCanvas = lineCanvas.cloneNode();
+				var symbolContext = symbolCanvas.getContext('2d');
+				symbolContext.shadowColor = lineContext.shadowColor;
+				symbolContext.shadowOffsetX = lineContext.shadowOffsetX;
+				symbolContext.shadowOffsetY = lineContext.shadowOffsetY;
+				symbolContext.shadowBlur = lineContext.shadowBlur;
+
+				// Save existing text content
+				var tempCanvas = lineCanvas.cloneNode();
+				var tempContext = tempCanvas.getContext('2d');
+				tempContext.drawImage(lineCanvas, 0, 0);
+				// Clear the line context
+				lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
+				
+				// First pass: Draw outlines only
+				manaSymbolsToRender.forEach(symbolData => {
+					if (!symbolData.hasOutline) return;
+					outlineContext.fillStyle = 'black';
+					outlineContext.beginPath();
+					var centerX = symbolData.x + symbolData.width/2;
+					var centerY = symbolData.y + symbolData.height/2;
+					var baseRadius = Math.max(symbolData.width, symbolData.height) / 2;
+					// Fix: Use half the outline width to match text rendering behavior
+					var outlineRadius = baseRadius + (symbolData.outlineWidth || 0) / 2;
+					outlineContext.arc(centerX, centerY + (symbolData.radius ?? 0), outlineRadius, 0, 2 * Math.PI);
+					outlineContext.fill();
+				});
+				// Transfer outlines to main canvas
+				lineContext.drawImage(outlineCanvas, 0, 0);
+				
+				// Restore text content on top of outlines
+				lineContext.drawImage(tempCanvas, 0, 0);
+				
+				// Second pass: Draw mana symbols
+				manaSymbolsToRender.forEach(symbolData => {
+					var imageToUse = symbolData.symbol.image;
+					var backImageToUse = symbolData.backImage;
+					
+					// For Safari, create a combined canvas first, then apply shadow
+					if (isSafari && (symbolData.symbol.image.src?.includes('.svg') || (backImageToUse?.src?.includes('.svg')))) {
+						// Create a combined canvas for both symbols
+						var combinedCanvas = document.createElement('canvas');
+						combinedCanvas.width = symbolData.width;
+						combinedCanvas.height = symbolData.height;
+						var combinedContext = combinedCanvas.getContext('2d');
+						
+						// Draw back image first (if exists)
+						if (symbolData.symbol.backs && backImageToUse) {
+							combinedContext.drawImage(backImageToUse, 0, 0, symbolData.width, symbolData.height);
+						}
+						
+						// Draw main symbol on top
+						combinedContext.drawImage(symbolData.symbol.image, 0, 0, symbolData.width, symbolData.height);
+						
+						// Now use the combined canvas as the image source
+						imageToUse = combinedCanvas;
+						backImageToUse = null; // Don't draw back separately since it's already combined
+					}
+					
+					if (symbolData.radius > 0) {
+						if (symbolData.symbol.backs && backImageToUse) {
+							symbolContext.drawImageArc(backImageToUse, symbolData.x, symbolData.y, 
+								symbolData.width, symbolData.height, symbolData.radius, 
+								symbolData.arcStart, symbolData.currentX);
+						}
+						symbolContext.drawImageArc(imageToUse, symbolData.x, symbolData.y, 
+							symbolData.width, symbolData.height, symbolData.radius,
+							symbolData.arcStart, symbolData.currentX);
+					} else if (symbolData.color) {
+						symbolContext.fillImage(imageToUse, symbolData.x, symbolData.y,
+							symbolData.width, symbolData.height, symbolData.color);
+					} else {
+						if (symbolData.symbol.backs && backImageToUse) {
+							symbolContext.drawImage(backImageToUse, symbolData.x, symbolData.y,
+								symbolData.width, symbolData.height);
+						}
+						symbolContext.drawImage(imageToUse, symbolData.x, symbolData.y,
+							symbolData.width, symbolData.height);
+					}
+				});
+
+				// Draw symbols on top of text
+				lineContext.drawImage(symbolCanvas, 0, 0);
+				
+				manaSymbolsToRender = [];
+			}
 			if (wordToWrite && lineContext.font.endsWith('belerenb')) {
 				wordToWrite = wordToWrite.replace(/f(?:\s|$)/g, '\ue006').replace(/h(?:\s|$)/g, '\ue007').replace(/m(?:\s|$)/g, '\ue008').replace(/n(?:\s|$)/g, '\ue009').replace(/k(?:\s|$)/g, '\ue00a');
 			}
@@ -3954,6 +4294,9 @@ function writeText(textObject, targetContext) {
 				}
 				if (currentX > widestLineWidth) {
 					widestLineWidth = currentX;
+				}
+				if (manaSymbolsToRender.length > 0) {
+					renderManaSymbols();
 				}
 				paragraphContext.drawImage(lineCanvas, horizontalAdjust, currentY);
 				lineY = 0;
@@ -4053,6 +4396,7 @@ function writeText(textObject, targetContext) {
 		}
 	}
 }
+
 CanvasRenderingContext2D.prototype.fillTextArc = function(text, x, y, radius, startRotation, distance = 0, outlineWidth = 0) {
 	this.save();
 	this.translate(x - distance + scaleWidth(0.5), y + radius);
@@ -4188,11 +4532,11 @@ function pinlineColors(color) {
 async function addTextbox(textboxType) {
 	if (textboxType == 'Nickname' && !card.text.nickname && card.text.title) {
 		await loadTextOptions({nickname: {name:'Nickname', text:card.text.title.text, x:0.14, y:0.1129, width:0.72, height:0.0243, oneLine:true, font:'mplantini', size:0.0229, color:'white', shadowX:0.0014, shadowY:0.001, align:'center'}}, false);
-		var nickname = card.text.title;
+		/*var nickname = card.text.title;
 		nickname.name = 'Nickname';
 		card.text.title = card.text.nickname;
 		card.text.title.name = 'Title';
-		card.text.nickname = nickname;
+		card.text.nickname = nickname;*/
 	} else if (textboxType == 'Power/Toughness' && !card.text.pt) {
 		loadTextOptions({pt: {name:'Power/Toughness', text:'', x:0.7928, y:0.902, width:0.1367, height:0.0372, size:0.0372, font:'belerenbsc', oneLine:true, align:'center'}}, false);
 	} else if (textboxType == 'DateStamp' && !card.text.dateStamp) {
@@ -4208,6 +4552,30 @@ function uploadArt(imageSource, otherParams) {
 			art.onload = artEdited;
 		};
 	}
+}
+async function pasteArt() {
+  try {
+    const clipboardItems = await navigator.clipboard.read();
+    
+    for (const item of clipboardItems) {
+      for (const type of item.types) {
+        if (type.startsWith('image/')) {
+          const blob = await item.getType(type);
+          
+          const url = URL.createObjectURL(blob);
+
+          uploadArt(url, document.querySelector("#art-update-autofit").checked ? "autoFit" : "");
+          // document.getElementById('preview').src = url;
+          return;
+        }
+      }
+    }
+
+    notify('No image found in clipboard!');
+  } catch (err) {
+    console.error('Failed to read clipboard: ', err);
+    notify('Clipboard access not allowed or no image available.');
+  }
 }
 function artEdited() {
 	card.artSource = art.src;
@@ -4325,6 +4693,10 @@ function artStartDrag(e) {
 	draggingArt = true;
 }
 function artDrag(e) {
+	var target = document.querySelector('#drag-target-setSymbol').checked ? "setSymbol" : "art";
+	var canRotate = target == "art";
+	var edited = target == "art" ? artEdited : setSymbolEdited;
+
 	e.preventDefault();
 	e.stopPropagation();
 	if (draggingArt && Date.now() > lastArtDragTime + 25) {
@@ -4332,13 +4704,13 @@ function artDrag(e) {
 		if (e.shiftKey || e.ctrlKey) {
 			startX = parseInt(e.clientX);
 			const endY = parseInt(e.clientY);
-			if (e.ctrlKey) {
-				document.querySelector('#art-rotate').value = Math.round((parseFloat(document.querySelector('#art-rotate').value) - (startY - endY) / 10) % 360 * 10) / 10;
+			if (e.ctrlKey && canRotate) {
+				document.querySelector(`#${target}-rotate`).value = Math.round((parseFloat(document.querySelector(`#${target}-rotate`).value) - (startY - endY) / 10) % 360 * 10) / 10;
 			} else {
-				document.querySelector('#art-zoom').value = Math.round((parseFloat(document.querySelector('#art-zoom').value) * (1.002 ** (startY - endY))) * 10) / 10;
+				document.querySelector(`#${target}-zoom`).value = Math.round((parseFloat(document.querySelector(`#${target}-zoom`).value) * (1.002 ** (startY - endY))) * 10) / 10;
 			}
 			startY = endY;
-			artEdited();
+			edited();
 		} else {
 			const endX = parseInt(e.clientX);
 			const endY = parseInt(e.clientY);
@@ -4349,11 +4721,11 @@ function artDrag(e) {
 				changeX = -changeY;
 				changeY = temp;
 			}
-			document.querySelector('#art-x').value = parseInt(document.querySelector('#art-x').value) + changeX;
-			document.querySelector('#art-y').value = parseInt(document.querySelector('#art-y').value) + changeY;
+			document.querySelector(`#${target}-x`).value = parseInt(document.querySelector(`#${target}-x`).value) + changeX;
+			document.querySelector(`#${target}-y`).value = parseInt(document.querySelector(`#${target}-y`).value) + changeY;
 			startX = endX;
 			startY = endY;
-			artEdited();
+			edited();
 		}
 
 	}
@@ -4435,7 +4807,7 @@ function fetchSetSymbol() {
 		uploadSetSymbol('https://api.hexproof.io/symbols/set/' + setCode + '/' + setRarity, 'resetSetSymbol');
 	} else {
 		var extension = 'svg';
-		if (['moc', 'ltr', 'ltc', 'cmm', 'who', 'scd', 'woe', 'wot', 'woc', 'lci', 'lcc', 'mkm', 'mkc', 'otj', 'otc', 'dft', 'drc', 'tdm', 'tdc'].includes(setCode.toLowerCase())) {
+		if (['moc', 'ltr', 'ltc', 'cmm', 'who', 'scd', 'woe', 'wot', 'woc', 'lci', 'lcc', 'mkm', 'mkc', 'otj', 'otc', 'dft', 'drc', 'tdm', 'tdc', 'fin', 'fic'].includes(setCode.toLowerCase())) {
 			extension = 'png';
 		}
 		if (setSymbolAliases.has(setCode.toLowerCase())) setCode = setSymbolAliases.get(setCode.toLowerCase());
@@ -4624,6 +4996,19 @@ function toggleStarDot() {
 	defaultCollector.starDot = !defaultCollector.starDot;
 	bottomInfoEdited();
 }
+
+/**
+ * @param isStar boolean
+ */
+function enableStarDot(isStar) {
+	if (typeof isStar !== "boolean") {
+		console.warn("enableStarDot received nonboolean value")
+		return;
+	}
+
+	defaultCollector.starDot = isStar;
+	bottomInfoEdited();
+}
 function enableNewCollectorInfoStyle() {
 	localStorage.setItem('enableNewCollectorStyle', document.querySelector('#enableNewCollectorStyle').checked);
 	setBottomInfoStyle();
@@ -4675,6 +5060,67 @@ function setDefaultCollector() {
 	};
 	localStorage.setItem('defaultCollector', JSON.stringify(defaultCollector));
 }
+function drawSetSymbol(cardContext, setSymbol, bounds) {
+    if (!bounds) return;
+    
+    const symbolWidth = setSymbol.width * card.setSymbolZoom;
+    const symbolHeight = setSymbol.height * card.setSymbolZoom; 
+    const x = scaleX(card.setSymbolX);
+    const y = scaleY(card.setSymbolY);
+
+    if (bounds.outlineWidth && bounds.outlineWidth > 0) {
+        // Create temp canvas for outlined symbol
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Scale the outline width the same way text outlines are scaled
+        const outlineWidth = scaleHeight(bounds.outlineWidth);
+        const margin = outlineWidth * 2;
+        tempCanvas.width = symbolWidth + margin;
+        tempCanvas.height = symbolHeight + margin;
+        
+        // Setup stroke style (similar to text outline system)
+        tempCtx.strokeStyle = bounds.outlineColor || 'black';
+        tempCtx.lineWidth = outlineWidth;
+        tempCtx.lineJoin = bounds.lineJoin || 'round';
+        tempCtx.lineCap = bounds.lineCap || 'round';
+        
+        // First pass: Draw outline by stroking the symbol multiple times in a circle pattern
+        const outlineSteps = Math.max(8, Math.ceil(outlineWidth * 2));
+        for (let i = 0; i < outlineSteps; i++) {
+            const angle = (i / outlineSteps) * Math.PI * 2;
+            const offsetX = Math.cos(angle) * (outlineWidth / 2);
+            const offsetY = Math.sin(angle) * (outlineWidth / 2);
+            
+            tempCtx.globalCompositeOperation = 'source-over';
+            tempCtx.drawImage(setSymbol, 
+                outlineWidth + offsetX, 
+                outlineWidth + offsetY, 
+                symbolWidth, 
+                symbolHeight);
+            
+            // Apply the outline color
+            tempCtx.globalCompositeOperation = 'source-in';
+            tempCtx.fillStyle = bounds.outlineColor || 'black';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.globalCompositeOperation = 'destination-over';
+        }
+        
+        // Second pass: Draw the original symbol on top
+        tempCtx.globalCompositeOperation = 'source-over';
+        tempCtx.drawImage(setSymbol, outlineWidth, outlineWidth, symbolWidth, symbolHeight);
+
+        // Draw to main canvas
+        cardContext.drawImage(tempCanvas, 
+            x - outlineWidth, 
+            y - outlineWidth,
+            tempCanvas.width,
+            tempCanvas.height);
+    } else {
+        // Draw main symbol without outline (simple path)
+        cardContext.drawImage(setSymbol, x, y, symbolWidth, symbolHeight);
+    }
+}
 //DRAWING THE CARD (putting it all together)
 function drawCard() {
 	// reset
@@ -4685,7 +5131,7 @@ function drawCard() {
 	cardContext.translate(scaleX(card.artX), scaleY(card.artY));
 	cardContext.rotate(Math.PI / 180 * (card.artRotate || 0));
 	if (document.querySelector('#grayscale-art').checked) {
-		cardContext.filter='grayscale(1)';
+		cardContext.filter = 'grayscale(1)';
 	}
 	cardContext.drawImage(art, 0, 0, art.width * card.artZoom, art.height * card.artZoom);
 	cardContext.restore();
@@ -4710,7 +5156,7 @@ function drawCard() {
 	// custom elements for sagas, classes, and dungeons
 	if (card.version.toLowerCase().includes('saga') && typeof sagaCanvas !== "undefined") {
 		cardContext.drawImage(sagaCanvas, 0, 0, cardCanvas.width, cardCanvas.height);
-	} else if (card.version.toLowerCase().includes('class') && typeof classCanvas !== "undefined") {
+	} else if (card.version.includes('class') && !card.version.includes('classic') && typeof classCanvas !== "undefined") {
 		cardContext.drawImage(classCanvas, 0, 0, cardCanvas.width, cardCanvas.height);
 	} else if (card.version.toLowerCase().includes('dungeon') && typeof dungeonCanvas !== "undefined") {
 		cardContext.drawImage(dungeonCanvas, 0, 0, cardCanvas.width, cardCanvas.height);
@@ -4718,40 +5164,42 @@ function drawCard() {
 	// text
 	cardContext.drawImage(textCanvas, 0, 0, cardCanvas.width, cardCanvas.height);
 	// set symbol
-	cardContext.drawImage(setSymbol, scaleX(card.setSymbolX), scaleY(card.setSymbolY), setSymbol.width * card.setSymbolZoom, setSymbol.height * card.setSymbolZoom)
+	if (card.setSymbolBounds) {
+		drawSetSymbol(cardContext, setSymbol, card.setSymbolBounds); 
+	}
 	// serial
 	if (card.serialNumber || card.serialTotal) {
 		var x = parseInt(card.serialX) || 172;
 		var y = parseInt(card.serialY) || 1383;
 		var scale = parseFloat(card.serialScale) || 1.0;
 
-		cardContext.drawImage(serial, scaleX(x/2010), scaleY(y/2814), scaleX(464/2010) * scale, scaleY(143/2814) * scale);
+		cardContext.drawImage(serial, scaleX(x / 2010), scaleY(y / 2814), scaleX(464 / 2010) * scale, scaleY(143 / 2814) * scale);
 
 		var number = {
-			name:"Number",
+			name: "Number",
 			text: '{kerning3}' + card.serialNumber || '',
-			x: (x+(30 * scale))/2010,
-			y: (y+(52 * scale))/2814,
-			width: (190 * scale)/2010,
-			height: (55 * scale)/2814,
+			x: (x + (30 * scale)) / 2010,
+			y: (y + (52 * scale)) / 2814,
+			width: (190 * scale) / 2010,
+			height: (55 * scale) / 2814,
 			oneLine: true,
 			font: 'gothambold',
 			color: 'white',
-			size: (55 * scale)/2010,
+			size: (55 * scale) / 2010,
 			align: 'center'
 		};
 
 		var total = {
-			name:"Number",
+			name: "Number",
 			text: '{kerning3}' + card.serialTotal || '',
-			x: (x+(251 * scale))/2010,
-			y: (y+(52 * scale))/2814,
-			width: (190 * scale)/2010,
-			height: (55 * scale)/2814,
+			x: (x + (251 * scale)) / 2010,
+			y: (y + (52 * scale)) / 2814,
+			width: (190 * scale) / 2010,
+			height: (55 * scale) / 2814,
 			oneLine: true,
 			font: 'gothambold',
 			color: 'white',
-			size: (55 * scale)/2010,
+			size: (55 * scale) / 2010,
 			align: 'center'
 		};
 
@@ -4775,19 +5223,20 @@ function drawCard() {
 	if (!card.noCorners && (card.marginX == 0 && card.marginY == 0)) {
 		var w = card.version == 'battle' ? 2100 : getStandardWidth();
 
-		cardContext.drawImage(corner, 0, 0, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, 0, 0, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, 0, -card.width, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, 0, -card.width, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, -card.width, -card.height, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, -card.width, -card.height, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
-		cardContext.drawImage(corner, -card.height, 0, scaleWidth(59/w), scaleWidth(59/w));
+		cardContext.drawImage(corner, -card.height, 0, scaleWidth(59 / w), scaleWidth(59 / w));
 		cardContext.rotate(Math.PI / 2);
 	}
 	// show preview
 	previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 	previewContext.drawImage(cardCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
 }
+
 //DOWNLOADING
 function downloadCard(alt = false, jpeg = false) {
 	if (card.infoArtist.replace(/ /g, '') == '' && !card.artSource.includes('/img/blank.png') && !card.artZoom == 0) {
@@ -4823,6 +5272,14 @@ function downloadCard(alt = false, jpeg = false) {
 		}
 	}
 }
+//DOWNLOAD BOTH DIGITAL AND PRINT
+function downloadDigitalAndPrint() {
+	downloadCard(false, true);
+
+	applyMargins();
+	window.setTimeout(downloadCard, 1500)
+}
+
 //IMPORT/SAVE TAB
 function importCard(cardObject) {
 	scryfallCard = cardObject;
@@ -4845,6 +5302,18 @@ function importCard(cardObject) {
 		optionIndex ++;
 	});
 	changeCardIndex();
+}
+
+async function pasteCardText() {
+	try {
+    const text = await navigator.clipboard.readText();
+    console.log(text);
+    const card = scryfallCardFromText(text);
+    importCard([card]);
+  } catch (err) {
+    console.error('Failed to read clipboard text: ', err);
+    notify('Clipboard access failed. Did you click the button?');
+  }
 }
 
 function scryfallCardFromText(text) {
@@ -4899,6 +5368,50 @@ function scryfallCardFromText(text) {
   cardObject.oracle_text = lines.join("\n");
 
   return cardObject;
+}
+
+function parseSagaAbilities(text) {
+  const stepsMap = {};
+
+  // Remove reminder text
+  const abilityText = text.replace(/^\(.*?\)\s*/, '');
+
+  // Match "I — ability" or "I, II — ability"
+  const regex = /([IVX, ]+)\s+—\s+([^]+?)(?=(?:\n[IVX, ]+\s+—|$))/g;
+
+  let match;
+  while ((match = regex.exec(abilityText)) !== null) {
+    const stepsRaw = match[1].split(',').map(s => s.trim());
+    const ability = match[2].trim();
+
+    for (const step of stepsRaw) {
+      stepsMap[step] = ability;
+    }
+  }
+
+  // Lore step order
+  const loreOrder = Array.from({ length: 24 }, (_, i) => romanNumeral(i + 1));
+
+  // Track deduplicated abilities in order with count of steps
+  const abilityMap = new Map();
+
+  for (const step of loreOrder) {
+    const ability = stepsMap[step];
+    if (!ability) continue;
+
+    if (abilityMap.has(ability)) {
+      abilityMap.get(ability).steps += 1;
+    } else {
+      abilityMap.set(ability, { ability, steps: 1 });
+    }
+  }
+
+  return Array.from(abilityMap.values());
+}
+
+function extractSagaReminderText(text) {
+  const match = text.match(/^\([^)]*\)/);
+  return match ? match[0] : null;
 }
 
 function changeCardIndex() {
@@ -5052,7 +5565,17 @@ function changeCardIndex() {
 		}
 		planeswalkerEdited();
 	} else if (card.version.includes('saga')) {
-		card.text.ability0.text = cardToImport.oracle_text.replace('(', '{i}(').replace(')', '){/i}') || '';
+		if (card.text.flavor) {
+			// future support sagas with flavor text
+			card.text.flavor.text = cardToImport.flavor_text || '';
+		}
+		const abilities = parseSagaAbilities(cardToImport.oracle_text);
+		for (let i = 0; i < abilities.length; i++) {
+			card.text[`ability${i}`].text = abilities[i].ability.replace('(', '{i}(').replace(')', '){/i}');
+		}
+		card.text.reminder.text = `{i}${extractSagaReminderText(cardToImport.oracle_text)}{/i}`;
+		card.saga = {...card.saga, abilities: abilities.map(a => a.steps).concat(Array.from({ length: 4 - abilities.length}, () => 0)), count: abilities.length};
+		updateAbilityHeights()
 	} else if (card.version.includes('battle')) {
 		card.text.defense.text = cardToImport.defense || '';
 	}
@@ -5426,7 +5949,7 @@ function imageURL(url, destination, otherParams) {
 	} else if (params.get('noproxy') != '') {
 		//CORS PROXY LINKS
 		//Previously: https://cors.bridged.cc/
-		imageurl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+		imageurl = 'https://corsproxy.io/?url=' + encodeURIComponent(url);
 	}
 	destination(imageurl, otherParams);
 }
@@ -5441,7 +5964,7 @@ async function imageLocal(event, destination, otherParams) {
 	await reader.readAsDataURL(event.target.files[0]);
 }
 function loadScript(scriptPath) {
-	console.log(scriptPath);
+	//console.log(scriptPath);
 	var script = document.createElement('script');
 	script.setAttribute('type', 'text/javascript');
 	script.onerror = function(){notify('A script failed to load, likely due to an update. Please reload your page. Sorry for the inconvenience.');}

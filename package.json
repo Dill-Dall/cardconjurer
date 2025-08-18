@@ -1,0 +1,10 @@
+{
+  "name": "cardconjurer",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "live-server --port=4242 --watch=about,askurza,converter,core,creator,css,globalHTML,js,legal,phyrexian,print,theme,tutorial"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

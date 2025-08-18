@@ -1,7 +1,7 @@
 //checks to see if it needs to run
 if (!loadedVersions.includes('/js/frames/versionMysticalArchiveJPHorizontal.js')) {
 	loadedVersions.push('/js/frames/versionMysticalArchiveJPHorizontal.js');
-	document.querySelector('#creator-menu-tabs').innerHTML += '<h3 class="selectable readable-background" onclick="toggleCreatorTabs(event, `mysticalArchiveHorizontal`)">Mystical Archive (H)</h3>';
+	document.querySelector('#creator-menu-tabs').innerHTML += '<button class="creator-menu-item readable-background" onclick="toggleCreatorTabs(event, `mysticalArchiveHorizontal`)">Mystical Archive (H)</h3>';
 	var newHTML = document.createElement('div');
 	newHTML.id = 'creator-menu-mysticalArchiveHorizontal';
 	newHTML.classList.add('hidden');
