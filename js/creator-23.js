@@ -3508,8 +3508,19 @@ function loadTextOptions(textObject, replace= true) {
 	Object.entries(oldCardText).forEach(item => {
 		savedTextContents[item[0]] = oldCardText[item[0]].text;
 	});
+
+	const textEntries = Object.entries(textObject).map(([key, item]) => {
+		const result = Object.assign(
+			{},
+			item,
+			{ fontSize: getBaseSize(key, item.text) }
+		);
+
+		return [key, result];
+	});
+
 	if (replace) {
-		card.text = textObject;
+		card.text = Object.fromEntries(textEntries)
 	} else {
 		Object.keys(textObject).forEach(key => {
 			card.text[key] = textObject[key];
@@ -3531,26 +3542,18 @@ function loadTextOptions(textObject, replace= true) {
 		document.querySelector('#text-options').appendChild(textOptionElement);
 	});
 
-	const textEntries = Object.entries(textObject).map(([key, item]) => {
-		const result = Object.assign(
-			{},
-			item,
-			{ fontSize: getBaseSize(key, item.text) }
-		);
-
-		return [key, result];
-	});
-
-	card.text = Object.fromEntries(textEntries)
-
 	document.querySelector('#text-options').firstChild.click();
 	drawTextBuffer();
 	drawNewGuidelines();
 }
 function textOptionClicked(event) {
 	selectedTextIndex = getElementIndex(event.target);
-	document.querySelector('#text-editor').value = Object.entries(card.text)[selectedTextIndex][1].text;
-	document.querySelector('#text-editor-font-size').value = Object.entries(card.text)[selectedTextIndex][1].fontSize;
+	const textObject = Object.entries(card.text)[selectedTextIndex]?.[1];
+	if (textObject) {
+		document.querySelector('#text-editor').value = textObject.text;
+		document.querySelector('#text-editor-font-size').value = textObject.fontSize ?? 0;
+	}
+
 	selectSelectable(event, '.text-option');
 }
 function lockCanvasHeight(event) {
@@ -3616,6 +3619,11 @@ async function drawText() {
 var justifyWidth = 90;
 let manaSymbolsToRender = [];
 function writeText(textObject, targetContext) {
+
+	if (!textObject) {
+		return;
+	}
+
 	manaSymbolsToRender = [];
 	//Most bits of info about text loaded, with defaults when needed
 	var textX = scaleX(textObject.x) || scaleX(0);
@@ -4524,11 +4532,11 @@ function pinlineColors(color) {
 async function addTextbox(textboxType) {
 	if (textboxType == 'Nickname' && !card.text.nickname && card.text.title) {
 		await loadTextOptions({nickname: {name:'Nickname', text:card.text.title.text, x:0.14, y:0.1129, width:0.72, height:0.0243, oneLine:true, font:'mplantini', size:0.0229, color:'white', shadowX:0.0014, shadowY:0.001, align:'center'}}, false);
-		var nickname = card.text.title;
+		/*var nickname = card.text.title;
 		nickname.name = 'Nickname';
 		card.text.title = card.text.nickname;
 		card.text.title.name = 'Title';
-		card.text.nickname = nickname;
+		card.text.nickname = nickname;*/
 	} else if (textboxType == 'Power/Toughness' && !card.text.pt) {
 		loadTextOptions({pt: {name:'Power/Toughness', text:'', x:0.7928, y:0.902, width:0.1367, height:0.0372, size:0.0372, font:'belerenbsc', oneLine:true, align:'center'}}, false);
 	} else if (textboxType == 'DateStamp' && !card.text.dateStamp) {
@@ -4986,6 +4994,19 @@ function toggleStarDot() {
 		}
 	}
 	defaultCollector.starDot = !defaultCollector.starDot;
+	bottomInfoEdited();
+}
+
+/**
+ * @param isStar boolean
+ */
+function enableStarDot(isStar) {
+	if (typeof isStar !== "boolean") {
+		console.warn("enableStarDot received nonboolean value")
+		return;
+	}
+
+	defaultCollector.starDot = isStar;
 	bottomInfoEdited();
 }
 function enableNewCollectorInfoStyle() {
@@ -5943,7 +5964,7 @@ async function imageLocal(event, destination, otherParams) {
 	await reader.readAsDataURL(event.target.files[0]);
 }
 function loadScript(scriptPath) {
-	console.log(scriptPath);
+	//console.log(scriptPath);
 	var script = document.createElement('script');
 	script.setAttribute('type', 'text/javascript');
 	script.onerror = function(){notify('A script failed to load, likely due to an update. Please reload your page. Sorry for the inconvenience.');}

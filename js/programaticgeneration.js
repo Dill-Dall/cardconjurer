@@ -111,18 +111,18 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	enableNewCollectorInfoStyle();
 	setDiStandard();
 
-	setCollectorInfo({
-		setCode: "DIN",
-		lang: "EN",
-		note: "D.I.",
-		number: "2025"
-	});
-
 	console.log("[DEBUG] Available frame names (final):", availableFrames.map(f => f.name));
 
 	const originalArtOnload = art.onload;
 
 	for (const row of rows) {
+		setCollectorInfo({
+			setCode: row['Set Code'] || "DIN",
+			lang: row['Language'] || "EN",
+			note: row['Collector Note'] || "D.I.",
+			number: row['Collector Number'] || "2025",
+		});
+
 		card.frames = [];
 		try {
 			if (!row['Cards']) {
@@ -148,7 +148,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 
 			const rarity = row['R']?.trim().toLowerCase() || "c";
 			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() || (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
-			const setSymbolUri = "/img/setSymbols/private/di-" + setSymbolIcon + ".svg";
+			const setSymbolUri = `/img/setSymbols/private/-${setSymbolIcon}.svg`;
 
 			card.infoRarity = rarity.toUpperCase();
 
