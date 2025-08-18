@@ -47,6 +47,7 @@ const frameNames = new Map ([
 	['Ghostfire (TDM)', 'Ghostfire'],
 	['Japan Showcase', 'JapanShowcase'],
 	['Japan Showcase Nicknames', 'JapanShowcaseNicknames'],
+	['Japan Showcase (FIN)', 'JapanShowcaseFin'],
 	['Paranormal (DSK)', 'Paranormal'],
 	['Bloomburrow Borderless (BLB)', 'BloomburrowBorderless'],
 	['Woodland (BLB)', 'Woodland'],

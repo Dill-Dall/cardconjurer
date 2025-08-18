@@ -4,6 +4,7 @@ loadFramePacks([
 	{name:'Draconic (TDM)', value:'Draconic'},
 	{name:'Ghostfire (TDM)', value:'Ghostfire'},
 	{name:'Japan Showcase', value:'JapanShowcase'},
+	{name:'Japan Showcase (FIN)', value:'JapanShowcaseFin'},
 	{name:'Paranormal (DSK)', value:'Paranormal'},
 	{name:'Bloomburrow Borderless (BLB)', value:'BloomburrowBorderless'},
 	{name:'Woodland (BLB)', value:'Woodland'},
