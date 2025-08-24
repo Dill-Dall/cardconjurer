@@ -146,14 +146,31 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
 
-			const rarity = row['R']?.trim().toLowerCase() || "c";
-			const setSymbolIcon = row['Set Symbol']?.trim().toLowerCase() || (['u', 'r', 'm'].includes(rarity) ? rarity : "c");
-			const setSymbolUri = `/img/setSymbols/private/-${setSymbolIcon}.svg`;
+			const setSymbolIconCode = row['Set Symbol Code']?.trim().toLowerCase();
 
-			card.infoRarity = rarity.toUpperCase();
+			const initialRarity = (row['Rarity'] || row['R'])?.trim().toLowerCase();
+			const rarity =  ['u', 'r', 'm', 'c'].includes(initialRarity) ? initialRarity : "c";
 
-			console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
-			fetchDISetSymbol(setSymbolUri);
+			// No set symbol icon code defaults to DI
+			if (!setSymbolIconCode || setSymbolIconCode === "di") {
+				const setSymbolUri = `/img/setSymbols/private/di-${rarity}.svg`;
+				console.log(`[DEBUG] Rarity image path: ${setSymbolUri}`);
+				card.setSymbolSource = fixUri(setSymbolUri);
+			} else if (setSymbolIconCode) {
+				fetchSetSymbol(setSymbolIconCode, rarity);
+			} else {
+				setSymbol.src = undefined;
+			}
+
+			// Collector info set symbol icon, "L" for land, "T" for token, "P" for promo, etc.
+			// Defaults to the rarity if no collector set symbol is given
+			const collectorInfoRarity = row['Set Symbol']?.trim().toLowerCase() || rarity;
+
+			setCollectorInfo({
+				rarity: collectorInfoRarity.toUpperCase()
+			});
+
+			card.infoRarity = collectorInfoRarity.toUpperCase();
 
 			let rulesText = '';
 			['Ability', 'Passive', 'Active', 'Flavour Text'].forEach(key => {
