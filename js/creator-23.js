@@ -3502,45 +3502,54 @@ function hslToRGB(h, s, l){
 //TEXT TAB
 var writingText;
 var autoFrameTimer;
+function applyFontSize(key, item) {
+	return Object.assign(
+		{},
+		item,
+		{ fontSize: getBaseSize(key, item.text ?? "") }
+	)
+}
+
+function normalizeFontSize(textObject) {
+	const textObjectArray = Object.entries(textObject ?? {}).map(([key, item]) => (
+		[key, applyFontSize(key, item)]
+	));
+
+	return Object.fromEntries(textObjectArray);
+}
+
 function loadTextOptions(textObject, replace= true) {
-	var oldCardText = card.text || {};
+	var oldCardText = card.text ? normalizeFontSize(card.text) : {};
 
 	Object.entries(oldCardText).forEach(item => {
 		savedTextContents[item[0]] = oldCardText[item[0]].text;
 	});
 
-	const textEntries = Object.entries(textObject).map(([key, item]) => {
-		const result = Object.assign(
-			{},
-			item,
-			{ fontSize: getBaseSize(key, item.text) }
-		);
-
-		return [key, result];
-	});
+	const textEntries = normalizeFontSize(textObject);
 
 	if (replace) {
-		card.text = Object.fromEntries(textEntries)
+		card.text = textEntries;
 	} else {
-		Object.keys(textObject).forEach(key => {
-			card.text[key] = textObject[key];
+		Object.keys(textEntries).forEach(key => {
+			card.text[key] = textEntries[key];
 		});
 	}
 	document.querySelector('#text-options').innerHTML = null;
 
-	Object.entries(card.text).forEach(item => {
-		const key = item[0]
+	Object.entries(card.text).forEach(([key, value]) => {
 		if (oldCardText[key]) {
-			card.text[item[0]].text = oldCardText[key].text;
+			card.text[key].text = oldCardText[key].text;
 		} else if (savedTextContents[key]) {
-			card.text[item[0]].text = savedTextContents[item[0]];
+			card.text[key].text = savedTextContents[key];
 		}
 		var textOptionElement = document.createElement('button');
-		textOptionElement.innerHTML = item[1].name;
+		textOptionElement.innerHTML = value.name;
 		textOptionElement.classList = 'text-option';
 		textOptionElement.onclick = textOptionClicked;
 		document.querySelector('#text-options').appendChild(textOptionElement);
-	});
+	})
+
+	card.text = normalizeFontSize(card.text);
 
 	document.querySelector('#text-options').firstChild.click();
 	drawTextBuffer();
@@ -4788,13 +4797,13 @@ function fetchDISetSymbol(uri){
 	uploadSetSymbol(fixUri(uri), 'resetSetSymbol');
 }			
 
-function fetchSetSymbol() {
+function fetchSetSymbol(inputSetCode, rarity) {
 	console.log('fetchSetSymbol() called');
-	var setCode = document.querySelector('#set-symbol-code').value.toLowerCase() || 'cmd';
+	var setCode = inputSetCode || document.querySelector('#set-symbol-code').value.toLowerCase() || 'cmd';
 	if (document.querySelector('#lockSetSymbolCode').checked) {
 		localStorage.setItem('lockSetSymbolCode', setCode);
 	}
-	var setRarity = document.querySelector('#set-symbol-rarity').value.toLowerCase().replace('uncommon', 'u').replace('common', 'c').replace('rare', 'r').replace('mythic', 'm') || 'c';
+	var setRarity = rarity || document.querySelector('#set-symbol-rarity').value.toLowerCase().replace('uncommon', 'u').replace('common', 'c').replace('rare', 'r').replace('mythic', 'm') || 'c';
 	if (['a22', 'a23', 'j22'].includes(setCode.toLowerCase())) {
 		uploadSetSymbol(fixUri(`/img/setSymbols/custom/${setCode.toLowerCase()}-${setRarity}.png`), 'resetSetSymbol');
 	} else if (['cc', 'logan', 'joe'].includes(setCode.toLowerCase())) {
@@ -5951,6 +5960,8 @@ function imageURL(url, destination, otherParams) {
 		//Previously: https://cors.bridged.cc/
 		imageurl = 'https://corsproxy.io/?url=' + encodeURIComponent(url);
 	}
+
+	console.log(imageurl);
 	destination(imageurl, otherParams);
 }
 async function imageLocal(event, destination, otherParams) {
