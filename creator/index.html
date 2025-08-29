@@ -339,6 +339,22 @@
 							<div class='input-grid'>
 								<input id='art-artist' type='text' class='input' oninput='artistEdited(this.value);' placeholder='Artist'>
 							</div>
+							<div id="brightness-art-slider">
+								<label for="art-brightness">Brightness</label>
+								<input
+									type="range"
+									id="art-brightness"
+									min="50"
+									max="200"
+									step="1"
+									value="100"
+								/>
+								<span id="art-brightness-value">100%</span>
+								<label class="checkbox">
+								<input type="checkbox" id="keep-art-brightness" />
+									Keep brightness when switching cards
+								</label>
+							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
 							<p class='margin-bottom padding input-description'>Position/scale your art (X, Y, Scale, Rotation)<br>Art is now visually adjustable! Click and drag anywhere on the card to move your art around. Hold shift while doing so to scale, or control to rotate.</p>

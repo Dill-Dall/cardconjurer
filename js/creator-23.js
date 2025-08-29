@@ -4592,6 +4592,8 @@ function artEdited() {
 	card.artY = document.querySelector('#art-y').value / card.height;
 	card.artZoom = document.querySelector('#art-zoom').value / 100;
 	card.artRotate = document.querySelector('#art-rotate').value;
+	card.artBrightness  = parseFloat(document.querySelector('#art-brightness').value) / 100;
+
 	drawCard();
 }
 function autoFitArt() {
@@ -5130,6 +5132,19 @@ function drawSetSymbol(cardContext, setSymbol, bounds) {
         cardContext.drawImage(setSymbol, x, y, symbolWidth, symbolHeight);
     }
 }
+
+//ADD "layers" to art
+function setLayerFilters(){
+	let filters = [];
+	if (document.querySelector('#grayscale-art').checked) {
+		filters.push('grayscale(1)');
+	}
+	if (typeof card.artBrightness === 'number' && card.artBrightness !== 1) {
+		filters.push(`brightness(${card.artBrightness})`);
+	}
+	cardContext.filter = filters.length ? filters.join(' ') : 'none';
+}
+
 //DRAWING THE CARD (putting it all together)
 function drawCard() {
 	// reset
@@ -5137,11 +5152,10 @@ function drawCard() {
 	cardContext.clearRect(0, 0, cardCanvas.width, cardCanvas.height);
 	// art
 	cardContext.save();
+	setLayerFilters();
 	cardContext.translate(scaleX(card.artX), scaleY(card.artY));
 	cardContext.rotate(Math.PI / 180 * (card.artRotate || 0));
-	if (document.querySelector('#grayscale-art').checked) {
-		cardContext.filter = 'grayscale(1)';
-	}
+	
 	cardContext.drawImage(art, 0, 0, art.width * card.artZoom, art.height * card.artZoom);
 	cardContext.restore();
 	// frame elements
@@ -5726,16 +5740,53 @@ function saveCard(saveFromFile) {
 		notify('You have exceeded your 5MB of local storage, and your card has failed to save. If you would like to continue saving cards, please download all saved cards, then delete all saved cards to free up space.<br><br>Local storage is most often exceeded by uploading large images directly from your computer. If possible/convenient, using a URL avoids the need to save these large images.<br><br>Apologies for the inconvenience.');
 	}
 }
+
+function initArtBrightnessControl(card) {
+  const slider = document.querySelector('#art-brightness');
+  const label  = document.querySelector('#art-brightness-value');
+  if (!slider || !label) return;
+
+  if (typeof card.artBrightness !== 'number') card.artBrightness = 1.0;
+
+  slider.value = Math.round(card.artBrightness * 100);
+  label.textContent = `${slider.value}%`;
+
+  const sync = () => {
+    label.textContent = `${slider.value}%`;
+    card.artBrightness = Number(slider.value) / 100;
+    artEdited();
+  };
+
+  slider.oninput  = sync;
+  slider.onchange = sync;
+}
+
+
+
 async function loadCard(selectedCardKey) {
-	//clear the draggable frames
-	document.querySelector('#frame-list').innerHTML = null;
-	//clear the existing card, then replace it with the new JSON
+  // clear UI
+  document.querySelector('#frame-list').innerHTML = null;
+
+  // Capture current brightness if toggle is on
+  const keepEl = document.querySelector('#keep-art-brightness');
+  const keep = !!(keepEl && keepEl.checked);
+  const prevBrightness =
+    (keep && typeof card?.artBrightness === 'number') ? card.artBrightness : null;
+
 
 	card = {};
 	const loadedCard = JSON.parse(localStorage.getItem(selectedCardKey));
 
 	if (loadedCard) {
 		Object.assign(card, loadedCard);
+
+		// Apply preserved brightness
+		if (prevBrightness !== null) {
+			card.artBrightness = prevBrightness;
+		} else if (typeof card.artBrightness !== 'number') {
+			card.artBrightness = 1.0;
+		}
+		initArtBrightnessControl(card);
 
 		//load values from card into html inputs
 		document.querySelector('#info-number').value = card.infoNumber;
