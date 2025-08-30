@@ -5051,12 +5051,14 @@ function removeDefaultCollector() {
 	localStorage.removeItem('defaultCollector'); //localStorage.setItem('defaultCollector', JSON.stringify(defaultCollector));
 }
 
-function setCollectorInfo({number, rarity, setCode, lang, note}) {
+async function setCollectorInfo({number, rarity, setCode, lang, note}) {
 	if (typeof number !== "undefined") document.getElementById('info-number').value = number;
 	if (rarity) document.getElementById('info-rarity').value = rarity;
-	if (setCode)  document.getElementById('info-set').value = setCode;
+	if (setCode) document.getElementById('info-set').value = setCode;
 	if (lang) document.getElementById('info-language').value = lang;
 	if (note) document.getElementById('info-note').value = note;
+
+	await bottomInfoEdited();
 }
 
 function setDefaultCollector() {
@@ -5761,8 +5763,6 @@ function initArtBrightnessControl(card) {
   slider.onchange = sync;
 }
 
-
-
 async function loadCard(selectedCardKey) {
   // clear UI
   document.querySelector('#frame-list').innerHTML = null;
@@ -5775,7 +5775,7 @@ async function loadCard(selectedCardKey) {
 
 
 	card = {};
-	const loadedCard = JSON.parse(localStorage.getItem(selectedCardKey));
+	const loadedCard = JSON.parse(localStorage.getItem(selectedCardKey))
 
 	if (loadedCard) {
 		Object.assign(card, loadedCard);
@@ -5846,7 +5846,7 @@ async function loadCard(selectedCardKey) {
 		if (canvasesResized) {
 			drawTextBuffer();
 			drawFrames();
-			bottomInfoEdited();
+			await bottomInfoEdited();
 			watermarkEdited();
 		}
 	} else {

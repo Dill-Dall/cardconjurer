@@ -105,6 +105,10 @@ function setDiStandard() {
 	artistEdited("DTF");
 }
 
+function clampValue(value, min, max = Number.MAX_SAFE_INTEGER) {
+	return Math.max(Math.min(value, min), Math.min(value, max));
+}
+
 async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = true, forceDefaultFrame = false } = {}) {
 	await document.fonts.ready;
 
@@ -116,7 +120,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 	const originalArtOnload = art.onload;
 
 	for (const row of rows) {
-		setCollectorInfo({
+		await setCollectorInfo({
 			setCode: row['Set Code'] || "DIN",
 			lang: row['Language'] || "EN",
 			note: row['Collector Note'] || "D.I.",
@@ -142,6 +146,18 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			card.text.mana.text = formatManaCost(row['Mana cost']);
 			card.text.pt.text = (row['p/t'] || '').trim();
 
+			const initialArtBrightness = row['Art Brightness'];
+			const convertedArtBrightness =
+				initialArtBrightness && typeof initialArtBrightness === "string" ?
+					Number(initialArtBrightness) :
+					undefined;
+
+			card.artBrightness = Number.isFinite(convertedArtBrightness) ?
+				clampValue(convertedArtBrightness, 0.5, 2.0) :
+				1.0;
+
+			initArtBrightnessControl(card);
+
 			Object.entries(card.text).forEach(([key, textObject]) => {
 				card.text[key].fontSize = getBaseSize(textObject.text.length);
 			})
@@ -166,7 +182,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			// Defaults to the rarity if no collector set symbol is given
 			const collectorInfoRarity = row['Set Symbol']?.trim().toLowerCase() || rarity;
 
-			setCollectorInfo({
+			await setCollectorInfo({
 				rarity: collectorInfoRarity.toUpperCase()
 			});
 
