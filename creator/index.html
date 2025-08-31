@@ -336,8 +336,24 @@
 							<p class='padding margin-bottom input-description'>Select a specific card art to load</p>
 							<select class='input margin-bottom' id='art-index' onchange='changeArtIndex();'></select>
 							<p class='margin-bottom padding input-description'>And credit the artist</p>
-							<div class='input-grid'>
+							<div class='input-grid margin-bottom'>
 								<input id='art-artist' type='text' class='input' oninput='artistEdited(this.value);' placeholder='Artist'>
+							</div>
+							<div class='input-grid margin-bottom brightness-art-slider'>
+								<p for="art-brightness" class='margin-bottom input-description'>Brightness</p>
+								<input
+									type="range"
+									id="art-brightness"
+									min="50"
+									max="200"
+									step="1"
+									value="100"
+								/>
+								<span id="art-brightness-value">100%</span>
+								<label class="checkbox">
+								<input type="checkbox" id="keep-art-brightness" />
+									Keep brightness when switching cards
+								</label>
 							</div>
 						</div>
 						<div class='readable-background padding margin-bottom'>
@@ -738,7 +754,7 @@
 							</div>
 						</div>
 						<div class='readable-background margin-bottom padding'>
-							<p class='collapsible collapsed padding margin-bottom input-description'>Import a real card by name</p>
+							<p class='collapsible collapsed padding margin-bottom input-description' onclick='toggleCollapse(event);'>Import a real card by name</p>
 							<div class='padding'>
 								<input id='import-name' class='input margin-bottom' type='text' onchange='importChanged();' placeholder='Enter Card Name'>
 								<label class='checkbox-container input margin-bottom'>Include all unique prints as options
