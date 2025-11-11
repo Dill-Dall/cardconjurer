@@ -165,7 +165,7 @@ async function generateCardsFromCSV(rows, { debugMode = true, skipDownload = tru
 			const setSymbolIconCode = row['Set Symbol Code']?.trim().toLowerCase();
 
 			const initialRarity = (row['Rarity'] || row['R'])?.trim().toLowerCase();
-			const rarity =  ['u', 'r', 'm', 'c'].includes(initialRarity) ? initialRarity : "c";
+			const rarity = ['u', 'r', 'm', 'c'].includes(initialRarity) ? initialRarity : "c";
 
 			// No set symbol icon code defaults to DI
 			if (!setSymbolIconCode || setSymbolIconCode === "di") {
@@ -305,6 +305,43 @@ async function onImportCsv(event) {
 	const data = parseCSV(text);
 	await generateCardsFromCSV(data);
 }
+
+// Load CSV templates on page load
+async function loadCsvTemplates() {
+	try {
+		const response = await fetch('data/csv_templates/');
+		const text = await response.text();
+
+		// Parse directory listing or use a JSON manifest
+		// If you have a manifest file, use that instead
+		const manifestResponse = await fetch('data/csv_templates/templates.json');
+		const templates = await manifestResponse.json();
+
+		const select = document.getElementById('csv-template-select');
+		templates.forEach(filename => {
+			const option = document.createElement('option');
+			option.value = filename;
+			option.textContent = filename.replace('.csv', '').replace(/_/g, ' ');
+			select.appendChild(option);
+		});
+	} catch (error) {
+		console.error('Error loading CSV templates:', error);
+	}
+}
+
+// Download selected template
+function downloadTemplateFile(filename) {
+	if (!filename) return;
+
+	const link = document.createElement('a');
+	link.href = `data/csv_templates/${filename}`;
+	link.download = filename;
+	link.click();
+}
+
+// Call on page load
+window.addEventListener('DOMContentLoaded', loadCsvTemplates);
+
 
 /*function downloadCardImage() {
 	const link = document.createElement('a');
