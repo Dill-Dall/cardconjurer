@@ -1,0 +1,74 @@
+Cards,Status,R,Set Symbol,Type,Subtype,Std Ability,Ability,Flavour Text,Image,Completed Card,Completed Card - Alt,Comment,image_file_path
+Wastes,Canceled,L,c,Basic Land,Wastes,,,,,,,,assets/land/wastes.png
+Frogner District,Canceled,L,r,Land,Forest Plains Island,,"~ enters the battlefield tapped.
+{T}: Add {G}, {W}, or {U}.",,,,,Frogner,assets/land/frogner.png
+Sentrum District,Canceled,L,r,Land,Plains Island Swamp,,"~ enters the battlefield tapped.
+{T}: Add {W}, {U}, or {B}.",,,,,Sentrum,assets/land/sentrum.png
+Grorud District,Canceled,L,r,Land,Island Swamp Mountain,,"~ enters the battlefield tapped.
+{T}: Add {U}, {B}, or {R}.",,,,,Grorud,assets/land/grorud.png
+Grünerløkka District,Canceled,L,r,Land,Swamp Mountain Forest,,"~ enters the battlefield tapped.
+{T}: Add {B}, {R}, or {G}.",,,,,Grünerløkka,assets/land/grunerlokka.png
+Nordstrand District,Canceled,L,r,Land,Mountain Forest Plains,,"~ enters the battlefield tapped.
+{T}: Add {R}, {G}, or {W}.",,,,,Nordstrand,assets/land/nordstrand.png
+Sagene District,Canceled,L,r,Land,Mountain Plains Swamp,,"~ enters the battlefield tapped.
+{T}: Add {R}, {W}, or {B}.",,,,,Sagene,assets/land/sagene.png
+St. Hanshaugen District,Canceled,L,r,Land,Forest Island Mountain,,"~ enters the battlefield tapped.
+{T}: Add {G}, {U}, or {R}.",,,,,St. Hanshaugen,assets/land/sthanshaugen.png
+Stovner District,Canceled,L,r,Land,Plains Swamp Forest,,"~ enters the battlefield tapped.
+{T}: Add {W}, {B}, or {G}.",,,,,Stovner,assets/land/stovner.png
+Ullern District,Canceled,L,r,Land,Island Mountain Plains,,"~ enters the battlefield tapped.
+{T}: Add {U}, {R}, or {W}.",,,,,Ullern,assets/land/ullern.png
+Østensjø District,Canceled,L,r,Land,Swamp Forest Island,,"~ enters the battlefield tapped.
+{T}: Add {B}, {G}, or {U}.",,,,,Østensjø,assets/land/ostensjo.png
+Oslo Heights,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {W} or {U}.",,,,,"White–Blue
+10 etage?
+
+Balkong",assets/land/white-blue.png
+Mediocre Café,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {U} or {B}.",,,,,"Blue–Black
+",assets/land/black-blue.png
+Room of Decisiveness,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {B} or {R}.",,,,,Black–Red,assets/land/red-black.png
+Wish Upon a Vista,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {R} or {G}.",,,,,Red–Green,assets/land/red-green.png
+Coffee Rendezvouz,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {G} or {W}.","""We are definitely only engaging in deep technical discussions here""",,,,Green–White,assets/land/green-white.png
+Lingering Lobby,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {W} or {B}.",,,,,White–Black,assets/land/black-white.png
+Product Pod,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {U} or {R}.",,,,,Blue–Red,assets/land/red-blue.png
+Fantastical Workspace,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {B} or {G}.",,,,,Black–Green,assets/land/black-green.png
+Brief Reprieve,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {R} or {W}.",,,,,Red–White,assets/land/red-white.png
+Mezzanine Terazzo,Ready to create,L,u,Land,,,"~ enters the battlefield tapped.
+When ~ enters the battlefield, scry 1.
+{T}: Add {G} or {U}.",,,,,Green–Blue,assets/land/green-blue.png
+Swamp,Ready to Print,L,c,Basic Land,Swamp,,,,,,,,assets/land/swamp.png
+Forest,Ready to Print,L,c,Basic Land,Forest,,,,,,,,assets/land/forest1.png
+Mountain,Ready to Print,L,c,Basic Land,Mountain,,,,,,,,assets/land/mountain1.png
+Island,Ready to Print,L,c,Basic Land,Island,,,,,,,,assets/land/island.png
+Plains,Ready to Print,L,c,Basic Land,Plains,,,,,,,,assets/land/plains.png
+Stopp Pressen,Ready to Print,L,r,Legendary Land,,,"~ enters the battlefield tapped.
+{T}: Add two mana in any combination of colors among cards in your graveyard.","""Wait - this isn't even a pint!?""",,,,,assets/land/stoppressen.png
+Printer Area,Ready to Print,L,r,Legendary Land,,,"~ enters the battlefield tapped unless you pay 2 life.
+{T}: Add {C}.
+{T}, Pay 1 life: Add one mana of any color.","""No one knows how it works. We just sacrifice paper and hope.""",,,,,assets/land/printer-area.png
+Home Office,Ready to Print,L,r,Legendary Land,,,"~ enters the battlefield tapped.
+As this land enters the battlefield, choose a color.
+{T}: Add one mana of the chosen color.",,,,,,assets/land/home-office.png
+Coffee Station,Ready to Print,L,m,Legendary Land,,,"If this card is in your opening hand and you’re not the starting player, you may begin the game with ~ on the battlefield with a luck counter on it. If you do, exile a card from your hand.
+{T}: Add {C}. If ~ has a luck counter on it, instead add one mana of any color.",,,,,,assets/land/coffeezonepotrait.png
+Vestby,Ready to Print,,r,Land,,Hexproof,"This land enters tapped.
+When this land enters, sacrifice two lands.
+{T}: Add three mana of any one color.",,,,,,asset/land/vestby.png

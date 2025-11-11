@@ -1,0 +1,30 @@
+Cards,Status,Type,Subtype,R,Mana cost,Std Ability,Ability,p/t,Flavour Text,Card,Comments,Image,Image alt 2,image_file_path
+Black Sunglasses,Ready to print,Artifact,Equipment,r,{1}{B},,"Equipped creature has protection from white and +1/+1.
+Equip {1}",,"""Don't switch the blade on the guy in shades.""",,Add equipment cost and mechanics,,,assets/artifacts/blindingsunglasses.png
+Component Library,Ready to print,Artifact,,c,{3},,{T}: Add one mana of any color.,,It was the hardest button to button.,,,,,assets/artifacts/componentlibrary2.png
+Confluence,Ready to print,Artifact,,,{WU}{WU}{WU},,"Whenever a creature enters the battlefield under your control, add a document counter to ~.
+{T}, Remove one or more document counters from ~: For each counter removed this way, choose target creature you control. Put a +1/+1 counter on it, then tap it and add a stun counter to it.",,,,,,,assets/artifacts/confluence.png
+Event-Based Architecture,Ready to print,Artifact,,u,{W}{R},,"Whenever one or more sources you control deal damage to an opponent, you gain 1 life.
+At the beginning of your end step, if an artifact creature you control dealt damage to an opponent this turn, create a 1/1 colorless Microservice artifact creature token.",,,,b should be Big?,,,assets/artifacts/events.png
+Artifactory,Ready to print,Artifact,,u,{1}{G},,"{i}Package Manager{/i} {-} {5}, {T}: Look at the top three cards of your library. You may put an artifact card from among them onto the battlefield tapped. Put the rest on the bottom of your library in any order.",,,,,,,assets/artifacts/artifactory.png
+Company Merch,Ready to print,Artifact,Equipment,c,{3},,"When ~ enters the battlefield, you may attach it to target creature you control.
+Equipped creature gets +1/+1 and has haste.
+Equip {1}",,Do we need it? No. But do we want it...?,,,,,assets/artifacts/diswag.png
+Design System,Ready to print,Legendary Artifact,,m,{2W}{2U}{2B}{2R}{2G},,{i}Standardize{/i} {-} {t}: Pick a color. Reveal cards from the top of your library until you reveal a nonland card of the chosen color. Put that card into your hand and the rest on the bottom of your library in a random order.,,,,Borderless,,,assets/artifacts/designsystem.png
+Docking Station,Ready to print,Artifact,,u,{2}{W}{U},,"{i}Modular Dock{/i} {-} When ~ enters the battlefield, you may return another artifact you control to its owner's hand. If you do, draw a card.
+{i}Energy Node Charging{/i} {-} Whenever an artifact enters the battlefield under your control, you may pay {1}. If you do, put a charge counter on ~.
+Remove three charge counters from ~: Tap or untap target artifact or creature.",,Surprisingly expensive.,,,,,assets/artifacts/dockingstation.png
+Doorstep Package,Ready to print,Artifact,,,{2},,"At the beginning of your endstep, if you've dealt damage to an opponent this turn, Deliver 1.",,,,,,,assets/artifacts/doorsteppackage.png
+Fruit Bowl,Ready to print,Artifact,,u,{2}{G},,"When ~ enters the battlefield, create two Food tokens.
+{3}: Create a Food token.",,,,,,,assets/artifacts/fruitbowl.png
+Malfunctioning Office Blinds,Ready to print,Artifact,,u,{2}{R}{B},,"When ~ enters the battlefield, target opponent reveals their hand. You choose a nonland card from it. Exile that card until ~ leaves the battlefield. You may play that card for as long as it remains exiled, and you may spend mana as though it were mana of any color to cast it.
+{T}: Add {B}.",,,,,,,assets/artifacts/malfunctioningblinds.png
+Paxter,Ready to print,Artifact,Vehicle,r,{1},Crew 1,"Whenever ~ attacks, Deliver 2.",3/1,,,I kinda prefer the gnome one,,,assets/artifacts/paxster.png
+Sybase,Ready to print,Legendary Artifact,,m,{2B}{U},,"At the beginning of your upkeep, if you don’t control a creature named Lars, Tamer of Sybase, pay {2}. If you don’t, sacrifice ~.
+At the beginning of your first main phase each turn, draw a card, then exile a card from your hand.
+{T}: You may play a card exiled with ~ this turn. Activate only as a sorcery.",,,,Wrong color order,,,assets/artifacts/sybase2.png
+Underwater Scooter,Ready to print,Artifact,Equipment,c,{2}{U},,"Equipped creature has hexproof and islandwalk. {i}(This creature is unblockable as long as defending player controls an Island.){/i}
+Equip {2}
+Equip costs {0} if you target a creature named Marie.",,The. Coolest. Thing. Ever.,,,,,assets/artifacts/underwaterscooter.png
+Moccamaster,Ready to create,Artifact,,c,{3},,"Untap this artifact during each other player's untap step.
+{T}: Add one mana of any color.",,,,,,,assets/artifacts/moccamaster.png

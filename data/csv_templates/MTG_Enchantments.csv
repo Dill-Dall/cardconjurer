@@ -1,0 +1,65 @@
+Cards,Status,Type,Subtype,R,Mana cost,p/t,Title,Std Ability,Ability,Passive,Active,Flavour Text,Card,Comment,Image,image_file_path,Prompt
+Christopher's Metaphor,Ready to create,Legendary Enchantment,Saga,m,{2W}{2U}{2B}{2R}{2G},,,,"{i}(As this Saga enters and after your draw step, add a lore counter.){/i}
+
+I — Deliver 3. You may search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.
+
+II — Distribute a vigilance counter, a flying counter, a menace counter, a defender counter, a deathtouch counter, a first strike counter, and a trample counter among any number of target creatures.
+
+III — Create four Treasure tokens.",,,,,,,assets/enchantments/cosmetaphors.png,
+Slingshot Maneuver,Ready to create,Legendary Enchantment,,m,,,,,You may spend mana as though it were mana of any color.,,,"""""Listen guys, it’s all quite elementary. We start off with doing what we are doing now and building upon our strengths, slowly preparing for stage two. Then we utilize gravitational assistance to slingshot ourselves towards our ultimate destination, leveraging our solutional excellence and experiences to reach new heights! This will take us into orbit around the moon, where we will start moon-based maneuvers. I really don't see why you guys are struggling with this.""""",,,,assets/enchantments/cosmetaphors.png,
+Cloud Wrangler,Ready to print,Enchantment,Aura,u,{1}{W}{W},,,,"Enchant creature.
+Enchanted creature has flying and lifelink.",,,,,"Vi trenger et nytt bilde, tror jeg. Skal helst være for trange rammer",,assets/enchantments/cloudwrangler2.png,
+Creative BIT Logic,Ready to print,Enchantment,Aura,r,{B}{R},,,,"Enchant creature.
+Whenever enchanted creature deals combat damage to a player, the owner of ~ draws a card.",,,"""""So if you have one bit here on the elbow, and one here on the knuckle, and one here on the inside of the index fingers nail, you absolutely flip 'em off."""" // - Roar",,"Typo aura. Also are auror supposed to have markers at the bootm or not?
+
+Vi trenger et nytt bilde, tror jeg. Skal helst være for trange rammer",,assets/enchantments/creativebitlogic.png,
+Developers Assemble,Ready to create,Enchantment,Saga,c,"{2}{U}{U}{R}
+",,,,"I — Tap and put two stun counters on target creature. (If a permanent with a stun counter would untap, remove one instead.)
+
+II — Creatures that enter the battlefield this turn gain haste.
+
+III — You may search your library for a Tech creature card, reveal it, put it into your hand, then shuffle.",,,,,,,assets/creatures/developersassemble6.png,
+Fredagspils,Ready to print,Enchantment,Saga,r,{3}{W}{G},,,,"I — Return target historic spell with mana value 4 or less from your graveyard to the battlefield.
+
+II — Create two Food tokens.
+
+III — Put a +1/+1 counter on every creature you control.",,,,,,,assets/enchantments/fredagspils.png,
+Greenfield,Created,Enchantment,,,{2}{WG}{WG},,,,"Whenever a nontoken artifact creature enters the battlefield, create a 1/1 colorless Microservice artifact creature token.",,,,,,,assets/creatures/greenfield.png,
+IAM Rabbit Hole,Created,Enchantment,,u,{2}{U}{B},,,,"Whenever you draw a card outside of your draw step, create a Clue token. This ability triggers only once each turn.
+Whenever you sacrifice a Clue, you may mill two cards. If a nonland permanent was milled this way, you may play that card from your graveyard this turn. If you do, you lose 1 life.",,"{2}, {t}, Sacrifice ~: Each opponent reveals their hand. You may choose a nonland card from among them. That player shuffles it into their library.","""Roles lead to policy, then to an assume-role chain, then existential dread.""
+",,"This needs a rework, possibly reduce word count or abilities",,assets/enchantments/IAM-Rabbit hole.png,
+Infinite Meetings,Ready to print,Enchantment,Aura,u,{U},,,,"Enchant creature.
+When this Aura enters, tap enchanted creature.
+Enchanted creature doesn't untap during its controller's untap step.
+When enchanted creature is dealt damage, sacrifice this Aura.",,,,,,,assets/enchantments/infinitemeeting.png,
+Project High,Created,Enchantment,,u,{2}{W}{W},,,,"At the beginning of your upkeep, create a 1/1 colorless Card Knight artifact creature token.
+",,,,,,,assets/enchantments/projecthigh.png,
+Scary Code Debt,Ready to print,Enchantment,Aura,c,{B},,,,"Enchant artifact or creature.
+As long as enchanted permanent is a creature it gets -1/-1 and can't block.
+Enchanted permanent has ""At the beginning of your upkeep, you lose 1 life.""",,,"""Nobody knows what it does, but everyone’s afraid to delete it.""",,,,assets/enchantments/scarycodedebt.png,
+Scope Creep,Created,Enchantment,,,{2}{UB}{UB},,,,Creatures don't untap during their controller's untap steps unless their controller pays {1} for each creature they untap.,,,,,,,assets/enchantments/scope-creep.png,
+"Tech Medarbeidersamtale
+",Ready to create,Enchantment,Saga,u,{4}{G}{G},,,,"I — Until the end of your turn, you may cast a Tech creature card from your hand without paying its mana cost.
+
+II — Until the end of your turn, you may cast a card named Terje, Teleporting Giant from your library, graveyard, or exile.
+
+III — Tech creatures you control get +2/+1 and gain trample until end of turn.",,,,,,,assets/enchantments/techdevelopmenttalk.png,
+This Is Fine,Ready to print,Enchantment,,,{1}{R},,,,Creatures you control get +1/+0 and menace when attacking.,,,,,,,assets/enchantments/thisisfine.png,
+Work In Progress,Ready to print,Enchantment,Aura,,{W},,,,"Enchant creature
+Enchanted creature can't block or attack 
+{2){W}: exile enchanted creature",,,,,,,assets/creatures/wip.png,
+Bingo Night,Created,Legendary Enchantment,,m,{1},,,,"{up50}Whenever one or more of the following occurs for the first time after ~ enters the battlefield, put a bingo counter on ~:
+• {indent}A card is put into a player’s hand outside draw step.{/indent}
+• {indent}A spell or ability destroys a permanent.{/indent}
+• {indent}A spell with mana value 6 or greater is cast.{/indent}
+• {indent}A card is put into exile.{/indent}
+When ~ has four or more bingo counters on it, draw seven cards, then exile ~",,,Everyone rushed out their bingo sheets as Harisan joined table.,,,,assets/enchantments/bingonight.png,
+Inspiration Burst,Needs Review,Enchantment,,r,{1}{U}{U},,,,"Whenever you cast an instant or sorcery spell, create a 1/1 colorless Card Knight artifact creature token.",,,,,,,assets/enchantments/suddeninsipiration.png,
+Burning the Midnight Oil,Needs Review,Enchantment,,r,{1}{B},,,,"At the beginning of your upkeep, you lose 1 life. Create a 1/1 colorless Card Knight artifact creature token.",,,,,,,assets/enchantments/burningthemidnightoil.png,
+Overwhelming Responsibility,Needs Review,Enchantment ,Aura,r,{3}{G}{G},,,,"Enchant creature
+Enchanted creature gets +3/+3 and has “At the beginning of each upkeep, create a 1/1 colorless Card Knight artifact creature token.”",,,,,Proxy of https://scryfall.com/card/afc/173/verdant-embrace,,assets/enchantments/overwhelmingresponsibility.png,
+Ever Vigilant Creators,Needs Review,Enchantment,,r,{2}{W},,,,"Knights you control gain vigilance.
+{2}{W}: Put a 1/1 colorless Card Knight artifact creature token into play.",,,,,Close Proxy of https://scryfall.com/card/c14/81/mobilization,,assets/enchantments/evervigilantcreators.png,
+Whimsical Ideas,Created,Enchantment,,r,{2}{R},,,,"At the beginning of your upkeep, create a 1/1 colorless Card Knight artifact creature token with haste.
+Knight creatures you control attack each turn if able.",,,,,Close Proxy of https://scryfall.com/card/mm3/95/goblin-assault,,assets/enchantments/whimsicalideas.png,
+MTG - Enchantment.csv

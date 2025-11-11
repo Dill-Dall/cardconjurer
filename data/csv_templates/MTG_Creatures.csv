@@ -1,0 +1,51 @@
+Cards,Status,Type,Subtype,R,Mana cost,p/t,Std Ability,Ability,Passive,Active,Flavour Text,Card Draft,Card Alt,Comment,"Approved by"
+person",Image,Image alt 2,Prompt,image_file_path,Word Count,Column 2,
+The Enterprise,Ready to print,Artifact,Vehicle,c,{4},*/*,Crew 3,,,{X}: ~'s base power and toughness become X. Activate only as a sorcery.,<Insert name of parent company; subject to change.>,,,,,,,,assets/creatures/theenterprise.png,23,,
+Glitter Bomber,Ready to print,Artifact Creature,Gnome,c,{R},1/1,Haste,"When ~ dies, create a Treasure token.",,,,,,,,,,,assets/creatures/glitterbomb.png,,,
+DAP,Ready to print,Artifact Creature,Neglected Tech Service,c,{1}{W}{B},3/1,Flying,,,"{i}Service Sunset{/i} {-} {B}, Sacrifice DAP: //Add four mana in any combination of {B} and {W}.
+
+",,,,,,,,,assets/creatures/dap.png,17,,
+Cloud API,Ready to print,Artifact Creature,Neglected Tech Service ,c,{1}{W}{B},1/2,,,"When ~ enters the battlefield, you may search your library for a creature card with flying, reveal it, put it into your hand, then shuffle.
+{i}Service Sunset{/i} {-} {1}{B}{W}, {T}, Sacrifice ~: Search your library for a creature card with flying, reveal it, put it into your hand, then shuffle.
+
+",,"""We can create IAC by way of APIs! The sky is the limit, we can even sell it standalone...""",,,,,,,,assets/creatures/cloudapi2.png,68,,
+Keycloak,Ready to print,Artifact Creature,Neglected Tech Service ,c,{1}{B},1/2,,"When ~ enters the battlefield, create an Authentication token.
+{i}Service Sunset{/i} {-} {2}{B}, {T}, Sacrifice this creature: Destroy target creature.",,,"Auth 2.0 {-} such a vision, a wonder, a glorious future. Now only supporting a husk of product.",,,,,,,,assets/creatures/keycloak.png,37,,
+Microservice Assembler,Ready to print,Artifact Creature,Tech,c,{W},1/1,,"When ~ enters, create a 1/1 colorless Microservice artifact creature token.",,,,,,,,,,,assets/creatures/developer-converyor-worker.png,,,
+Avisretur,Ready to print,Artifact Creature,Tech Service,c,{R},2/2,Haste,,"At the beginning of the end step, return ~ to its owner's hand.
+",,"""Take them back!""",,,,,,,"A colourful Vermeer-style oil painting with stained glass-like leaded lines, designed in an Art Nouveau style. A scene depicting newspapers and magazines being returned in bulk to a shop. At the top of this image, an icon with a symbolic depiction of a whirlwind with newspapers that goes around and around — is integrated into the Art Nouveau framing. The scene is painted in rich, earthy tones with dramatic lighting and textured brushwork.",assets/creatures/avisretur.png,17,,
+Buddy,Ready to print,Artifact Creature,Tech Service,c,{2}{U}{R},4/2,Flash,"~ attacks each combat if able.
+Whenever ~ attacks, Deliver 2.",,,,,,,,,,,assets/creatures/buddy2.png,11,,
+Auth,Ready to print,Artifact Creature,Tech Service,c,{2}{G}{G},1/4,Defender,,"When ~ enters the battlefield, create an Authentication token. {i}({T}, Sacrifice this artifact: Target creature can't be blocked this turn.){/i}
+As long as ~ is on the battlefield, you may tap Authentication tokens you control instead of sacrificing them to add {G}.
+","{2}{G}, {T}: Create an Authentication token.","A homemade security solution with questionable logic {lns}{-} but somehow, it works.",,,,,,,,assets/creatures/auth2.png,60,,
+Cargostream,Ready to print,Artifact Creature,Tech Service,c,{1}{W}{U},1/2,Flying,"When ~ enters the battlefield, scry 1, then draw a card.",,,,,,,,,,,assets/creatures/cargostream2.png,12,,
+DRP,Ready to print,Artifact Creature,Tech Service,c,{2}{W}{G},2/2,Vigilance,,,{T}: Add {G}{G} to your mana pool.,"""""You, Dynamic Route Planner, will henceforth be known as 'derp'.""""",,,,,,,,assets/creatures/drp2.png,18,,
+Flow,Ready to print,Artifact Creature,Tech Service,c,{2}{R}{G},2/2,Double strike,,"When ~ enters the battlefield, Deliver 2.",,,,,,,,,,assets/creatures/flow3.png,9,,
+Insight,Ready to print,Artifact Creature,Tech Service,c,{2}{U},2/2,,"When ~ enters the battlefield, scry 2, then draw a card.
+",,,,,,,,,,,assets/creatures/di-insights.png,11,,
+Optimize,Ready to print,Artifact Creature,Tech Service,c,{2}{U}{G},4/2,Trample,"If ~ was not the first spell you cast this turn, draw a card.
+Plot {2}{U}{G} {i}(You may pay {2}{U}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.){/i}",,,"""""Optimize is Primed for success!""""",,,,,,,,assets/creatures/optimize.png,52,,
+Retailer,Ready to print,Artifact Creature,Tech Service,c,{2}{R},3/1,Menace,,,,"Papers, please.",,,,,,,"Create the image In the style of Wizards of the Coast, with Rider-Waite style elements from the tarot cards and some elements from art nouveau. It should look like a stained glass image with thick lines, where light is shining from behind the glass. Make it brighter if the image is too dark. The scene is a newsstand in the middle of the image, where a man sells papers and magazines, but all text are replaced with lines.",assets/creatures/retailer.png,3,,
+Plan & Go,Ready to print,Artifact Creature,Tech Service,c,{1}{R},2/2,Haste,"Whenever ~ deals combat damage to a player, Deliver 1.
+",,,,,,,,,,,assets/creatures/planandgo.png,11,,
+Firewall,Ready to print,Artifact Creature,Wall,c,{1}{W}{B},0/5,Defender,"Spells and abilities your opponents control must target this creature if able unless that player pays {2}.
+",,,,,,,,,,,assets/creatures/firewall.png,18,,
+Living Breathing Document,Ready to print,Artifact Creature,,c,{W}{U},2/2,,"Whenever you draw a card, put a +1/+1 counter on ~.
+Whenever you cast a spell, remove a +1/+1 counter from ~.",,,,,,,,,,,assets/creatures/livingbreathingdocument.png,21,,
+Fearless Courier,Ready to print,Creature,Human,c,{1}{G},2/2,,"At the beginning of your second main phase, if ~ is tapped, Deliver 1.",,,,,,Fix new text,,,,,assets/creatures/fearlesscourier.png,14,,
+Forklift Chauffeur,Ready to print,Creature,Human Pilot,c,{G},1/1,,,,{T}: Add {G} to your mana pool.,,,,,,,,,assets/creatures/forkliftDriver.png,,,
+Porch Bandit,Ready to print,Creature,Human Rogue,c,{1}{B},1/1,Deathtouch,"When ~ enters the battlefield, you may remove up to one counter from target permanent or target opponent's Delivery Sheet.",,,,,,,,,,,assets/creatures/porchbandit2.png,,,
+Offroad Navigator,Ready to print,Creature,Human Scout,c,{U} ,1/1,,"When ~ enters, Deliver 1. {i}(Place a deliver counter on your Delivery Sheet.){/i}",,,,,,,,,,,assets/creatures/navigatingcourier.png,,,
+The Commercers,Ready to print,Creature,Human Team,u,{3}{R}{R},3/6,Double strike,,"When this creature deals damage to an opponent this turn, choose one {-}
+• {indent}Create a 1/1 colorless Microservice artifact creature token.{/indent}
+• {indent}Create a Treasure token.{/indent}",<instant> {i}Quick Fix{/i} {-} {W}: Create a 1/1 colorless Microservice artifact creature token. {i}(Then shuffle this card into its owner's library.){/i},,,,Move quick fix to omen,,,,,assets/creatures/commercers.png,48,,
+The Council of C,Ready to print,Creature,Human Team,m,{3}{G}{G}{U}{U},6/7,"This spell can't be countered.
+Reach",,"Cascade, cascade, cascade.",<instant> {i}Quick Fix{/i} – {U}: Counter target spell with mana value 3 or less. {i}(Then shuffle this card into its owner's library.){/i},,,,"Remove reminder text.
+
+Cascade, cascade, cascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card with lesser mana value. You may cast it without paying its mana cost. Put the exiled cards on the bottom of your library in a random order.)",,,,,assets/creatures/council-of-cs1.png,30,,
+The Foundationalists,Ready to print,Creature,Human Team,r,{2}{R}{U},3/4,,"When ~ enters the battlefield, your next instant or sorcery spell this turn may be copied. You may choose new targets for the copy.",,<instant>{i}Quick Fix{/i} {-} {U}: Tap or untap target creature. {i}(Then shuffle this card into its owner's library.){/i},,,,Probably change this to the Foundry? Foundationalism might be... something else :P,,,,,assets/creatures/the-foundationalists.png,41,,
+The Last Milers,Ready to print,Creature,Human Team,u,{3}{R}{G},4/5,"Haste, Trample",,"Whenever a creature you control deals damage to an opponent, Deliver 1.","<Sorcery>{i}Quick Fix{/i} {-} {1}{R}: Deliver 2, then deal X damage to target creature, where X is the number of your delivery counters. {i}(Then shuffle this card into its owner's library.){/i}","""Oh my fur and whiskers! I'm late, I'm late! For a very important date!""",,,,,,,,assets/creatures/lastmilers.png,58,,
+The Medias,Ready to print,Creature,Human Team,u,{4}{B}{R},4/7,Haste,,"Whenever this creature deals combat damage to a player, you may deal 2 damage to target creature.",<instant>{i}Quick Fix{/i} {-} {1}{B}: Destroy target creature that was dealt damage this turn. {i}(Then shuffle this card into its owner's library.){/i},"Dreams of war, dreams of liars. Dreams of dragon's fire.",,,,,,,,assets/creatures/themedias.png,49,,
+The Operationals,Ready to print,Creature,Human Team,u,{3}{G}{W},3/6,,,"Whenever a Support Ticket token leaves, put two +1/+1 counters on target creature you control.
+{2}: Create a tapped Support Ticket token.","<instant>{i}Quick Fix{/i} {-} {G}: Search your library for a basic land card, reveal it, put it into your hand, then shuffle. {i}(Then shuffle this card into its owner's library.){/i}",,,,"mulig det blir for mye text her, kann være vi kan droppe activen.",,,,,assets/creatures/operations.png,50,,
