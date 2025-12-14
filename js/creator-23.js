@@ -579,24 +579,21 @@ function doubleClick(event, maskOrFrame) {
 	}
 	return null;
 }
-function cardFrameProperties(colors, manaCost, typeLine, power, style) {
-	var colors = colors.map(color => color.toUpperCase())
-		.sort(sortMana);
+function cardFrameProperties(symbols, manaCost, typeLine, power, style) {
+    var isHybrid = manaCost.includes('/');
 
-	var isHybrid = manaCost.includes('/');
-
-	var rules;
+    var rules;
 	if (style == 'Seventh') {
 		if (typeLine.includes('Land')) {
-			if (colors.length == 0 || colors.length > 2) {
+			if (symbols.length == 0 || symbols.length > 2) {
 				rules = 'L';
 			} else {
-				rules = colors[0] + 'L';
+				rules = symbols[0] + 'L';
 			}
 		} else {
-			if (colors.length == 1) {
-				rules = colors[0];
-			} else if (colors.length >=2) {
+			if (symbols.length == 1) {
+				rules = symbols[0];
+			} else if (colorsRaw.length >=2) {
 				rules = 'M';
 			} else if (typeLine.includes("Artifact")) {
 				rules = 'A';
@@ -607,21 +604,21 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 
 	} else {
 		if (typeLine.includes('Land')) {
-			if (colors.length == 0) {
+			if (symbols.length == 0) {
 				rules = 'L';
-			} else if (colors.length > 2) {
+			} else if (symbols.length > 2) {
 				rules = 'ML';
 			} else {
-				rules = colors[0] + 'L';
+				rules = symbols[0] + 'L';
 			}
-		} else if (colors.length > 2) {
+		} else if (symbols.length > 2) {
 			if (style == 'Etched' && typeLine.includes('Artifact')) {
 				rules = 'A';
 			} else {
 				rules = 'M';
 			}
-		} else if (colors.length != 0) {
-			rules = colors[0];
+		} else if (symbols.length != 0) {
+			rules = symbols[0];
 		} else if (style == 'Borderless' && !typeLine.includes('Artifact')) {
 			rules = 'C';
 		} else {
@@ -630,26 +627,26 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 	}
 
 	var rulesRight;
-	if (colors.length == 2) {
+	if (symbols.length == 2) {
 		if (typeLine.includes('Land')) {
-			rulesRight = colors[1] + 'L';
+			rulesRight = symbols[1] + 'L';
 		} else if (style != 'Seventh') {
-			rulesRight = colors[1];
+			rulesRight = symbols[1];
 		}
 	}
 
 	var pinline = rules;
 	var pinlineRight = rulesRight;
 
-	if (style == 'Seventh' && typeLine.includes('Land') && colors.length >= 2) {
+	if (style == 'Seventh' && typeLine.includes('Land') && symbols.length >= 2) {
 		pinline = 'L';
 		pinlineRight = null;
 	}
 
 	var typeTitle;
-	if (colors.length >= 2) {
+	if (symbols.length >= 2) {
 		if (isHybrid || typeLine.includes('Land')) {
-			if (colors.length >= 3) {
+			if (symbols.length >= 3) {
 				typeTitle = 'M';
 			} else {
 				typeTitle = 'L';
@@ -658,21 +655,21 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 			typeTitle = 'M';
 		}
 	} else if (typeLine.includes('Land')) {
-		if (colors.length == 0) {
+		if (symbols.length == 0) {
 			typeTitle = 'L';
 		} else if (style == 'Etched') {
-			if (colors.length > 2) {
+			if (symbols.length > 2) {
 				typeTitle = 'M';
-			} else if (colors.length == 1) {
-				typeTitle = colors[0];
+			} else if (symbols.length == 1) {
+				typeTitle = symbols[0];
 			} else {
 				typeTitle = 'L';
 			}
 		} else {
-			typeTitle = colors[0] + 'L';
+			typeTitle = symbols[0] + 'L';
 		}
-	} else if (colors.length == 1) {
-		typeTitle = colors[0];
+	} else if (symbols.length == 1) {
+		typeTitle = symbols[0];
 	} else if (style == 'Borderless' && !typeLine.includes('Artifact')) {
 		typeTitle = 'C';
 	} else {
@@ -699,10 +696,10 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 		}
 	} else if (typeLine.includes('Land')) {
 		if (style == 'Etched') {
-			if (colors.length > 2) {
+			if (symbols.length > 2) {
 				frame = 'M';
-			} else if (colors.length > 0) {
-				frame = colors[0];
+			} else if (symbols.length > 0) {
+				frame = symbols[0];
 			} else {
 				frame = 'L';
 			}
@@ -713,24 +710,24 @@ function cardFrameProperties(colors, manaCost, typeLine, power, style) {
 		frame = 'V';
 	} else if (typeLine.includes('Artifact')) {
 		frame = 'A';
-	} else if (colors.length > 2) {
+	} else if (symbols.length > 2) {
 		frame = 'M';
-	} else if (colors.length == 2) {
+	} else if (symbols.length == 2) {
 		if (isHybrid || style == 'Etched') {
-			frame = colors[0];
+			frame = symbols[0];
 		} else {
 			frame = 'M';
 		}
-	} else if (colors.length == 1) {
-		frame = colors[0];
+	} else if (symbols.length == 1) {
+		frame = symbols[0];
 	} else {
 		frame = 'L';
 	}
 
 	var frameRight;
 	if (!(typeLine.includes('Vehicle') || typeLine.includes('Artifact'))) {
-		if (colors.length == 2 && (isHybrid || style == 'Etched')) {
-			frameRight = colors[1];
+		if (symbols.length == 2 && (isHybrid || style == 'Etched')) {
+			frameRight = symbols[1];
 		}
 	}
 
@@ -751,87 +748,144 @@ function setAutoframeNyx(value) {
 	setAutoFrame();
 }
 
-function sortMana(a, b) {
-	const colorOrder = { W: 1, U: 2, B: 3, R: 4, G: 5 };
+function tokenizeManaCostString(raw) {
+    if (!raw) return [];
+    console.log(raw, typeof raw)
+    const segments = raw.match(/\{[^}]*}/g);
+    if (!segments) return [];
+    return segments.map(s => s.slice(1, -1).trim()); // "{R}" -> "R"
+}
 
-	const cleanA = a.replace(/[{}]/g, '').toUpperCase();
-	const cleanB = b.replace(/[{}]/g, '').toUpperCase();
+function makeManaComparator(allTokens) {
+    const schemas = {
+        1: [["W"], ["U"], ["B"], ["R"], ["G"]],
+        2: [
+            ["W","U"], ["U","B"], ["B","R"], ["R","G"], ["G","W"],
+            ["W","B"], ["U","R"], ["B","G"], ["R","W"], ["G","U"],
+        ],
+        3: [
+            ["W","U","B"], ["U","B","R"], ["B","R","G"], ["R","G","W"], ["G","W","U"],
+            ["W","U","R"], ["U","B","G"], ["B","R","W"], ["R","G","U"], ["G","W","B"],
+        ],
+        4: [
+            ["W","U","B","R"], ["U","B","R","G"], ["B","R","G","W"], ["R","G","W","U"], ["G","W","U","B"],
+            ["W","U","B","G"], ["U","B","R","W"], ["B","R","G","U"], ["R","G","W","B"], ["G","W","U","R"],
+        ],
+        5: [["W","U","B","R","G"]],
+    };
 
-	// Check if they're numbers or X - these always come first
-	const isNumberA = /^\d+$/.test(cleanA);
-	const isNumberB = /^\d+$/.test(cleanB);
-	const isXA = cleanA === 'X';
-	const isXB = cleanB === 'X';
+    const clean = (x) => String(x).replace(/[{}]/g, "").trim().toUpperCase();
 
-	// Handle X and numbers ordering: X comes first, then numbers
-	if (isXA && isXB) return 0; // Both X, equal
-	if (isXA && (isNumberB || !isXB)) return -1; // X before numbers/colors
-	if (isXB && (isNumberA || !isXA)) return 1; // X before numbers/colors
+    // Detect which colors are present in the whole cost (for circular order selection)
+    const set = new Set();
+    for (const t of allTokens) {
+        const tok = clean(t);
 
-	if (isNumberA && isNumberB) {
-		return parseInt(cleanA) - parseInt(cleanB);
-	}
-	if (isNumberA || isXA) return -1;  // Numbers and X before colors
-	if (isNumberB || isXB) return 1;   // Numbers and X before colors
+        // PW
+        if (/^P[WUBRG]$/.test(tok)) set.add(tok[1]);
+        // WUP / etc
+        if (/^[WUBRG]{2}P$/.test(tok)) { set.add(tok[0]); set.add(tok[1]); }
+        // CW
+        if (/^C[WUBRG]$/.test(tok)) set.add(tok[1]);
+        // 2W
+        const mNum = tok.match(/^\d+([WUBRG])$/);
+        if (mNum) set.add(mNum[1]);
+        // Normal letters
+        for (const c of (tok.match(/[WUBRG]/g) ?? [])) set.add(c);
+    }
 
-	// Extract colors (handle Phyrexian modifier and number-color hybrids)
-	let colorsA = cleanA.toUpperCase();
-	let colorsB = cleanB.toUpperCase();
+    const unique = Array.from(set);
+    const n = unique.length;
 
-	// Handle number-color hybrids like {2G}, {3W} - extract the color and number parts
-	const numberColorA = colorsA.match(/^(\d+)([WUBRG])$/);
-	const numberColorB = colorsB.match(/^(\d+)([WUBRG])$/);
+    let schema = ["W","U","B","R","G"]; // fallback
+    if (schemas[n]) {
+        const found = schemas[n].find(order =>
+            order.length === unique.length &&
+            order.every(c => unique.includes(c)) &&
+            unique.every(c => order.includes(c))
+        );
+        if (found) schema = found.slice();
+    }
 
-	let numberPartA = null;
-	let numberPartB = null;
+    const sIdx = (c) => {
+        const i = schema.indexOf(c);
+        return i === -1 ? 99 : i;
+    };
 
-	if (numberColorA) {
-		numberPartA = parseInt(numberColorA[1]);
-		colorsA = numberColorA[2]; // Extract just the color part
-	}
-	if (numberColorB) {
-		numberPartB = parseInt(numberColorB[1]);
-		colorsB = numberColorB[2]; // Extract just the color part
-	}
+    // Category order per your images:
+    // X/Y/Z → numbers → 2W.. → C → CW.. → colored (mono, phy, hybrid, phyhybrid) → S → other
+    const CAT = {
+        variable: 0,
+        number: 1,
+        numColor: 2,
+        colorless: 3,
+        colorlessHybrid: 4,
+        mono: 5,
+        phyMono: 6,
+        hybrid: 7,
+        phyHybrid: 8,
+        snow: 9,
+        other: 99,
+    };
 
-	// Remove P from beginning (single Phyrexian: {PW}) or end (hybrid Phyrexian: {WUP})
-	if (colorsA.startsWith('P')) {
-		colorsA = colorsA.substring(1);
-	} else if (colorsA.endsWith('P')) {
-		colorsA = colorsA.substring(0, colorsA.length - 1);
-	}
+    function key(token) {
+        const tok = clean(token);
 
-	if (colorsB.startsWith('P')) {
-		colorsB = colorsB.substring(1);
-	} else if (colorsB.endsWith('P')) {
-		colorsB = colorsB.substring(0, colorsB.length - 1);
-	}
+        // variables
+        if (/^[XYZ]$/.test(tok)) return [CAT.variable, ["X","Y","Z"].indexOf(tok), 0, 0, 0];
 
-	// Get primary color for sorting (WUBRG order)
-	const primaryA = colorsA[0];
-	const primaryB = colorsB[0];
+        // pure numbers
+        if (/^\d+$/.test(tok)) return [CAT.number, 0, 0, 0, parseInt(tok, 10)];
 
-	const orderA = colorOrder[primaryA] || 999;
-	const orderB = colorOrder[primaryB] || 999;
+        // numbered generic hybrid: 2W, 2R...
+        {
+            const m = tok.match(/^(\d+)([WUBRG])$/);
+            if (m) return [CAT.numColor, sIdx(m[2]), 0, 0, parseInt(m[1], 10)];
+        }
 
-	if (orderA !== orderB) {
-		return orderA - orderB;
-	}
+        // colorless
+        if (tok === "C") return [CAT.colorless, 0, 0, 0, 0];
 
-	// If primary colors are the same, handle special cases
-	if (numberPartA !== null && numberPartB !== null) {
-		// Both are number-color hybrids with same color, sort by number
-		return numberPartA - numberPartB;
-	}
+        // colorless hybrid
+        {
+            const m = tok.match(/^C([WUBRG])$/);
+            if (m) return [CAT.colorlessHybrid, sIdx(m[1]), 0, 0, 0];
+        }
 
-	// If primary colors are the same, sort by secondary color
-	const secondaryA = colorsA[1] || '';
-	const secondaryB = colorsB[1] || '';
+        // mono
+        if (/^[WUBRG]$/.test(tok)) return [CAT.mono, sIdx(tok), 0, 0, 0];
 
-	const secondOrderA = colorOrder[secondaryA] || 0;
-	const secondOrderB = colorOrder[secondaryB] || 0;
+        // phyrexian mono: PW
+        {
+            const m = tok.match(/^P([WUBRG])$/);
+            if (m) return [CAT.phyMono, sIdx(m[1]), 0, 0, 0];
+        }
 
-	return secondOrderA - secondOrderB;
+        // hybrid: WU (IMPORTANT: don’t reorder letters; left half defines grouping)
+        {
+            const m = tok.match(/^([WUBRG])([WUBRG])$/);
+            if (m && m[1] !== m[2]) return [CAT.hybrid, sIdx(m[1]), 0, sIdx(m[2]), 0];
+        }
+
+        // hybrid phyrexian: WUP
+        {
+            const m = tok.match(/^([WUBRG])([WUBRG])P$/);
+            if (m && m[1] !== m[2]) return [CAT.phyHybrid, sIdx(m[1]), 0, sIdx(m[2]), 0];
+        }
+
+        // snow last (among mana)
+        if (tok === "S") return [CAT.snow, 0, 0, 0, 0];
+
+        return [CAT.other, 0, 0, 0, 0];
+    }
+
+    return (a, b) => {
+        const A = key(a), B = key(b);
+        for (let i = 0; i < A.length; i++) {
+            if (A[i] !== B[i]) return A[i] - B[i];
+        }
+        return 0;
+    };
 }
 
 var autoFramePack;
@@ -3722,13 +3776,10 @@ function writeText(textObject, targetContext) {
 		rawText = rawText.replace(/\*/g, '{fontbelerenbsc}*{fontsaloongirl}');
 	}
 	if (textObject.manaCost && rawText) {
-		rawText =
-			rawText
-				.match(/\{[^}]+}|[^{}]/g)
-				?.filter(item => item.trim())
-				.map(c => c.startsWith('{') ? c : `{${c.toUpperCase()}}`)
-				.sort(sortMana)
-				.join("") ?? "";
+        const symbols = tokenizeManaCostString(rawText).map(t => t.toUpperCase());
+        symbols.sort(makeManaComparator(symbols));
+
+        rawText = symbols.map(t => `{${t}}`).join("");
 	}
 	rawText = rawText.replace(/ - /g, ' — ');
 	var splitText = rawText.replace(/\n/g, '{line}').replace(/{-}/g, '\u2014').replace(/{divider}/g, '{/indent}{lns}{bar}{lns}{fixtextalign}');
