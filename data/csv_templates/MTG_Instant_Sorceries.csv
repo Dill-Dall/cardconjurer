@@ -1,0 +1,94 @@
+Cards,Status,Type,Subtype,R,Mana cost,Ability,Flavour Text,Card,COMMENT,Image,Image alt 2,Image alt,image_file_path
+AWS Bill,Ready to print,Sorcery,,C,{R},"~ deals 1 damage to each player, each planeswalker, and each creature.
+",,,,,,,assets/instant-sorceries/awsbill.png
+AWS Outage,Ready to print,Instant,,c,{1}{R},"Until end of turn, creatures lose flying and players can't cast spells or activate abilities that target creatures.","His echoes can still be heard; ""It never goes down!""",,,,,,assets/instant-sorceries/awsoutage.png
+Backlog Refinement,Ready to print,Sorcery,,u,{3}{U},Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in a random order.,,,,,,,assets/instant-sorceries/backlogrefinment.png
+Click-Ops,Ready to print,Sorcery,,c,{2},Draw two cards. Skip your next draw step.,,,Centrer art,,,,assets/instant-sorceries/clickops.png
+Cloudkiller!,Ready to print,Sorcery,,u,{1}{G}{R},"Chose one, or two if you control a legendary permanent {-}
+• {indent}Destroy target creature with flying.{/indent}
+• {indent}Draw a card, then discard a card.{/indent}",Who said its so safe to be in the cloud?!,,,,,,assets/creatures/cloudkiller.png
+Customer Feedback,Ready to print,Instant,,u,{1}{R}{U},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}This deals 3 damage to target permanent.{/indent}
+• {indent}Counter target spell with mana value 3 or less.{/indent}",,,,,,,assets/instance-sorceries/customerfeedback.png
+Daily Stand-Up,Ready to print,Sorcery,,c,{1}{U},"Draw two cards, then discard a card.","""Nothing new from me.""",,,,,,assets/instant-sorceries/dailystandup.png
+Dig Through the Backlog,Ready to print,Sorcery,,u,{1}{B}{G},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}Return target creature from you graveyard to hand.{/indent}
+• {indent}Target creature deals damage equal to its power to itself.{/indent}",,,,,,,assets/instant-sorceries/digthroughthebacklog.png
+Do You Have a Sec?,Ready to print,Instant,,c,{3}{U},"Put target permanent third from the top of its owner's library.
+","""It will just take five minutes.""",,,,,,assets/instant-sorceries/doyouhaveasec.png
+Don't Be Stupid,Ready to print,Instant,,c,{U}{U},Counter target spell.,,,Center text,,,,assets/instant-sorceries/dontbestupid.png
+Endless Scalability,Ready to print,Sorcery,,c,{1}{W},Target up to three tokens you control. Create a copy of each. You may target the same token more than one time.,,,,,,,assets/instant-sorceries/endlessscalability.png
+Farewell,Ready to print,Sorcery,,r,{4}{W}{W},"Choose one or more {-}
+• Exile all artifacts.
+• Exile all creatures.
+• Exile all enchantments.
+• Exile all graveyards.",Change is the only constant.,,,,,,assets/instant-sorceries/farewell.png
+First Commit,Ready to print,Legendary Sorcery,,m,{1}{U},"{i}(You may cast a legendary sorcery only if you control a legendary creature or planeswalker.){/i}
+The next artifact spell you cast this turn costs {0} to cast. You still need to pay any colored mana.","Tue Jun 18 07:48:45 2002 : ""New repository initialized by cvs2svn.""",,Could It be green instead?,,,,assets/instant-sorceries/firstcommit.png
+Follow Git Conventions,Ready to print,Instant,,c,{B}{U},"Choose one or more {-}
+• {indent}Return target creature card from your graveyard to your hand.{/indent}
+• {indent}Return target nonland permanent to its owner's hand.{/indent}
+If you chose both, sacrifice a permanent.",Feat means feature!,,,,,,assets/instant-sorceries/conventionalcommits.png
+Force Push,Ready to print,Sorcery,,c,{B},"Exile target player's graveyard. That player draws a card.
+",,,,,,,assets/instant-sorceries/forcepush.png
+Friday Release,Ready to print,Sorcery,,u,{1}{R},"Kicker {R}
+Goad all Human creatures. {i}(Until your next turn, those creatures attack each combat if able and attack a player other than you if able.){/i}
+If ~ was kicked, search your library for a card named Pizza Party, then put it into your hand.","""Wait... It's 4pm?""",,GOAD not clearly defined,,,,assets/instant-sorceries/fridayrelease.png
+Git Revert,Ready to print,Sorcery,,u,{B},"Return target creature card from your graveyard to the battlefield under your control. You lose life equal to its mana value.
+",,,would need new symbol if uncommon and not common,,,,assets/instant-sorceries/gitrevert.png
+"Guys, Come On!",Ready to print,Instant,,u,{1}{W},Return target spell to its owner's hand. Draw a card.,"""Please no talking in the office.""",,,,,,assets/instant-sorceries/guyscomeon.png
+Hackathon,Ready to create,Sorcery,,m,{2}{W}{R},"Tap any number of creatures you control. Create an X/X colorless Project artifact creature token with haste, where X is double the total power of creatures tapped this way, with ""Sacrifice this token at the beginning of the next end step"".",,,,,,,assets/instant-sorceries/hackathon.png
+Helm Install,Ready to print,Sorcery,,c,{2}{R},"Kicker {R} {i}(You may pay an additional {R} as you cast this spell.){/i}
+Create three 1/1 colorless Microservice artifact creature tokens. If this spell was kicked, those tokens gain haste until end of turn.
+",,,,,,,assets/instant-sorceries/helminstall.png
+It works for me,Ready to print,Instant,,c,{1}{G},"Target creature you control gets +1/+1, reach and hexproof until end of turn.",,,,,,,assets/instant-sorceries/itworksforme.png
+Login,Ready to create,Sorcery,,c,{U}{U},"Create two Authentication tokens. {i}({T}, Sacrifice this artifact: Target creature can't be blocked this turn.){/i}",,,,,,,assets/instant-sorceries/login.png
+Low Hanging Fruit ,Ready to print,Sorcery,,c,{U}{G},"Scry 3. You may reveal the top card of your library. If you reveal a basic land card this way, put it onto the battlefield tapped.",,,,,,,assets/instant-sorceries/lowhangingfruit.png
+Lunch at Finn,Ready to print,Instant,,u,{G}{U}{W},"Choose two, or pay 2 life to chose three {-}
+• {indent}Target creature gets +2/+2 until end of turn.{/indent}
+• {indent}Put two +1/+1 counters on target creature.{/indent}
+• {indent}Create two Food tokens.{/indent}",,,,,,,assets/instant-sorceries/finnkantina.png
+Merge Conflict,Ready to print,Sorcery,,u,{2}{U}{R},"Exile two target instant and/or sorcery cards from your graveyard. If the exiled cards have the same mana value, copy each of them. You may cast the copies without paying their mana costs. Otherwise, choose one of them at random and copy it. You may cast the copy without paying its mana cost. Put the other one in your hand",,,,,,,assets/instant-sorceries/mergeconflict.png
+Move the Goalposts,Ready to create,Sorcery,,u,{1}{U}{B},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}Look at target player's hand. You may choose a nonland card from it. That player discards the chosen card, then draws a card.{/indent}
+• {indent}Return target nonland permanent to its owner's hand.{/indent}",,,,,,,assets/instant-sorceries/Move_the_ Goalposts.png
+Nondeterministic Entrance,Ready to print,Instant,,u,{1}{W}{U},"Chose one, or two if you control a legendary permanent {-}
+• {indent}Tap or untap target permanent.{/indent}
+• {indent}Exile target tapped permanent.{/indent}","""Please stand on the grey square until both doors are closed. Thank you.""",,,,,,assets/instant-sorceries/nondeterministicexit.png
+Nullpointer Exception,Ready to print,Instant,,r,{2}{U}{B},"Counter target activated or triggered ability. If a creature or planeswalker is the source of that ability, its controller sacrifices it unless they discard their hand.
+Flashback {2}{U}{B} {i}(You may cast this card from your graveyard for its flashback cost. Then exile it.){/I}
+","""java.lang.NullPointerException at Developer.brain(Main.java:42) at Everything.Crashes(All.java:0)""",,Reduced casting cost,,,,assets/instant-sorceries/nullpointerexception.png
+Pizza Party,Ready to print,Instant,,c,{2}{R},"Target creature gains double strike until end of turn.
+Untap all goaded creatures at the beginning of your second main phase this turn.",,,GOAD not clearly defined,,,,assets/instant-sorceries/pizzaparty.png
+Prod Incident,Ready to print,Sorcery,,c,{2}{W},Tap all nonwhite creatures.,,,,,,,assets/instant-sorceries/prodincident.png
+"Product Cancelation
+",Ready to print,Instant,,c,{1}{R},"Choose one {-}
+• {indent}~ deals 2 damage to target creature.{/indent}
+• {indent}Destroy target Service.{/indent}","Alas, the market was not ready.",,,,,,assets/instant-sorceries/productcancelation.png
+Replaced By AI,Ready to print,Sorcery,,u,{1}{B},Destroy target creature. Its controller creates a colorless AI Agent artifact creature token with the same power and toughness as that creature.,,,,,,,assets/instant-sorceries/replacedbyai.png
+Setup Cloudfront,Ready to print,Sorcery,,c,{2}{R},"~ deals 4 damage to any target. If that target has flying, it deals 6 damage instead.","""Always... There is always an issue with Cloudfront.""",,,,,,assets/instant-sorceries/setupcloudfront.png
+"Split the Monolith
+",Ready to print,Instant,,r,{1}{W}{B},"Destroy target artifact creature. Its controller creates X 1/1 colorless Microservice artifact creature tokens, where X is that creature’s toughness.",,,,,,,assets/instant-sorceries/splitthemonolith2.png
+Spontaneous Evolution,Ready to print,Instant,,u,{1}{G}{U},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}Return target creature to its owner's hand.{/indent}
+• {indent}Target creature gets +2/+2 until end of turn.{/indent}",,,,,,,assets/instant-sorceries/developerevolution.png
+"Surprising Resignation
+",Ready to print,Instant,,c,{1}{B},"As an additional cost to cast this spell, sacrifice a creature.
+Draw two cards. If the sacrificed creature was legendary, create two Food tokens.",,,Cleaned up Flavour,,,,assets/instant-sorceries/suprisingresignation.png
+Tasks in Limbo,Ready to print,Instant,,c,{2}{U},Deliver 3. Exile target nonland permanent until you Deliver again.,,,,,,,assets/instant-sorceries/tasks_in_limbo.png
+Tech Talk,Ready to create,Sorcery,,r,{2}{U}{B},Choose a creature or artifact card from your graveyard and put it onto target opponent's battlefield under their control. Then take control of another target permanent an opponent controls.,Sharing is caring.,,,,,,assets/instant-sorceries/techtalk.png
+Terraform Import,Ready to print,Instant,,c,{1}{W},Gain 2 life and draw a card.,Fixing click ops bonanza one import at a time.,,Hmm weird image,,,,assets/instant-sorceries/terraformimport.png
+Terrible Lunch,Ready to print,Instant,,u,{1}{B}{R},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}Target creature gets -3/-3 until end of turn.{/indent}
+• {indent}This deals 2 damage to any target.{/indent}",,,,,,,assets/instant-sorceries/terriblelunch.png
+Toxic Comment,Ready to print,Instant,,u,{1}{B}{W},"Choose one, or two if you control a legendary permanent {-} 
+• {indent}Target player sacrifices a legendary permanent.{/indent}
+• {indent}You gain life equal to target permanent's mana value.{/indent}",,,,,,,assets/instant-sorceries/toxicomment.png
+Utmost Priority,Ready to print,Instant,,u,{1}{R}{W},"Chose one, or two if you control a legendary permanent {-}
+• {indent}Target creature gains indestructible until end of turn.{/indent}
+• {indent}This deals 2 damage to every creature.{/indent}",,,"picture of a lot of people trying to reach someone at a laptop, but are stopped by someone holding them off. The person at the laptop is working hard.",,,,assets/instant-sorceries/toxicomment.png
+Version Upgrade,Ready to print,Instant,,u,{1}{G}{W},"Chose one, or two if you control a legendary permanent {-} 
+• {indent}Put a +1/+1 counter on target creature.{/indent}
+• {indent}Target creature you control fights another target creature.{/indent}",,,,,,,assets/instant-sorceries/version_upgrade.png
+Wrong Certificate,Ready to print,Instant,,u,{3}{U},"This spell costs {2} less to cast if you control a creature with flying.
+Change the target of target spell with a single target.","""It doesn't seem like it's working""",,,,,,assets/instant-sorceries/wroncertificate.png

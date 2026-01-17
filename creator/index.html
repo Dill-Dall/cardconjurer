@@ -730,12 +730,17 @@
 							</select>
 
 							<p class='padding input-description'>Import or reset</p>
-							<div class="input-grid">
+
+							<div class="input-grid" style="grid-template-columns: 1fr 1fr 1fr;">
 								<button class='input margin-bottom' onclick='importCsv();'>Import CSV</button>
 								<button class='input margin-bottom' onclick='deleteSavedCards();'>Delete All Cards</button>
+								<select id='csv-template-select' class='input margin-bottom' onchange='downloadTemplateFile(this.value); this.value="";'>
+									<option value=''>Fetch template</option>
+								</select>
 							</div>
 
 							<input id="import-csv-input" type="file" accept=".csv" hidden oninput="onImportCsv(event)" />
+
 
 						</div>
 						<div class='readable-background margin-bottom padding'>

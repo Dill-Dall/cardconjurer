@@ -1,0 +1,29 @@
+Cards,Status,Type,Subtype,R,Mana cost,Loyalty,Std Ability,Ability,Passive,Active,Flavour Text,Card Draft,Comment,"Approved by
+person",Image,Image alt 2,Prompt,image_file_path,Column 1,Column 2
+"Otac, the Reverse Enginer",Ready to create,Legendary Planeswalker,Otac,r,{3},3,,,,"""+1: Create a 1/1 colorless Microservice artifact creature token. 
+0: Sacrifice an artifact you control. ~ deals two damage to target creature.
+-4: Choose target player, then choose an artifact that player controls and an artifact card in that player's graveyard. That player sacrifices the artifact they control, then puts the artifact card from their graveyard onto the battlefield.""","""Is undoing something just another way of moving forward?""",,,,,,,assets/creatures/cato2.png,,
+"Assembly, the Auto Generator",Canceled,Legendary Planeswalker,Assembly,r,{3},3,,,,"""+1: Create a Pull Request. 
+0: Create a Treasure.  
+-1 Create a 1/1 colorless Microservice artifact creature token.""",,,,,,,,assets/creatures/wip.png,,
+"Thomas, Presser of Buttons",Ready to create,Legendary Planeswalker,Thomas,r,{3}{B},3,,,,"Whenever a creature with flying dies, surveil 1.
+
++3 {i}Don’t Annoy Me{/i} {-} Target creature can’t block and loses flying until your next turn.
+
++1 {i}You Want Access to What?{/i} {-} Target opponent loses 2 life and you gain 1 life. //You may return any nonland card from your graveyard to your hand.
+
+-9 {i}Tear the House Down{/i} {-} All opponents discard their hand and all players mill 20 cards. All creatures lose flying and then get -9/-9 this turn.",,,could also call it 'cdktf destroy' :P ,,,,,assets/planeswalker/thomastoxic1.png,,
+"Dean, Enraged Enthusiast",Ready to create,Legendary Planeswalker,Dean,r,{2}{R}{W},4,,,,"Creatures you control have haste.
+
++1 Target creature gains menace until end of turn.
+
+-3 Creatures you control gain indestructible until end of turn.
+
+-8 Exile all creatures with power 3 or greater, then each noncreature artifact you control becomes a 1/1 artifact creature in addition to its other types. They don't lose their abilities.",,,,,,,,assets/planeswalker/deanenragedenthusiast.png,,
+"Felix, Dangerous Multitasker",Ready to create,Legendary Planeswalker,Felix,r,{2}{U}{U},3,,,,"Whenever a player draws one or more cards, each other player draws that many cards. Drawing cards this way doesn't cause any triggered abilities to trigger.
+
++2: Creature spells cost {1} less to cast until the beginning of your next turn.
+
++1: All players may cast creature spells as though they had flash until your next turn.
+
+-8: Each player draws a card for each permanent they control. Drawing cards this way doesn't cause any triggered abilities to trigger. Then, each opponent loses X life, where X is the number of cards in their hand over seven.",,,,,,,,assets/planeswalker/felix.png,,
